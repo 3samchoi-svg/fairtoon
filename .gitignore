@@ -1,0 +1,9 @@
+# 운영/내부 — 공개 repo에 올리지 않음
+CLAUDE.md
+.drivesync/
+.claude/
+backup/
+
+# OS
+.DS_Store
+**/.DS_Store
