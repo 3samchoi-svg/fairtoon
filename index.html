@@ -1,23 +1,1464 @@
-<!doctype html>
-<html lang="ko">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>fairtoon</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fairtoon — Preview Build</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  html,body{height:100%;margin:0}
-  body{display:flex;align-items:center;justify-content:center;
-       font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-       background:#0e0e12;color:#fff}
-  .wrap{text-align:center}
-  h1{font-size:clamp(2.5rem,8vw,5rem);margin:0;letter-spacing:.05em}
-  p{opacity:.6;margin-top:1rem}
+/* ============ TOKENS ============ */
+:root{
+  --bg:#FAFAFA;
+  --surface:#FFFFFF;
+  --ink:#10182B;
+  --ink-soft:#454D5C;
+  --gray:#646C76;
+  --gray-light:#9AA0AC;
+  --line:#E7E7E5;
+  --line-soft:#EFEFED;
+  --blue:#2F5FEF;
+  --blue-dark:#1C3FC4;
+  --blue-soft:#F0F2FF;
+  --blue-softer:#F5F7FF;
+  --amber:#FFB020;
+  --amber-soft:#FFF6E5;
+  --red:#E5484D;
+  --red-soft:#FDEDEE;
+  --green:#1CA66B;
+  --radius-s:10px;
+  --radius-m:16px;
+  --radius-l:24px;
+  --radius-pill:999px;
+  --shadow-sm:0 1px 2px rgba(16,24,43,.05);
+  --shadow-md:0 10px 30px rgba(16,24,43,.07);
+  --shadow-lg:0 24px 60px rgba(16,24,43,.12);
+  --font-display:'Archivo Black','Arial Black',sans-serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --maxw:1180px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+img,svg{display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+.hidden{display:none !important;}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px;}
+
+/* ============ HEADER ============ */
+header.site-header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(247,246,242,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.header-inner{
+  max-width:var(--maxw);margin:0 auto;padding:14px 28px;
+  display:flex;align-items:center;gap:18px;
+}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.brand-mark{
+  width:38px;height:38px;border-radius:11px;background:var(--blue-soft);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.brand-name{font-family:var(--font-display);font-size:19px;letter-spacing:-.3px;color:var(--ink);white-space:nowrap;}
+nav.main-nav{display:flex;align-items:center;gap:2px;flex-shrink:0;}
+.nav-link{
+  font-family:var(--font-body);font-size:12.5px;font-weight:700;letter-spacing:.6px;
+  padding:11px 18px;border-radius:var(--radius-pill);color:var(--gray);
+  transition:background .15s,color .15s;white-space:nowrap;text-transform:uppercase;
+}
+.nav-link:hover{background:var(--blue-softer);color:var(--ink);}
+.nav-link.active{background:var(--blue);color:#fff;}
+.header-search{
+  position:relative;
+  flex:1;display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius-pill);padding:9px 16px;min-width:0;max-width:340px;
+}
+.header-search:focus-within{border-color:var(--blue);}
+.header-search input{
+  border:none;outline:none;background:none;font-family:var(--font-body);
+  font-size:14px;color:var(--ink);width:100%;
+}
+.header-search input::placeholder{color:var(--gray-light);}
+.header-search svg{flex-shrink:0;}
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.lang-switch{
+  position:relative;display:inline-flex;align-items:center;
+  background:var(--line-soft);border-radius:var(--radius-pill);padding:3px;
+  border:1px solid var(--line);
+}
+.lang-slider{
+  position:absolute;top:3px;left:3px;height:calc(100% - 6px);width:36px;
+  background:var(--blue);border-radius:var(--radius-pill);
+  transition:left .25s cubic-bezier(.4,0,.2,1);z-index:1;
+  box-shadow:0 4px 10px rgba(47,95,239,.3);
+}
+.lang-opt{
+  position:relative;z-index:2;font-family:var(--font-body);font-size:11.5px;font-weight:800;
+  letter-spacing:.4px;padding:7px 13px;border-radius:var(--radius-pill);color:var(--gray);
+  transition:color .2s;min-width:36px;text-align:center;
+}
+.lang-opt.active{color:#fff;}
+.nav-burger{display:none;width:38px;height:38px;border-radius:10px;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--line);flex-shrink:0;}
+
+/* ============ BUTTONS ============ */
+.btn{
+  font-family:var(--font-body);font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+  padding:14px 28px;border-radius:var(--radius-pill);display:inline-flex;
+  align-items:center;gap:8px;transition:transform .12s,box-shadow .12s,background .12s;
+}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 10px 24px rgba(47,95,239,.35);}
+.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px);}
+.btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+.btn-sm{padding:9px 16px;font-size:11px;}
+
+/* ============ VIEWS ============ */
+main{min-height:60vh;}
+.view{padding-bottom:80px;}
+
+/* ---- HOME / HERO ---- */
+.hero{padding:108px 28px 40px;text-align:center;}
+.hero h1{
+  font-family:var(--font-display);font-size:clamp(38px,6.2vw,68px);line-height:1.04;
+  letter-spacing:-1.8px;margin:0 auto;max-width:880px;color:var(--ink);
+}
+.hero h1 .accent{color:var(--blue);}
+.hero p.sub{
+  font-size:17.5px;color:var(--gray);max-width:560px;margin:24px auto 0;line-height:1.6;
+}
+.hero-search-wrap{max-width:620px;margin:40px auto 0;position:relative;}
+.hero-search{
+  display:flex;align-items:center;gap:10px;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--radius-pill);
+  padding:8px 8px 8px 24px;box-shadow:var(--shadow-md);
+}
+.hero-search:focus-within{border-color:var(--blue);}
+.hero-search svg{flex-shrink:0;color:var(--gray-light);}
+.hero-search input{
+  flex:1;border:none;outline:none;background:none;font-size:16px;
+  font-family:var(--font-body);color:var(--ink);min-width:0;
+}
+.hero-search input::placeholder{color:var(--gray-light);}
+.hero-search button{
+  background:var(--blue);color:#fff;font-family:var(--font-body);font-size:13px;font-weight:800;
+  letter-spacing:.5px;text-transform:uppercase;padding:14px 26px;border-radius:var(--radius-pill);flex-shrink:0;
+  transition:background .15s;
+}
+.hero-search button:hover{background:var(--blue-dark);}
+.trending{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:22px;}
+.trending span.label{font-size:13px;color:var(--gray-light);align-self:center;margin-right:2px;}
+.chip{
+  font-size:13.5px;color:var(--ink-soft);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius-pill);padding:7px 15px;
+  transition:border-color .15s,color .15s;
+}
+.chip:hover{border-color:var(--blue);color:var(--blue);}
+
+.section-label-row{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 22px;}
+.section-label{font-family:var(--font-display);font-size:14px;letter-spacing:.3px;color:var(--ink);}
+.section-link{font-size:12.5px;color:var(--blue);font-weight:800;text-transform:uppercase;letter-spacing:.5px;}
+
+.home-row{margin-top:60px;padding-top:48px;border-top:1px solid var(--line);}
+.preview-flag{
+  display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--gray);
+  background:var(--line-soft);border-radius:var(--radius-pill);padding:5px 12px;margin-bottom:18px;
+}
+.preview-flag b{color:var(--ink-soft);}
+
+/* ---- CARDS (search results / similar) ---- */
+.toon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:20px;}
+.toon-card{
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);
+  overflow:hidden;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;
+}
+.toon-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.toon-cover{
+  aspect-ratio:3/4;width:100%;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.toon-cover .ti{
+  font-family:var(--font-display);color:#fff;font-size:15px;letter-spacing:.2px;
+  text-align:center;padding:0 16px;line-height:1.25;text-shadow:0 1px 6px rgba(0,0,0,.15);
+}
+.toon-cover .rating-pill{
+  position:absolute;top:10px;right:10px;background:rgba(255,255,255,.92);
+  border-radius:var(--radius-pill);padding:4px 9px;font-size:12px;font-weight:700;
+  display:flex;align-items:center;gap:3px;color:var(--ink);
+}
+.toon-body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.toon-title{font-family:var(--font-display);font-size:14.5px;letter-spacing:-.1px;line-height:1.25;}
+.toon-author{font-size:12.5px;color:var(--gray);}
+.toon-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-size:11px;background:var(--blue-softer);color:var(--blue-dark);border-radius:var(--radius-pill);padding:3px 9px;font-weight:600;}
+.toon-platforms{display:flex;align-items:center;gap:5px;margin-top:auto;padding-top:8px;flex-wrap:wrap;}
+.plat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.plat-logo{
+  border-radius:5px;flex-shrink:0;color:#fff;font-family:var(--font-display);
+  display:inline-flex;align-items:center;justify-content:center;line-height:1;
+}
+.plat-mini{font-size:11px;color:var(--gray);display:flex;align-items:center;gap:4px;}
+.plat-more{font-size:11px;color:var(--gray-light);}
+
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:16px;}
+.mini-card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);overflow:hidden;transition:transform .15s,box-shadow .15s;}
+.mini-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.mini-cover{aspect-ratio:3/4;display:flex;align-items:center;justify-content:center;}
+.mini-cover .ti{font-family:var(--font-display);color:#fff;font-size:12px;text-align:center;padding:0 10px;}
+.mini-body{padding:10px 12px 13px;}
+.mini-title{font-family:var(--font-display);font-size:12.5px;margin-bottom:4px;}
+.mini-reason{font-size:11.5px;color:var(--gray);line-height:1.4;}
+
+/* ---- SEARCH RESULTS HEADER ---- */
+.results-header{padding:40px 0 28px;}
+.results-header h2{font-family:var(--font-display);font-size:24px;letter-spacing:-.4px;margin:0 0 6px;}
+.results-header .count{font-size:14px;color:var(--gray);}
+.no-results{padding:60px 0;text-align:center;color:var(--gray);}
+.no-results svg{margin:0 auto 16px;}
+
+/* ---- DETAIL VIEW ---- */
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13.5px;color:var(--gray);margin:30px 0 22px;font-weight:600;}
+.back-link:hover{color:var(--blue);}
+.detail-top{display:grid;grid-template-columns:220px 1fr;gap:34px;margin-bottom:36px;}
+.detail-cover{aspect-ratio:3/4;border-radius:var(--radius-l);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-md);}
+.detail-cover .ti{font-family:var(--font-display);color:#fff;font-size:20px;text-align:center;padding:0 18px;line-height:1.3;}
+.detail-titles h1{font-family:var(--font-display);font-size:30px;letter-spacing:-.5px;margin:0 0 4px;line-height:1.15;}
+.detail-titles .ko-title{font-size:15px;color:var(--gray);margin:0 0 16px;}
+.meta-grid{display:grid;grid-template-columns:repeat(2,minmax(140px,1fr));gap:10px 24px;margin-bottom:18px;}
+.meta-item .meta-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-light);margin-bottom:2px;}
+.meta-item .meta-val{font-size:14px;font-weight:600;color:var(--ink-soft);}
+.status-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:4px 11px;border-radius:var(--radius-pill);}
+.status-Ongoing{background:#E8F8EF;color:var(--green);}
+.status-Completed{background:var(--blue-softer);color:var(--blue-dark);}
+.status-Hiatus{background:var(--amber-soft);color:#9A6700;}
+.status-Cancelled{background:var(--red-soft);color:var(--red);}
+.tagrow{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;}
+.tag-outline{font-size:11.5px;border:1px solid var(--line);color:var(--ink-soft);border-radius:var(--radius-pill);padding:4px 11px;}
+.tag-warn{font-size:11.5px;border:1px solid #F3C9CB;color:var(--red);background:var(--red-soft);border-radius:var(--radius-pill);padding:4px 11px;}
+.tag-age{font-size:11.5px;font-weight:700;border:1px solid var(--line);color:var(--gray);border-radius:6px;padding:3px 8px;}
+
+.detail-section{margin-bottom:38px;}
+.detail-section h2{font-family:var(--font-display);font-size:16px;letter-spacing:-.1px;margin:0 0 16px;display:flex;align-items:center;justify-content:space-between;}
+.synopsis{font-size:15px;line-height:1.7;color:var(--ink-soft);max-width:760px;}
+.why-read{
+  margin-top:16px;background:var(--blue-softer);border-left:3px solid var(--blue);
+  border-radius:0 var(--radius-m) var(--radius-m) 0;padding:14px 18px;font-size:14px;
+  color:var(--blue-dark);max-width:760px;font-weight:600;
+}
+.report-link{font-size:12.5px;color:var(--gray);font-weight:600;display:inline-flex;align-items:center;gap:5px;}
+.report-link:hover{color:var(--blue);}
+
+.platform-list{display:flex;flex-direction:column;gap:16px;}
+.platform-card{
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);
+  padding:22px 24px;border-left:4px solid var(--blue);
+}
+.platform-card-head{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  margin-bottom:18px;padding-bottom:18px;border-bottom:1px solid var(--line-soft);
+}
+.plat-name{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:16px;letter-spacing:-.1px;}
+.platform-fields{display:grid;grid-template-columns:1fr 1fr;gap:18px 28px;}
+.pf-item.full{grid-column:1/-1;}
+.pf-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-light);margin-bottom:5px;}
+.pf-value{font-size:13.5px;color:var(--ink-soft);line-height:1.55;}
+.read-btn{
+  font-family:var(--font-body);font-size:11.5px;font-weight:800;letter-spacing:.4px;text-transform:uppercase;background:var(--ink);
+  color:#fff;padding:11px 18px;border-radius:var(--radius-pill);white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;transition:background .15s;flex-shrink:0;
+}
+.read-btn:hover{background:var(--blue);}
+
+.rating-row{display:flex;gap:14px;margin-bottom:16px;flex-wrap:wrap;}
+.rating-chip{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:14px 20px;min-width:130px;}
+.rating-chip .rc-label{font-size:11px;color:var(--gray-light);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
+.rating-chip .rc-val{font-family:var(--font-display);font-size:22px;color:var(--ink);}
+.reception-text{font-size:14px;color:var(--ink-soft);line-height:1.65;max-width:760px;margin-bottom:10px;}
+.awards-list{margin:0;padding-left:18px;font-size:13.5px;color:var(--gray);line-height:1.8;}
+
+.adapt-list{display:flex;flex-direction:column;gap:8px;}
+.adapt-row{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:12px 16px;font-size:13.5px;}
+.adapt-type{font-family:var(--font-display);font-size:10.5px;letter-spacing:.3px;background:var(--blue-soft);color:var(--blue-dark);padding:4px 10px;border-radius:6px;flex-shrink:0;}
+.adapt-note{color:var(--gray);}
+
+/* ---- ARTICLES ---- */
+.article-filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:34px;}
+.filter-chip{font-size:13px;font-weight:600;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-pill);padding:8px 16px;}
+.filter-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+.article-list-lg{display:flex;flex-direction:column;gap:24px;}
+.article-card-lg{
+  display:flex;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);
+  overflow:hidden;cursor:pointer;transition:box-shadow .15s,border-color .15s;
+}
+.article-card-lg:hover{box-shadow:var(--shadow-md);border-color:var(--gray-light);}
+.ac-visual{width:200px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ac-body{padding:30px 34px;display:flex;flex-direction:column;gap:11px;flex:1;min-width:0;}
+.ac-cat{font-size:11px;text-transform:uppercase;letter-spacing:.6px;font-weight:700;}
+.ac-title{font-family:var(--font-display);font-size:19px;letter-spacing:-.3px;line-height:1.3;margin:0;}
+.ac-excerpt{font-size:14.5px;color:var(--gray);line-height:1.6;margin:0;max-width:600px;}
+.ac-foot{display:flex;align-items:center;gap:18px;margin-top:auto;padding-top:6px;}
+.ac-time{font-size:12.5px;color:var(--gray-light);}
+.ac-cta{font-size:13px;font-weight:700;color:var(--blue);}
+.ac-cta.soon{color:var(--gray-light);}
+.article-reader{max-width:680px;margin:0 auto;}
+.article-reader .a-cat{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--blue);font-weight:700;margin-bottom:10px;}
+.article-reader h1{font-family:var(--font-display);font-size:30px;letter-spacing:-.5px;line-height:1.2;margin:0 0 14px;}
+.article-reader .a-meta{font-size:13px;color:var(--gray);margin-bottom:28px;}
+.article-reader .a-body p{font-size:16px;line-height:1.75;color:var(--ink-soft);margin:0 0 18px;}
+
+/* ---- STAY SAFE ---- */
+.staysafe-intro{font-size:16px;color:var(--ink-soft);line-height:1.65;max-width:680px;margin-bottom:36px;}
+.device-tabs{display:flex;gap:8px;margin-bottom:32px;flex-wrap:wrap;}
+.device-tab{font-size:13.5px;font-weight:600;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-pill);padding:9px 18px;display:flex;align-items:center;gap:7px;}
+.device-tab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.threat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:48px;}
+.threat-card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);padding:24px;}
+.threat-card .tc-icon{width:40px;height:40px;border-radius:11px;background:var(--red-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.threat-card h3{font-family:var(--font-display);font-size:14px;margin:0 0 8px;letter-spacing:-.1px;}
+.threat-card p{font-size:13.5px;color:var(--gray);line-height:1.55;margin:0;}
+.checklist{display:flex;flex-direction:column;gap:0;border:1px solid var(--line-soft);border-radius:var(--radius-l);overflow:hidden;background:var(--surface);margin-bottom:48px;}
+.check-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line-soft);}
+.check-item:last-child{border-bottom:none;}
+.check-box{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;}
+.check-box.checked{background:var(--blue);border-color:var(--blue);}
+.check-text{font-size:14.5px;color:var(--ink-soft);}
+.check-text.checked{color:var(--gray-light);text-decoration:line-through;}
+.remediation-steps{display:flex;flex-direction:column;gap:14px;}
+.step-row{display:flex;gap:16px;}
+.step-num{font-family:var(--font-display);font-size:14px;width:32px;height:32px;border-radius:50%;background:var(--blue-soft);color:var(--blue-dark);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-text{font-size:14.5px;color:var(--ink-soft);line-height:1.6;padding-top:5px;}
+.step-text b{color:var(--ink);}
+
+/* ---- ABOUT ---- */
+.about-hero{padding:60px 0 10px;max-width:680px;}
+.about-wrap{max-width:680px;margin:0 auto;}
+.about-hero h1{font-family:var(--font-display);font-size:36px;letter-spacing:-.6px;margin:0 0 18px;}
+.about-hero p{font-size:16px;line-height:1.7;color:var(--ink-soft);margin:0 0 16px;}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin:44px 0;max-width:680px;}
+.about-stat{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:20px;text-align:center;}
+.about-stat .num{font-family:var(--font-display);font-size:26px;color:var(--blue);}
+.about-stat .lbl{font-size:12px;color:var(--gray);margin-top:4px;}
+.faq-item{border-bottom:1px solid var(--line-soft);padding:18px 0;max-width:680px;}
+.faq-item h3{font-family:var(--font-display);font-size:14.5px;margin:0 0 8px;letter-spacing:-.1px;}
+.faq-item p{font-size:14px;color:var(--gray);line-height:1.6;margin:0;}
+
+/* ---- TOAST / MODAL ---- */
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--ink);color:#fff;padding:14px 24px;border-radius:var(--radius-pill);
+  font-size:13.5px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;z-index:1000;display:flex;align-items:center;gap:8px;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ---- FOOTER ---- */
+footer{border-top:1px solid var(--line);margin-top:60px;}
+.footer-inner{max-width:var(--maxw);margin:0 auto;padding:48px 28px 36px;}
+.footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:36px;margin-bottom:32px;}
+.footer-brand .brand{margin-bottom:10px;}
+.footer-brand p{font-size:13.5px;color:var(--gray);max-width:280px;line-height:1.6;}
+.footer-cols{display:flex;gap:48px;flex-wrap:wrap;}
+.footer-col h4{font-family:var(--font-display);font-size:11.5px;letter-spacing:.4px;color:var(--gray-light);margin:0 0 14px;}
+.footer-col a{display:block;font-size:13.5px;color:var(--ink-soft);margin-bottom:10px;}
+.footer-col a:hover{color:var(--blue);}
+.footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:24px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--gray-light);}
+
+/* ---- AUTOCOMPLETE DROPDOWN ---- */
+.search-pop{
+  position:absolute;left:0;right:0;top:calc(100% + 10px);z-index:60;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-l);
+  box-shadow:var(--shadow-lg);overflow:hidden;padding:6px;
+  opacity:0;transform:translateY(-6px);pointer-events:none;transition:opacity .16s,transform .16s;
+}
+.search-pop.open{opacity:1;transform:translateY(0);pointer-events:auto;}
+.ac-row{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:var(--radius-m);cursor:pointer;transition:background .12s;}
+.ac-row:hover,.ac-row.active{background:var(--blue-softer);}
+.ac-thumb{width:34px;height:46px;border-radius:7px;flex-shrink:0;display:flex;align-items:center;justify-content:center;}
+.ac-thumb .ti{font-family:var(--font-display);color:#fff;font-size:9px;text-align:center;line-height:1.1;padding:0 3px;}
+.ac-meta{min-width:0;flex:1;}
+.ac-name{font-family:var(--font-display);font-size:13px;letter-spacing:-.1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ac-sub{font-size:11.5px;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;}
+.ac-rate{font-size:11.5px;font-weight:700;color:#B8860B;flex-shrink:0;}
+.ac-empty{padding:16px 14px;font-size:13px;color:var(--gray-light);text-align:center;}
+.ac-foot{padding:9px 12px;border-top:1px solid var(--line-soft);margin-top:4px;font-size:11.5px;color:var(--gray-light);display:flex;justify-content:space-between;}
+.ac-foot b{color:var(--blue);font-weight:700;}
+
+/* ---- FILTER / SORT BAR ---- */
+.filter-bar{
+  display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;
+  padding:16px 18px;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--radius-l);margin-bottom:24px;
+}
+.filter-group{display:flex;align-items:center;gap:7px;}
+.filter-group .fg-label{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-light);font-weight:700;}
+.fselect{
+  font-family:var(--font-body);font-size:13px;font-weight:600;color:var(--ink-soft);
+  background:var(--bg);border:1px solid var(--line);border-radius:var(--radius-pill);
+  padding:8px 30px 8px 14px;cursor:pointer;appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23646C76' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;transition:border-color .15s;
+}
+.fselect:hover{border-color:var(--blue);}
+.filter-spacer{flex:1;}
+.filter-clear{font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.4px;}
+.filter-clear:hover{color:var(--red);}
+
+/* ---- HOME: HOW IT WORKS STRIP ---- */
+.how-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.how-card{position:relative;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);padding:26px 24px;}
+.how-num{font-family:var(--font-display);font-size:13px;color:var(--blue);background:var(--blue-soft);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.how-card h3{font-family:var(--font-display);font-size:15px;letter-spacing:-.2px;margin:0 0 8px;}
+.how-card p{font-size:13.5px;color:var(--gray);line-height:1.55;margin:0;}
+
+/* ---- PRICING MODEL LEGEND ---- */
+.pricing-legend{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.pl-item{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:16px 18px;border-top:3px solid var(--blue);}
+.pl-name{font-family:var(--font-display);font-size:13px;letter-spacing:-.1px;margin-bottom:5px;}
+.pl-desc{font-size:12.5px;color:var(--gray);line-height:1.5;}
+.pricing-note{font-size:12.5px;color:var(--gray-light);margin-top:14px;}
+
+/* ---- INLINE ARTICLE CROSS-LINK ---- */
+.xlink-box{margin-top:8px;background:var(--amber-soft);border:1px solid #F2DCB0;border-radius:var(--radius-m);padding:14px 18px;font-size:13.5px;color:#7a5a14;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.xlink-box a{color:var(--blue-dark);font-weight:700;}
+.sample-body-note{font-size:12.5px;color:var(--gray-light);font-style:italic;border-left:2px solid var(--line);padding-left:12px;margin-bottom:18px;}
+
+/* ---- VIEW TRANSITION ---- */
+@keyframes viewIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.view-anim{animation:viewIn .26s cubic-bezier(.22,.61,.36,1);}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width:920px){
+  .how-strip{grid-template-columns:1fr;}
+  nav.main-nav{display:none;}
+  .header-search{max-width:none;}
+  .nav-burger{display:flex;}
+  .threat-grid{grid-template-columns:1fr;}
+  .detail-top{grid-template-columns:1fr;}
+  .detail-cover{max-width:200px;}
+  .meta-grid{grid-template-columns:1fr 1fr;}
+}
+@media (max-width:600px){
+  .header-inner{flex-wrap:wrap;}
+  .header-search{order:3;flex-basis:100%;}
+  .platform-fields{grid-template-columns:1fr;}
+  .platform-card-head{flex-wrap:wrap;}
+  .read-btn{width:100%;justify-content:center;}
+  .article-card-lg{flex-direction:column;}
+  .ac-visual{width:100%;height:110px;}
+  .ac-body{padding:22px 22px 24px;}
+}
+.mobile-nav{
+  display:none;flex-direction:column;gap:4px;padding:12px 28px 18px;border-bottom:1px solid var(--line);
+}
+.mobile-nav.open{display:flex;}
+.mobile-nav .nav-link{width:100%;text-align:left;}
 </style>
 </head>
 <body>
-  <div class="wrap">
-    <h1>fairtoon</h1>
-    <p>중간 결과물 점검용 페이지 · setup OK</p>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="brand" onclick="showView('home');return false;">
+      <span class="brand-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z" stroke="#1C3FCC" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z" stroke="#1C3FCC" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand-name" data-i18n="brand">FAIRTOON</span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#" class="nav-link active" data-view="home" data-i18n="nav_home">Home</a>
+      <a href="#" class="nav-link" data-view="articles" data-i18n="nav_articles">Articles</a>
+      <a href="#" class="nav-link" data-view="staysafe" data-i18n="nav_staysafe">Stay Safe</a>
+      <a href="#" class="nav-link" data-view="about" data-i18n="nav_about">About</a>
+    </nav>
+    <div class="header-search">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="text" id="headerSearchInput" data-i18n-ph="search_ph" placeholder="Where to read..." autocomplete="off">
+      <div class="search-pop" id="headerSearchPop"></div>
+    </div>
+    <div class="header-right">
+      <div class="lang-switch" id="langSwitch">
+        <span class="lang-slider" id="langSlider"></span>
+        <button type="button" class="lang-opt active" data-lang="en" onclick="setLang('en')">EN</button>
+        <button type="button" class="lang-opt" data-lang="ko" onclick="setLang('ko')">KR</button>
+      </div>
+      <button class="nav-burger" onclick="document.getElementById('mobileNav').classList.toggle('open')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
   </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#" class="nav-link" data-view="home" data-i18n="nav_home">Home</a>
+    <a href="#" class="nav-link" data-view="articles" data-i18n="nav_articles">Articles</a>
+    <a href="#" class="nav-link" data-view="staysafe" data-i18n="nav_staysafe">Stay Safe</a>
+    <a href="#" class="nav-link" data-view="about" data-i18n="nav_about">About</a>
+  </div>
+</header>
+
+<main id="mainContent"></main>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand">
+          <span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z" stroke="#1C3FCC" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z" stroke="#1C3FCC" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <span class="brand-name">FAIRTOON</span>
+        </div>
+        <p>A search engine for finding where to legally read webtoons — every official platform, compared in one place.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>SITE</h4>
+          <a href="#" data-view="home">Home</a>
+          <a href="#" data-view="articles">Articles</a>
+          <a href="#" data-view="staysafe">Stay Safe</a>
+          <a href="#" data-view="about">About</a>
+        </div>
+        <div class="footer-col">
+          <h4>LANGUAGE</h4>
+          <a href="#" onclick="setLang('en');return false;">English</a>
+          <a href="#" onclick="setLang('ko');return false;">한국어</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Fairtoon. An independent, non-commercial project.</span>
+      <span>Preview build — sample data shown for design purposes, not live platform listings.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ======================================================
+   FAIRTOON PREVIEW — sample data + view logic
+   This is a design preview only. Series data below is
+   illustrative sample content, not a live database.
+====================================================== */
+
+var PLATFORM_COLORS = {
+  "WEBTOON":"#00C853","Tapas":"#FF5630","Lezhin":"#202229",
+  "Tappytoon":"#8B5CF6","Manta":"#FF3B81","Kakaopage":"#E8B600"
+};
+var PLATFORM_INITIALS = {
+  "WEBTOON":"W","Tapas":"Ta","Lezhin":"L","Tappytoon":"Tp","Manta":"M","Kakaopage":"K"
+};
+function platLogo(name,size){
+  size = size||16;
+  var initials = PLATFORM_INITIALS[name] || name.charAt(0);
+  return '<span class="plat-logo" style="background:'+(PLATFORM_COLORS[name]||"#999")+';width:'+size+'px;height:'+size+'px;font-size:'+Math.round(size*0.52)+'px;">'+initials+'</span>';
+}
+
+var COVERS = [
+  ["#FF7A59","#FF3D81"],["#2F5BFF","#7C3AED"],["#00C853","#00A0E3"],
+  ["#FFB020","#FF5630"],["#7C3AED","#2F5BFF"],["#0EA5A5","#2F5BFF"],
+  ["#E5484D","#FFB020"],["#202229","#2F5BFF"],["#FF3D81","#7C3AED"],
+  ["#00A0E3","#00C853"],["#FF5630","#E5484D"],["#2F5BFF","#0EA5A5"]
+];
+function coverStyle(id){
+  var c = COVERS[(id-1) % COVERS.length];
+  return "background:linear-gradient(145deg,"+c[0]+","+c[1]+");";
+}
+function initials(title){
+  var words = title.split(" ").filter(function(w){return w.length>0;});
+  if(words.length===1) return words[0].slice(0,3).toUpperCase();
+  return words.slice(0,3).map(function(w){return w[0];}).join("").toUpperCase();
+}
+
+/* ---------------- WEBTOON DATABASE (sample) ---------------- */
+var TOONS = [
+{id:1,titleEn:"Solo Leveling",titleKo:"나 혼자만 레벨업",alt:["Only I Level Up"],
+ author:"Chugong",artist:"Dubu (Redice Studio)",publisher:"D&C Media",run:"2018 – 2021",
+ status:"Completed",schedule:null,chapters:"179 (complete)",
+ genres:["Action","Fantasy"],catTags:["Dungeon","Power Progression","Hunter Guild"],
+ warnings:["Violence"],age:"15+",ratingAL:9.1,ratingMU:9.3,
+ reception:"One of the most-read fantasy action series on every platform that carries it; community discussion centers on the art upgrade partway through the series.",
+ awards:["Eisner Award nomination, Best Webcomic (2022)"],
+ synopsis:"A weak hunter who barely survives a deadly double dungeon wakes up with the rare ability to level up like a game character, and sets out to climb from the bottom of the hunter rankings to the very top.",
+ whyRead:"A power-fantasy with one of the best mid-series visual glow-ups in the medium.",
+ adaptations:[{type:"Anime",note:"Streaming on Crunchyroll"},{type:"Light Novel",note:"Original source novel, available via Yen Press"}],
+ similar:[6,5,8],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+8 more"],pricing:"Wait for Free",latestCh:"179",updated:"Complete series",formats:["web","app"],link:"https://www.webtoons.com"},
+  {name:"Tapas",regions:["Global"],langs:["EN"],pricing:"Coins (à la carte)",latestCh:"179",updated:"Complete series",formats:["web","app"],link:"https://tapas.io"}
+ ]},
+{id:2,titleEn:"Tower of God",titleKo:"신의 탑",alt:[],
+ author:"SIU",artist:"SIU",publisher:"Naver Webtoon",run:"2010 – Present",
+ status:"Ongoing",schedule:"Every Friday",chapters:"600+",
+ genres:["Fantasy","Adventure"],catTags:["Tower Climbing","Ensemble Cast","Mystery"],
+ warnings:["Violence"],age:"13+",ratingAL:8.7,ratingMU:8.9,
+ reception:"Praised for world-building depth; some readers note the early chapters' art looks dated compared to the current run.",
+ awards:[],
+ synopsis:"A boy named Bam chases his closest friend into a mysterious tower where climbing each floor tests a different skill, and where everyone he meets seems to want something from him.",
+ whyRead:"One of the longest-running originals with a genuinely massive, payoff-heavy world.",
+ adaptations:[{type:"Anime",note:"Season 1 on Crunchyroll"}],
+ similar:[6,1,11],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+10 more"],pricing:"Fully Free",latestCh:"600+",updated:"Weekly",formats:["web","app"],link:"https://www.webtoons.com"}
+ ]},
+{id:3,titleEn:"Lookism",titleKo:"외모지상주의",alt:[],
+ author:"Park Tae-jun",artist:"Park Tae-jun",publisher:"Naver Webtoon",run:"2014 – Present",
+ status:"Ongoing",schedule:"Every Saturday",chapters:"500+",
+ genres:["Drama","Action"],catTags:["School","Body Swap","Social Commentary"],
+ warnings:["Violence","Mature Themes"],age:"15+",ratingAL:8.5,ratingMU:8.6,
+ reception:"Long-running discussion around its handling of appearance-based social commentary alongside its action arcs.",
+ awards:[],
+ synopsis:"A bullied teenager wakes up with a second, idealized body and starts living a double life — switching between his old self and his new one as he learns how differently the world treats each.",
+ whyRead:"A premise built for social commentary that still delivers on action-arc payoff.",
+ adaptations:[{type:"Drama",note:"Live-action series, regional streaming varies"}],
+ similar:[9,10,2],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+6 more"],pricing:"Fully Free",latestCh:"500+",updated:"Weekly",formats:["web","app"],link:"https://www.webtoons.com"},
+  {name:"Tapas",regions:["Global"],langs:["EN"],pricing:"First Chapters Free",latestCh:"480",updated:"2 weeks behind",formats:["web"],link:"https://tapas.io"}
+ ]},
+{id:4,titleEn:"True Beauty",titleKo:"여신강림",alt:["Yeoshingangrim"],
+ author:"Yaongyi",artist:"Yaongyi",publisher:"Naver Webtoon",run:"2018 – 2023",
+ status:"Completed",schedule:null,chapters:"219 (complete)",
+ genres:["Romance","Comedy"],catTags:["High School","Makeup","Love Triangle"],
+ warnings:[],age:"13+",ratingAL:8.2,ratingMU:8.4,
+ reception:"A breakout romance-comedy that drove a lot of new readers to webtoons generally; community favorite for its slow-burn pacing.",
+ awards:[],
+ synopsis:"A girl who hides her face behind a skillfully applied layer of makeup transfers to a new school determined to keep her old self secret — until two very different boys start getting close.",
+ whyRead:"The romance-comedy a lot of casual readers point to as their first webtoon.",
+ adaptations:[{type:"Drama",note:"Live-action series available on regional streaming"}],
+ similar:[9,3,7],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+5 more"],pricing:"Wait for Free",latestCh:"219",updated:"Complete series",formats:["web","app"],link:"https://www.webtoons.com"},
+  {name:"Tapas",regions:["Global"],langs:["EN"],pricing:"Coins (à la carte)",latestCh:"219",updated:"Complete series",formats:["web","app"],link:"https://tapas.io"}
+ ]},
+{id:5,titleEn:"The God of High School",titleKo:"신의 탑",alt:["GOH"],
+ author:"Yongje Park",artist:"Yongje Park",publisher:"Naver Webtoon",run:"2011 – 2022",
+ status:"Completed",schedule:null,chapters:"569 (complete)",
+ genres:["Action","Martial Arts"],catTags:["Tournament","Mythology","Ensemble Cast"],
+ warnings:["Violence"],age:"13+",ratingAL:8.0,ratingMU:8.1,
+ reception:"A martial-arts tournament arc that gradually escalates into a much larger mythological conflict; later arcs are more divisive than the opening tournament.",
+ awards:[],
+ synopsis:"A high schooler enters a nationwide martial arts tournament with a simple wish, only to discover the competition is a cover for something much bigger involving gods and ancient power.",
+ whyRead:"Tournament-arc structure that escalates into genuinely high stakes.",
+ adaptations:[{type:"Anime",note:"Streaming on Crunchyroll"}],
+ similar:[1,2,11],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+4 more"],pricing:"Fully Free",latestCh:"569",updated:"Complete series",formats:["web","app"],link:"https://www.webtoons.com"}
+ ]},
+{id:6,titleEn:"Omniscient Reader's Viewpoint",titleKo:"전지적 독자 시점",alt:["ORV"],
+ author:"Sing-Shong",artist:"Sleepy-C",publisher:"D&C Media",run:"2020 – Present",
+ status:"Ongoing",schedule:"Every Tuesday",chapters:"160+",
+ genres:["Fantasy","Action"],catTags:["Apocalypse","Meta Fiction","Ensemble Cast"],
+ warnings:["Violence"],age:"15+",ratingAL:9.0,ratingMU:9.2,
+ reception:"Frequently cited for how it subverts typical apocalypse-genre tropes by having the lead already know what's coming.",
+ awards:[],
+ synopsis:"The only reader of a web novel finishes the story just as its apocalyptic events start happening in real life — and being the one person who knows what's coming next becomes both his only advantage and his biggest target.",
+ whyRead:"A genre-savvy lead in a genre that rarely lets its characters be genre-savvy.",
+ adaptations:[{type:"Light Novel",note:"Original web novel, licensed in print"}],
+ similar:[1,2,5],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+3 more"],pricing:"Wait for Free",latestCh:"160",updated:"Weekly",formats:["web","app"],link:"https://www.webtoons.com"},
+  {name:"Kakaopage",regions:["KR","Select Global"],langs:["KO","EN"],pricing:"Coins (à la carte)",latestCh:"165",updated:"Weekly",formats:["app"],link:"https://page.kakao.com"}
+ ]},
+{id:7,titleEn:"Eleceed",titleKo:"엘리시드",alt:[],
+ author:"Son Jeho",artist:"ZHENA",publisher:"Naver Webtoon",run:"2018 – Present",
+ status:"Ongoing",schedule:"Every Sunday",chapters:"320+",
+ genres:["Action","Comedy"],catTags:["Cats","Superpowers","Found Family"],
+ warnings:["Violence"],age:"13+",ratingAL:9.0,ratingMU:9.1,
+ reception:"Consistently ranks near the top of community 'feel-good action' lists; the cat side-character is a frequent highlight in discussion threads.",
+ awards:[],
+ synopsis:"An ordinary, overly-cautious teenager's life changes when he saves an injured cat who turns out to be a shape-shifting, super-powered being with a complicated past — and a lot of opinions about how to use his powers responsibly.",
+ whyRead:"Rare balance of genuine comedy and action that doesn't undercut either.",
+ adaptations:[],
+ similar:[4,9,1],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+4 more"],pricing:"Fully Free",latestCh:"320+",updated:"Weekly",formats:["web","app"],link:"https://www.webtoons.com"},
+  {name:"Manta",regions:["US","CA"],langs:["EN"],pricing:"Subscription (All-You-Can-Read)",latestCh:"325",updated:"Weekly",formats:["app"],link:"https://www.mantacomics.com"}
+ ]},
+{id:8,titleEn:"Noblesse",titleKo:"노블레스",alt:[],
+ author:"Son Jeho",artist:"Lee Kwang-Su",publisher:"Naver Webtoon",run:"2007 – 2019",
+ status:"Completed",schedule:null,chapters:"544 (complete)",
+ genres:["Action","Supernatural"],catTags:["Vampires","School","Ensemble Cast"],
+ warnings:["Violence"],age:"13+",ratingAL:8.3,ratingMU:8.5,
+ reception:"One of the earlier breakout webtoons in the action-supernatural space; often recommended to readers looking for completed long-runners.",
+ awards:[],
+ synopsis:"A centuries-old noble wakes up from an 820-year sleep with no memory of why, and enrolls in a modern high school while figuring out who's hunting him and why his loyal servant never left his side.",
+ whyRead:"A completed long-runner with a satisfying, planned ending.",
+ adaptations:[{type:"Anime",note:"Available on select streaming services"}],
+ similar:[2,5,11],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+3 more"],pricing:"Fully Free",latestCh:"544",updated:"Complete series",formats:["web","app"],link:"https://www.webtoons.com"},
+  {name:"Tappytoon",regions:["Global"],langs:["EN"],pricing:"First Chapters Free",latestCh:"544",updated:"Complete series",formats:["web","app"],link:"https://www.tappytoon.com"}
+ ]},
+{id:9,titleEn:"UnOrdinary",titleKo:"-",alt:[],
+ author:"uru-chan",artist:"uru-chan",publisher:"WEBTOON Canvas / Originals",run:"2016 – Present",
+ status:"Ongoing",schedule:"Every other Friday",chapters:"260+",
+ genres:["Action","Drama"],catTags:["School","Superpowers","Social Hierarchy"],
+ warnings:["Violence","Mature Themes"],age:"15+",ratingAL:8.6,ratingMU:8.7,
+ reception:"Strong following built from its Canvas (creator-owned) origins before moving to a faster release tier; pacing slowed noticeably in later arcs.",
+ awards:[],
+ synopsis:"In a school where superpowers determine social rank, a seemingly powerless transfer student keeps getting tangled in the politics of the school's strongest — and powerless might not mean what everyone assumes.",
+ whyRead:"A school-hierarchy premise that takes its own power system seriously.",
+ adaptations:[],
+ similar:[3,4,7],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","+2 more"],pricing:"Fully Free",latestCh:"260+",updated:"Every other week",formats:["web","app"],link:"https://www.webtoons.com"}
+ ]},
+{id:10,titleEn:"Wind Breaker",titleKo:"윈드브레이커",alt:[],
+ author:"Jo Yong-suk",artist:"Jo Yong-suk",publisher:"Naver Webtoon",run:"2020 – Present",
+ status:"Ongoing",schedule:"Every Monday",chapters:"330+",
+ genres:["Action","Sports"],catTags:["Cycling","School","Gang Hierarchy"],
+ warnings:["Violence"],age:"13+",ratingAL:8.4,ratingMU:8.5,
+ reception:"Praised for art that captures motion unusually well for the medium; community discussion often centers on the cycling choreography.",
+ awards:[],
+ synopsis:"A quiet, friendless student joins his school's biker gang and discovers that the social hierarchy he's avoided his whole life runs entirely on something he happens to be unusually good at.",
+ whyRead:"Some of the best-choreographed action in current Naver Webtoon originals.",
+ adaptations:[{type:"Anime",note:"Announced, release date pending"}],
+ similar:[3,9,7],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+2 more"],pricing:"Fully Free",latestCh:"330+",updated:"Weekly",formats:["web","app"],link:"https://www.webtoons.com"}
+ ]},
+{id:11,titleEn:"Bastard",titleKo:"배드파더",alt:[],
+ author:"Carnby Kim",artist:"Youngchan Hwang",publisher:"Naver Webtoon",run:"2014 – 2017",
+ status:"Completed",schedule:null,chapters:"77 (complete)",
+ genres:["Thriller","Drama"],catTags:["Psychological","Crime","Family"],
+ warnings:["Violence","Mature Themes"],age:"18+",ratingAL:8.8,ratingMU:8.9,
+ reception:"Regarded as one of the tighter, shorter psychological thrillers in the medium; frequently recommended to readers who want a complete story without a long time investment.",
+ awards:[],
+ synopsis:"A teenager has spent his whole life helping his father hide the bodies — until a new transfer student who seems to know more than she should starts pulling at the one thread that could unravel everything.",
+ whyRead:"A complete, tightly-plotted thriller you can finish in a weekend.",
+ adaptations:[{type:"Drama",note:"Live-action adaptation, regional availability varies"}],
+ similar:[12,2,8],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+2 more"],pricing:"Fully Free",latestCh:"77",updated:"Complete series",formats:["web","app"],link:"https://www.webtoons.com"},
+  {name:"Lezhin",regions:["Global"],langs:["EN"],pricing:"Coins (à la carte)",latestCh:"77",updated:"Complete series",formats:["web","app"],link:"https://www.lezhinus.com"}
+ ]},
+{id:12,titleEn:"Sweet Home",titleKo:"스위트홈",alt:[],
+ author:"Kim Carnby",artist:"Hwang Young-chan",publisher:"Naver Webtoon",run:"2017 – 2020",
+ status:"Completed",schedule:null,chapters:"141 (complete)",
+ genres:["Horror","Action"],catTags:["Monsters","Apartment Building","Survival"],
+ warnings:["Violence","Graphic Content"],age:"18+",ratingAL:8.9,ratingMU:9.0,
+ reception:"One of the most-adapted webtoons into live-action; community discussion often compares the source material's pacing favorably to the adaptation's.",
+ awards:[],
+ synopsis:"A reclusive teenager moves into a rundown apartment building right as its residents start turning into monsters shaped by their worst desires, and the building becomes the last line between them and the outside world.",
+ whyRead:"The source material behind a major live-action adaptation, with tighter pacing.",
+ adaptations:[{type:"Live-Action Series",note:"Streaming on Netflix"}],
+ similar:[11,2,1],
+ platforms:[
+  {name:"WEBTOON",regions:["Global"],langs:["EN","KO","+3 more"],pricing:"Fully Free",latestCh:"141",updated:"Complete series",formats:["web","app"],link:"https://www.webtoons.com"}
+ ]}
+];
+
+/* ---------------- ARTICLES (sample) ---------------- */
+var ARTICLES = [
+{id:1,cat:"Explainers",title:"Why Webtoons Disappear Without Warning",
+ excerpt:"Licensing deals expire quietly, and when they do, a series can vanish from a platform overnight with no announcement at all.",
+ readTime:"6 min read",full:true,
+ body:["Licensing agreements between a webtoon's publisher and a reading platform usually run for a fixed term — often a year or two — and renewal isn't automatic. When a deal lapses without a new one in place, the series simply stops being available on that platform. There's rarely a banner or an email explaining why; the title just stops showing up.",
+ "This matters more than it might seem, because it's one of the most common reasons a reader ends up on a piracy site without intending to. They go looking for a series they read legally last month, can't find it anywhere official, assume it's gone for good, and land on the first unofficial result that loads.",
+ "The fix isn't really on the reader's side — it's on the side of whoever is tracking platform catalogs closely enough to catch the gap and point to wherever the series actually resurfaces, whether that's a different platform, a delayed re-license, or sometimes nowhere at all for a while.",
+ "That tracking is most of what this site's search feature is trying to do: catch the move before you have to go looking for it yourself."]},
+{id:2,cat:"Explainers",title:"The Real Cost of a Pirated Chapter",
+ excerpt:"It's not a simple one-to-one loss, but the math behind how piracy actually affects a series' future isn't nothing either.",
+ readTime:"7 min read",full:true,
+ body:["It's tempting to either dismiss piracy's impact entirely or to treat every illegal read as a directly stolen sale. Neither framing holds up well. Most readers on piracy sites would not have paid for that specific chapter anyway — many wouldn't have read the series at all without a free option. So the simple 'lost sale' math overstates the damage.",
+ "But platforms make licensing and renewal decisions based on visible readership and revenue numbers, and piracy doesn't show up in either. A series with a large pirate readership and a small official one looks, on paper, like a series nobody wants — which can affect whether it gets renewed, simulpublished, or licensed into new regions at all.",
+ "The clearest cost isn't to any single sale. It's to the data platforms use to decide which series are worth investing in next, and pirated reads simply don't register in that decision."]},
+{id:3,cat:"Platform Guides",title:"Platform Pricing, Side by Side",
+ excerpt:"Wait-for-free, coins, fast pass, subscriptions — a breakdown of how the major platforms actually charge for chapters.",
+ readTime:"5 min read",full:false},
+{id:4,cat:"How Piracy Works",title:"The Business Model Behind 'Free' Piracy Sites",
+ excerpt:"They don't host stolen chapters out of generosity. Here's where the money actually comes from, and why that matters to you.",
+ readTime:"5 min read",full:false},
+{id:5,cat:"Creator Voices",title:"What Creators Have Said About Piracy",
+ excerpt:"A roundup of public statements from webtoon creators on how unauthorized scans and mirrors have affected their work.",
+ readTime:"8 min read",full:false},
+{id:6,cat:"By The Numbers",title:"Translation Lag, Mapped",
+ excerpt:"How many chapters behind is the official English release, on average, across the platforms in our database?",
+ readTime:"4 min read",full:false},
+{id:7,cat:"Reader Mindset",title:"Why Readers Switch Back to Piracy",
+ excerpt:"Most people who pirate know it's not ideal. What actually convinces someone to go back to reading legally?",
+ readTime:"6 min read",full:false},
+{id:8,cat:"Staying Safe",title:"Inside Malvertising Networks",
+ excerpt:"A closer, more technical look at how ad-based malware on unofficial sites actually reaches your device.",
+ readTime:"7 min read",full:false}
+];
+var ARTICLE_CATS = ["All","Explainers","By The Numbers","Creator Voices","Staying Safe","Platform Guides","How Piracy Works","Reader Mindset"];
+var ARTICLE_CAT_COLORS = {
+  "Explainers":"#2F5FEF","Platform Guides":"#1CA66B","How Piracy Works":"#E5484D",
+  "Creator Voices":"#7C5CFA","By The Numbers":"#0EA5A5","Reader Mindset":"#B8773A","Staying Safe":"#3A3E4A"
+};
+var ARTICLE_ICONS = {
+  "Explainers":'<path d="M6 3h8l5 5v12a1 1 0 01-1 1H6a1 1 0 01-1-1V4a1 1 0 011-1z"/><path d="M14 3v5h5"/><path d="M8 13h8M8 17h8"/>',
+  "Platform Guides":'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+  "How Piracy Works":'<path d="M12 3l9 16H3z"/><path d="M12 10v4"/><circle cx="12" cy="17" r="0.6" fill="#fff" stroke="none"/>',
+  "Creator Voices":'<path d="M4 5h16v11H9l-5 4V5z"/>',
+  "By The Numbers":'<path d="M5 19V11M11 19V5M17 19v-7"/>',
+  "Reader Mindset":'<path d="M9 18h6M10 21h4M12 3a6 6 0 00-3 11c.6.5 1 1 1 2h4c0-1 .4-1.5 1-2a6 6 0 00-3-11z"/>',
+  "Staying Safe":'<path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/>'
+};
+
+/* ---------------- STAY SAFE (sample) ---------------- */
+var THREATS = [
+{title:"Malvertising",icon:"⚠",desc:"Ad networks on unofficial sites can run code that installs malware just from the page loading — no click required on your part."},
+{title:"Fake \u201CUpdate Your Player\u201D Prompts",icon:"⟳",desc:"A popup claims your video player is out of date and offers a fix to download. The download is the threat — your player was never the problem."},
+{title:"Notification Permission Abuse",icon:"🔔",desc:"Allowing notifications once can let a site send disguised ad popups straight to your lock screen indefinitely, even after you close the tab."}
+];
+var DEVICES = ["iPhone","Android","Mac","Windows"];
+var CHECKLIST = {
+ iPhone:["Check Settings > Notifications for sites you don't recognize and turn them off","Review Settings > Safari > Advanced > Website Data and clear unfamiliar entries","Check Settings > General > VPN & Device Management for unknown profiles","Make sure Safari's Fraudulent Website Warning is turned on","Keep iOS updated to the latest version"],
+ Android:["Check Settings > Apps for anything you don't remember installing","Review Settings > Apps > Special app access > Notification access","Turn on Google Play Protect and run a scan","Check Chrome > Settings > Site Settings > Notifications and remove unknown sites","Avoid installing APKs from outside the Play Store"],
+ Mac:["Check System Settings > Notifications for unfamiliar entries","Review System Settings > General > Login Items for anything that starts automatically","Check your browser's Extensions menu for ones you didn't install","Check Privacy & Security > Profiles for unknown configuration profiles","Keep macOS and your browser up to date"],
+ Windows:["Check Settings > Apps for anything unfamiliar","Review Task Manager > Startup apps for new entries","Make sure Windows Security real-time protection is on","Check your browser's Notifications settings and remove unknown sites","Avoid running .exe files downloaded from streaming or piracy pages"]
+};
+var REMEDIATION = {
+ iPhone:["Open Settings > Notifications and remove permission for the site immediately.","Go to Settings > General > VPN & Device Management and delete any configuration profile you don't recognize.","Clear Safari history and website data for the last 24 hours under Settings > Safari.","Change passwords for accounts you logged into around the same time, starting with email.","If you downloaded a file claiming to be a \u201Cplayer update,\u201D don't open it — delete it and restart your phone."],
+ Android:["Open Settings > Apps and uninstall anything unfamiliar, especially apps installed right after visiting the site.","Run a scan with Google Play Protect (Play Store > Profile icon > Play Protect).","Revoke notification access for unknown apps under Settings > Apps > Special app access.","Clear Chrome's site data for the domain under Site Settings.","Change your Google account password if you entered it anywhere on or after the site."],
+ Mac:["Remove unfamiliar extensions from your browser's Extensions menu.","Check System Settings > General > Login Items and delete anything you don't recognize.","Delete any configuration profile under Privacy & Security > Profiles you didn't install yourself.","Restart your Mac so built-in malware protection can re-check recently added files.","Change passwords for accounts you used during or after the visit."],
+ Windows:["Open Settings > Apps and uninstall anything unfamiliar, especially recent installs.","Open Task Manager > Startup apps and disable anything you don't recognize.","Run a full scan with Windows Security (Settings > Privacy & Security > Windows Security).","Remove unfamiliar browser extensions and clear site data for the domain.","Change passwords for accounts used during or shortly after the visit, starting with email."]
+};
+var checkedState = {};
+var activeDevice = "iPhone";
+
+/* ---------------- i18n ---------------- */
+var LANG = "en";
+var I18N = {
+ brand:{en:"FAIRTOON",ko:"페어툰"},
+ nav_home:{en:"Home",ko:"홈"},
+ nav_articles:{en:"Articles",ko:"아티클"},
+ nav_staysafe:{en:"Stay Safe",ko:"안전 수칙"},
+ nav_about:{en:"About",ko:"소개"},
+ search_ph:{en:"Where to read...",ko:"어디서 볼까요..."},
+ /* hero */
+ hero_h1a:{en:"Know The Series.",ko:"작품을 알고,"},
+ hero_h1b:{en:"Know Where To Read It.",ko:"어디서 볼지 알기."},
+ hero_sub:{en:"Look up any webtoon for its synopsis, genre, and ratings — then see every official platform that carries it, with pricing and regions compared instantly.",ko:"어떤 웹툰이든 줄거리·장르·평점을 찾아보고, 그 작품을 제공하는 모든 공식 플랫폼을 가격·지역까지 한눈에 비교하세요."},
+ hero_search_ph:{en:"Search a webtoon series...",ko:"웹툰 제목을 검색하세요..."},
+ btn_search:{en:"Search",ko:"검색"},
+ trending:{en:"Trending:",ko:"인기 검색:"},
+ view_all:{en:"View all →",ko:"전체 보기 →"},
+ /* how it works */
+ how_label:{en:"How Fairtoon Works",ko:"페어툰 사용법"},
+ how1_t:{en:"Search a series",ko:"작품 검색"},
+ how1_d:{en:"Type any webtoon title to pull up its details — no account, no app install.",ko:"웹툰 제목을 입력하면 상세 정보가 바로 떠요. 계정도, 앱 설치도 필요 없습니다."},
+ how2_t:{en:"Compare legal platforms",ko:"합법 플랫폼 비교"},
+ how2_d:{en:"See every official platform side by side — pricing model, region, language, and how far each is caught up.",ko:"모든 공식 플랫폼을 나란히 비교하세요. 가격 모델·지역·언어·최신 화수까지."},
+ how3_t:{en:"Read it the right way",ko:"올바르게 감상"},
+ how3_d:{en:"Jump straight to the series on the platform that fits you best.",ko:"본인에게 가장 잘 맞는 플랫폼의 작품 페이지로 바로 이동하세요."},
+ popular_now:{en:"Popular Right Now",ko:"지금 인기 작품"},
+ /* search */
+ results_for:{en:"Results for",ko:"검색 결과:"},
+ all_series:{en:"All Series (Preview Sample)",ko:"전체 작품 (프리뷰 샘플)"},
+ series_found:{en:"series found · sample preview data",ko:"개 작품 · 프리뷰 샘플 데이터"},
+ no_match:{en:"No matches in this 12-series preview sample. The full database will cover 150–300 series.",ko:"이 12편 프리뷰 샘플에는 일치하는 작품이 없습니다. 실제 DB는 150~300편을 다룰 예정입니다."},
+ f_genre:{en:"Genre",ko:"장르"},
+ f_platform:{en:"Platform",ko:"플랫폼"},
+ f_status:{en:"Status",ko:"연재 상태"},
+ f_pricing:{en:"Pricing",ko:"가격"},
+ f_sort:{en:"Sort",ko:"정렬"},
+ f_all:{en:"All",ko:"전체"},
+ sort_rel:{en:"Relevance",ko:"관련도순"},
+ sort_rate:{en:"Top rated",ko:"평점순"},
+ sort_az:{en:"Title A–Z",ko:"제목순"},
+ clear:{en:"Clear",ko:"초기화"},
+ pricing_models:{en:"Pricing Models, Explained",ko:"가격 모델 안내"},
+ /* detail */
+ back_results:{en:"← Back to results",ko:"← 결과로 돌아가기"},
+ d_desc:{en:"Description",ko:"줄거리"},
+ d_why:{en:"Why read this:",ko:"이 작품을 읽어야 하는 이유:"},
+ d_legal:{en:"Legal Platforms",ko:"합법 플랫폼"},
+ d_report:{en:"⚠ Report an issue",ko:"⚠ 오류 신고"},
+ d_read_now:{en:"Read Now ↗",ko:"보러 가기 ↗"},
+ d_regions:{en:"Regions",ko:"서비스 지역"},
+ d_langs:{en:"Languages",ko:"지원 언어"},
+ d_pricing:{en:"Pricing",ko:"가격 모델"},
+ d_latest:{en:"Latest Update",ko:"최신 업데이트"},
+ d_available_on:{en:"Available On",ko:"이용 환경"},
+ d_ratings:{en:"Ratings & Reception",ko:"평점 & 평가"},
+ d_adapt:{en:"Adaptations & Related Media",ko:"각색 & 관련 미디어"},
+ d_similar:{en:"Similar Series",ko:"비슷한 작품"},
+ d_author_artist:{en:"Author / Artist",ko:"글 / 그림"},
+ d_publisher:{en:"Publisher",ko:"퍼블리셔"},
+ d_run:{en:"Original Run",ko:"연재 기간"},
+ d_chapters:{en:"Chapters",ko:"화수"},
+ d_status_lbl:{en:"Status:",ko:"상태:"},
+ d_no_award:{en:"No award nominations listed yet.",ko:"등록된 수상 내역이 아직 없습니다."},
+ d_no_adapt:{en:"No related adaptations listed for this series.",ko:"이 작품의 각색 정보가 아직 없습니다."},
+ d_similar_reason:{en:"Similar tone and pacing.",ko:"분위기와 전개가 비슷해요."},
+ d_xlink:{en:"Confused by a platform's pricing? Read",ko:"플랫폼 가격이 헷갈리나요? 읽어보세요:"},
+ /* articles */
+ art_title:{en:"Articles",ko:"아티클"},
+ art_sub:{en:"Reporting and analysis on legal access and webtoon piracy.",ko:"합법적 감상과 웹툰 불법 유통에 관한 리포트와 분석."},
+ art_read:{en:"Read article →",ko:"기사 읽기 →"},
+ art_soon:{en:"Sample →",ko:"샘플 →"},
+ art_none:{en:"No articles in this category yet.",ko:"이 카테고리에는 아직 글이 없습니다."},
+ back_articles:{en:"← Back to articles",ko:"← 아티클로 돌아가기"},
+ editorial:{en:"Fairtoon Editorial",ko:"페어툰 편집부"},
+ /* stay safe */
+ ss_title:{en:"Stay Safe",ko:"안전 수칙"},
+ ss_intro:{en:"Piracy sites don’t just risk a creator’s next paycheck — they risk your device. Most run on ad networks that profit from popups, fake downloads, and permissions you didn’t mean to grant. Here’s what to actually watch for, by device.",ko:"불법 사이트는 창작자의 수입만 위협하는 게 아니라 당신의 기기까지 위협합니다. 대부분 팝업·가짜 다운로드·의도치 않은 권한으로 수익을 내는 광고 네트워크로 돌아갑니다. 기기별로 실제 주의할 점을 정리했습니다."},
+ ss_threats:{en:"Common Threats",ko:"주요 위협"},
+ ss_checklist:{en:"Device Safety Checklist",ko:"기기 안전 체크리스트"},
+ ss_exposed:{en:"If You’ve Already Been Exposed",ko:"이미 노출됐다면"},
+ ss_more:{en:"Want the long-form version? See the Stay Safe articles →",ko:"더 자세히 보고 싶다면? Stay Safe 관련 아티클을 확인하세요 →"},
+ /* about */
+ ab_h1:{en:"Why Fairtoon Exists",ko:"페어툰을 만든 이유"},
+ ab_faq:{en:"Frequently Asked",ko:"자주 묻는 질문"},
+ ab_planned:{en:"Series planned at launch",ko:"출시 시 목표 작품 수"},
+ ab_platforms:{en:"Legal platforms compared",ko:"비교 대상 합법 플랫폼"},
+ ab_langs:{en:"Language support",ko:"지원 언어"}
+};
+function tr(k){ var e=I18N[k]; return e ? (e[LANG]||e.en) : k; }
+function setLang(l){
+  if(l===LANG) return;
+  LANG=l;
+  document.querySelectorAll(".lang-opt").forEach(function(el){
+    el.classList.toggle("active", el.getAttribute("data-lang")===l);
+  });
+  updateLangSlider();
+  document.querySelectorAll("[data-i18n]").forEach(function(el){
+    var k=el.getAttribute("data-i18n");
+    if(I18N[k]) el.textContent = I18N[k][l];
+  });
+  document.querySelectorAll("[data-i18n-ph]").forEach(function(el){
+    var k=el.getAttribute("data-i18n-ph");
+    if(I18N[k]) el.placeholder = I18N[k][l];
+  });
+  if(l==="ko") showToast("한국어 프리뷰: UI는 번역되며, 샘플 작품·기사 본문은 영어로 유지됩니다.");
+  else showToast("Korean preview: UI is translated; sample article & series text stays in English.");
+  render();
+}
+function updateLangSlider(){
+  var wrap = document.getElementById("langSwitch");
+  var slider = document.getElementById("langSlider");
+  var activeBtn = wrap ? wrap.querySelector(".lang-opt.active") : null;
+  if(!wrap || !slider || !activeBtn) return;
+  var wrapRect = wrap.getBoundingClientRect();
+  var btnRect = activeBtn.getBoundingClientRect();
+  slider.style.width = btnRect.width + "px";
+  slider.style.left = (btnRect.left - wrapRect.left) + "px";
+}
+window.addEventListener("resize", updateLangSlider);
+
+
+/* ---------------- TOAST ---------------- */
+var toastTimer;
+function showToast(msg){
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+}
+function reportIssue(title){
+  showToast("Thanks — flagged \u201C"+title+"\u201D for review.");
+}
+
+/* ---------------- ROUTER ---------------- */
+var state = {
+  view:"home", query:"", detailId:null, articleId:null, articleFilter:"All",
+  filters:{ genre:"All", platform:"All", status:"All", pricing:"All" }, sort:"rel"
+};
+function resetFilters(){ state.filters={ genre:"All", platform:"All", status:"All", pricing:"All" }; state.sort="rel"; }
+
+function showView(name){
+  state.view = name;
+  closeAc();
+  document.querySelectorAll(".nav-link").forEach(function(el){
+    el.classList.toggle("active", el.getAttribute("data-view")===name);
+  });
+  document.getElementById("mobileNav").classList.remove("open");
+  render();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+function showDetail(id){
+  state.view="detail"; state.detailId=id; closeAc(); render();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+function runSearch(q){
+  state.query=q; state.view="search"; resetFilters(); closeAc(); render();
+  document.querySelectorAll(".nav-link").forEach(function(el){ el.classList.remove("active"); });
+  window.scrollTo({top:0,behavior:"instant"});
+}
+function showArticle(id){
+  state.view="article"; state.articleId=id; closeAc(); render();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+
+document.addEventListener("click",function(e){
+  var navEl = e.target.closest("[data-view]");
+  if(navEl && navEl.tagName==="A"){
+    e.preventDefault();
+    showView(navEl.getAttribute("data-view"));
+  }
+});
+
+/* ---------------- AUTOCOMPLETE ---------------- */
+var acState = { pop:null, items:[], active:-1 };
+function closeAc(){
+  document.querySelectorAll(".search-pop.open").forEach(function(p){ p.classList.remove("open"); });
+  acState.pop=null; acState.items=[]; acState.active=-1;
+}
+function acMatches(q){
+  q=(q||"").trim().toLowerCase();
+  if(!q) return [];
+  return TOONS.filter(function(x){
+    var hay=(x.titleEn+" "+x.titleKo+" "+x.alt.join(" ")+" "+x.author+" "+x.genres.join(" ")).toLowerCase();
+    return hay.indexOf(q)!==-1;
+  }).slice(0,6);
+}
+function acRowHTML(x,i){
+  return '<div class="ac-row'+(i===acState.active?" active":"")+'" data-idx="'+i+'" onmousedown="acPick('+x.id+')">'+
+    '<div class="ac-thumb" style="'+coverStyle(x.id)+'"><span class="ti">'+initials(x.titleEn)+'</span></div>'+
+    '<div class="ac-meta"><div class="ac-name">'+x.titleEn+'</div><div class="ac-sub">'+x.author+' · '+x.genres[0]+'</div></div>'+
+    '<span class="ac-rate">★ '+ratingOf(x)+'</span>'+
+  '</div>';
+}
+function acRender(pop,q){
+  var items=acMatches(q);
+  acState.items=items; acState.active=-1;
+  if(!q.trim()){ pop.classList.remove("open"); return; }
+  var html;
+  if(items.length){
+    html=items.map(acRowHTML).join("")+
+      '<div class="ac-foot"><span>'+items.length+(LANG==="ko"?"개 일치":" matches")+'</span><span><b>Enter</b> '+(LANG==="ko"?"전체 결과 보기":"see all results")+'</span></div>';
+  } else {
+    html='<div class="ac-empty">'+(LANG==="ko"?"이 12편 샘플에 일치 없음 — Enter로 전체 검색":"No match in the 12-series sample — press Enter to search anyway")+'</div>';
+  }
+  pop.innerHTML=html; pop.classList.add("open"); acState.pop=pop;
+}
+function acPick(id){ closeAc(); showDetail(id); }
+function attachAutocomplete(input){
+  if(!input) return;
+  var pop=input.parentNode.querySelector(".search-pop");
+  if(!pop) return;
+  input.addEventListener("input",function(){ acRender(pop,this.value); });
+  input.addEventListener("focus",function(){ if(this.value.trim()) acRender(pop,this.value); });
+  input.addEventListener("keydown",function(e){
+    if(!pop.classList.contains("open")) return;
+    if(e.key==="ArrowDown"){ e.preventDefault(); acState.active=Math.min(acState.active+1,acState.items.length-1); acHighlight(pop); }
+    else if(e.key==="ArrowUp"){ e.preventDefault(); acState.active=Math.max(acState.active-1,-1); acHighlight(pop); }
+    else if(e.key==="Enter"){ if(acState.active>=0 && acState.items[acState.active]){ e.preventDefault(); acPick(acState.items[acState.active].id); } }
+    else if(e.key==="Escape"){ closeAc(); }
+  });
+  input.addEventListener("blur",function(){ setTimeout(closeAc,120); });
+}
+function acHighlight(pop){
+  pop.querySelectorAll(".ac-row").forEach(function(r){
+    r.classList.toggle("active", parseInt(r.getAttribute("data-idx"),10)===acState.active);
+  });
+}
+
+/* ---------------- CARD BUILDERS ---------------- */
+function ratingOf(t){ return ((t.ratingAL+t.ratingMU)/2).toFixed(1); }
+
+function toonCardHTML(t){
+  var plats = t.platforms.slice(0,2).map(function(p){
+    return '<span class="plat-mini">'+platLogo(p.name,14)+p.name+'</span>';
+  }).join("");
+  var more = t.platforms.length>2 ? '<span class="plat-more">+'+(t.platforms.length-2)+'</span>' : "";
+  return '<div class="toon-card" onclick="showDetail('+t.id+')" tabindex="0" role="button" aria-label="View '+t.titleEn+'">'+
+    '<div class="toon-cover" style="'+coverStyle(t.id)+'">'+
+      '<span class="rating-pill">★ '+ratingOf(t)+'</span>'+
+      '<span class="ti">'+initials(t.titleEn)+'</span>'+
+    '</div>'+
+    '<div class="toon-body">'+
+      '<div class="toon-title">'+t.titleEn+'</div>'+
+      '<div class="toon-author">'+t.author+'</div>'+
+      '<div class="toon-tags">'+t.genres.slice(0,3).map(function(g){return '<span class="tag">'+g+'</span>';}).join("")+'</div>'+
+      '<div class="toon-platforms">'+plats+more+'</div>'+
+    '</div>'+
+  '</div>';
+}
+function miniCardHTML(t,reason){
+  return '<div class="mini-card" onclick="showDetail('+t.id+')" tabindex="0" role="button" aria-label="View '+t.titleEn+'">'+
+    '<div class="mini-cover" style="'+coverStyle(t.id)+'"><span class="ti">'+initials(t.titleEn)+'</span></div>'+
+    '<div class="mini-body"><div class="mini-title">'+t.titleEn+'</div><div class="mini-reason">'+reason+'</div></div>'+
+  '</div>';
+}
+
+/* ---------------- RENDER: HOME ---------------- */
+var HERO_QUERIES = ["Solo Leveling","Lookism","True Beauty","Tower of God","Eleceed","Sweet Home"];
+var heroTypeIdx = 0, heroTypeTimer;
+function startHeroTyping(){
+  clearInterval(heroTypeTimer);
+  var input = document.getElementById("heroSearchInput");
+  if(!input) return;
+  heroTypeTimer = setInterval(function(){
+    heroTypeIdx = (heroTypeIdx+1) % HERO_QUERIES.length;
+    input.setAttribute("placeholder","e.g. \u201C"+HERO_QUERIES[heroTypeIdx]+"\u201D");
+  },2400);
+}
+
+var HOW_STEPS = [["how1_t","how1_d"],["how2_t","how2_d"],["how3_t","how3_d"]];
+function renderHome(){
+  var trending = ["Solo Leveling","Lookism","Tower of God","True Beauty","Eleceed","Omniscient Reader's Viewpoint"];
+  var howCards = HOW_STEPS.map(function(s,i){
+    return '<div class="how-card"><div class="how-num">'+(i+1)+'</div><h3>'+tr(s[0])+'</h3><p>'+tr(s[1])+'</p></div>';
+  }).join("");
+  var html = ''+
+  '<section class="hero">'+
+    '<h1>'+tr("hero_h1a")+' <span class="accent">'+tr("hero_h1b")+'</span></h1>'+
+    '<p class="sub">'+tr("hero_sub")+'</p>'+
+    '<div class="hero-search-wrap">'+
+      '<form class="hero-search" onsubmit="runSearch(document.getElementById(\'heroSearchInput\').value);return false;">'+
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'+
+        '<input type="text" id="heroSearchInput" autocomplete="off" placeholder="'+tr("hero_search_ph")+'">'+
+        '<button type="submit">'+tr("btn_search")+'</button>'+
+      '</form>'+
+      '<div class="search-pop" id="heroSearchPop"></div>'+
+    '</div>'+
+    '<div class="trending"><span class="label">'+tr("trending")+'</span>'+
+      trending.map(function(q){return '<button class="chip" onclick="runSearch(\''+q.replace(/'/g,"\\'")+'\')">'+q+'</button>';}).join("")+
+    '</div>'+
+  '</section>'+
+  '<div class="container">'+
+    '<div class="home-row">'+
+      '<div class="section-label-row"><span class="section-label">'+tr("popular_now")+'</span><a href="#" class="section-link" onclick="runSearch(\'\');return false;">'+tr("view_all")+'</a></div>'+
+      '<div class="toon-grid">'+ TOONS.slice(0,4).map(toonCardHTML).join("") +'</div>'+
+    '</div>'+
+    '<div class="home-row">'+
+      '<div class="section-label-row"><span class="section-label">'+tr("how_label")+'</span></div>'+
+      '<div class="how-strip">'+howCards+'</div>'+
+    '</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML = html;
+  setTimeout(function(){ startHeroTyping(); attachAutocomplete(document.getElementById("heroSearchInput")); },50);
+}
+
+/* ---------------- RENDER: SEARCH ---------------- */
+function uniqueGenres(){ var s={}; TOONS.forEach(function(t){t.genres.forEach(function(g){s[g]=1;});}); return Object.keys(s).sort(); }
+function uniquePlatforms(){ var s={}; TOONS.forEach(function(t){t.platforms.forEach(function(p){s[p.name]=1;});}); return Object.keys(s).sort(); }
+function uniqueStatuses(){ var order=["Ongoing","Completed","Hiatus","Cancelled"],s={}; TOONS.forEach(function(t){s[t.status]=1;}); return order.filter(function(x){return s[x];}); }
+function pricingModel(str){
+  var s=(str||"").toLowerCase();
+  if(s.indexOf("wait")>-1) return "Wait for Free";
+  if(s.indexOf("first")>-1) return "First Chapters Free";
+  if(s.indexOf("coin")>-1||s.indexOf("token")>-1) return "Coins";
+  if(s.indexOf("subscription")>-1) return "Subscription";
+  if(s.indexOf("free")>-1) return "Free";
+  return "Other";
+}
+function uniquePricing(){ var s={}; TOONS.forEach(function(t){t.platforms.forEach(function(p){s[pricingModel(p.pricing)]=1;});}); return Object.keys(s).sort(); }
+var PRICING_LEGEND=[
+ {n:"Fully Free",d:{en:"All content permanently free, ad-supported.",ko:"\uBAA8\uB4E0 \uCF58\uD150\uCE20\uAC00 \uC601\uAD6C \uBB34\uB8CC(\uAD11\uACE0 \uAE30\uBC18)."}},
+ {n:"Wait for Free",d:{en:"Locked episodes unlock after a waiting period (often 24\u201372h).",ko:"\uC7A0\uAE34 \uD68C\uCC28\uAC00 \uC77C\uC815 \uC2DC\uAC04(\uBCF4\uD1B5 24~72\uC2DC\uAC04) \uB4A4 \uBB34\uB8CC\uB85C \uD480\uB9BC."}},
+ {n:"First N Chapters Free",d:{en:"A fixed preview window of free chapters, then a paywall.",ko:"\uC55E\uCABD \uC77C\uBD80 \uD68C\uCC28 \uBB34\uB8CC, \uC774\uD6C4 \uC720\uB8CC."}},
+ {n:"Coins / Tokens",d:{en:"Buy platform currency to unlock individual episodes.",ko:"\uD50C\uB7AB\uD3FC \uD654\uD3D0\uB97C \uAD6C\uB9E4\uD574 \uD68C\uCC28\uB97C \uAC1C\uBCC4 \uD574\uAE08."}},
+ {n:"Fast Pass / Early Access",d:{en:"Pay to read ahead of the free schedule; episodes later become free.",ko:"\uBB34\uB8CC \uC77C\uC815\uBCF4\uB2E4 \uC55E\uC11C \uBCF4\uB824\uBA74 \uC720\uB8CC, \uC2DC\uAC04\uC774 \uC9C0\uB098\uBA74 \uBB34\uB8CC \uC804\uD658."}},
+ {n:"Subscription",d:{en:"A monthly fee unlocks a full catalog (e.g. all-you-can-read).",ko:"\uC6D4 \uAD6C\uB3C5\uB8CC\uB85C \uC804\uCCB4 \uCE74\uD0C8\uB85C\uADF8 \uC774\uC6A9."}}
+];
+function fselectHTML(type,label,opts){
+  var cur=state.filters[type];
+  var o='<option value="All"'+(cur==="All"?" selected":"")+'>'+tr("f_all")+'</option>'+
+    opts.map(function(v){return '<option value="'+v+'"'+(cur===v?" selected":"")+'>'+v+'</option>';}).join("");
+  return '<div class="filter-group"><span class="fg-label">'+label+'</span><select class="fselect" onchange="setFilter(\''+type+'\',this.value)">'+o+'</select></div>';
+}
+function setFilter(type,val){ state.filters[type]=val; renderSearch(); }
+function setSort(val){ state.sort=val; renderSearch(); }
+function clearSearchFilters(){ resetFilters(); renderSearch(); }
+function activeFilterCount(){ var f=state.filters,n=0; ["genre","platform","status","pricing"].forEach(function(k){if(f[k]!=="All")n++;}); return n; }
+
+function renderSearch(){
+  var q = (state.query||"").trim().toLowerCase();
+  var f = state.filters;
+  var results = TOONS.filter(function(t){
+    if(q){
+      var hay = (t.titleEn+" "+t.titleKo+" "+t.alt.join(" ")+" "+t.genres.join(" ")+" "+t.author).toLowerCase();
+      if(hay.indexOf(q)===-1) return false;
+    }
+    if(f.genre!=="All" && t.genres.indexOf(f.genre)===-1) return false;
+    if(f.status!=="All" && t.status!==f.status) return false;
+    if(f.platform!=="All" && !t.platforms.some(function(p){return p.name===f.platform;})) return false;
+    if(f.pricing!=="All" && !t.platforms.some(function(p){return pricingModel(p.pricing)===f.pricing;})) return false;
+    return true;
+  });
+  if(state.sort==="rate") results=results.slice().sort(function(a,b){return ratingOf(b)-ratingOf(a);});
+  else if(state.sort==="az") results=results.slice().sort(function(a,b){return a.titleEn.localeCompare(b.titleEn);});
+
+  var sortOpts=[["rel",tr("sort_rel")],["rate",tr("sort_rate")],["az",tr("sort_az")]];
+  var sortSel='<div class="filter-group"><span class="fg-label">'+tr("f_sort")+'</span><select class="fselect" onchange="setSort(this.value)">'+
+    sortOpts.map(function(o){return '<option value="'+o[0]+'"'+(state.sort===o[0]?" selected":"")+'>'+o[1]+'</option>';}).join("")+'</select></div>';
+
+  var filterBar='<div class="filter-bar">'+
+    fselectHTML("genre",tr("f_genre"),uniqueGenres())+
+    fselectHTML("platform",tr("f_platform"),uniquePlatforms())+
+    fselectHTML("status",tr("f_status"),uniqueStatuses())+
+    fselectHTML("pricing",tr("f_pricing"),uniquePricing())+
+    sortSel+
+    '<span class="filter-spacer"></span>'+
+    (activeFilterCount()? '<button class="filter-clear" onclick="clearSearchFilters()">'+tr("clear")+' ('+activeFilterCount()+')</button>':'')+
+  '</div>';
+
+  var html = '<div class="container">'+
+    '<div class="results-header">'+
+      '<h2>'+(q ? tr("results_for")+' \u201C'+state.query+'\u201D' : tr("all_series"))+'</h2>'+
+      '<div class="count">'+results.length+' '+tr("series_found")+'</div>'+
+    '</div>'+
+    filterBar;
+  if(results.length===0){
+    html += '<div class="no-results"><svg width="40" height="40" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9AA0AC" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="#9AA0AC" stroke-width="2" stroke-linecap="round"/></svg>'+tr("no_match")+'</div>';
+  } else {
+    html += '<div class="toon-grid">'+results.map(toonCardHTML).join("")+'</div>';
+  }
+  // pricing-model legend
+  html += '<div class="home-row" style="margin-top:56px;">'+
+    '<div class="section-label-row"><span class="section-label">'+tr("pricing_models")+'</span></div>'+
+    '<div class="pricing-legend">'+
+      PRICING_LEGEND.map(function(p){return '<div class="pl-item"><div class="pl-name">'+p.n+'</div><div class="pl-desc">'+(p.d[LANG]||p.d.en)+'</div></div>';}).join("")+
+    '</div>'+
+  '</div>';
+  html += '</div>';
+  document.getElementById("mainContent").innerHTML = html;
+}
+
+/* ---------------- RENDER: DETAIL ---------------- */
+function renderDetail(){
+  var t = TOONS.find(function(x){return x.id===state.detailId;});
+  if(!t){ showView("home"); return; }
+  var genreTags = t.genres.map(function(g){return '<span class="tag-outline">'+g+'</span>';}).join("");
+  var catTags = t.catTags.map(function(g){return '<span class="tag-outline">'+g+'</span>';}).join("");
+  var warnTags = t.warnings.map(function(g){return '<span class="tag-warn">'+g+'</span>';}).join("");
+
+  var platformRows = t.platforms.map(function(p){
+    var formatIcons = p.formats.map(function(f){return f==="web"?"\uD83C\uDF10 Web":"\uD83D\uDCF1 App";}).join(" \u00B7 ");
+    return '<div class="platform-card" style="border-left-color:'+(PLATFORM_COLORS[p.name]||"#2F5BFF")+'">'+
+      '<div class="platform-card-head">'+
+        '<div class="plat-name">'+platLogo(p.name,28)+'<span>'+p.name+'</span></div>'+
+        '<a class="read-btn" href="'+p.link+'" target="_blank" rel="noopener">'+(LANG==="ko"?"보러 가기 ":"Read Now ")+'\u2197</a>'+
+      '</div>'+
+      '<div class="platform-fields">'+
+        '<div class="pf-item"><div class="pf-label">'+tr("d_regions")+'</div><div class="pf-value">'+p.regions.join(", ")+'</div></div>'+
+        '<div class="pf-item"><div class="pf-label">'+tr("d_langs")+'</div><div class="pf-value">'+p.langs.join(", ")+'</div></div>'+
+        '<div class="pf-item"><div class="pf-label">'+tr("d_pricing")+'</div><div class="pf-value">'+p.pricing+'</div></div>'+
+        '<div class="pf-item"><div class="pf-label">'+tr("d_latest")+'</div><div class="pf-value">Ch. '+p.latestCh+' \u00B7 '+p.updated+'</div></div>'+
+        '<div class="pf-item full"><div class="pf-label">'+tr("d_available_on")+'</div><div class="pf-value">'+formatIcons+'</div></div>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+
+  var adaptRows = t.adaptations.length ? t.adaptations.map(function(a){
+    return '<div class="adapt-row"><span class="adapt-type">'+a.type+'</span><span class="adapt-note">'+a.note+'</span></div>';
+  }).join("") : '<div class="adapt-row"><span class="adapt-note">'+tr("d_no_adapt")+'</span></div>';
+
+  var similarItems = t.similar.map(function(sid){
+    var s = TOONS.find(function(x){return x.id===sid;});
+    if(!s) return "";
+    return miniCardHTML(s,tr("d_similar_reason"));
+  }).join("");
+
+  var awardsHTML = t.awards.length ? '<ul class="awards-list">'+t.awards.map(function(a){return '<li>'+a+'</li>';}).join("")+'</ul>' : '<p class="reception-text" style="margin-top:0;">'+tr("d_no_award")+'</p>';
+  var xlinkArticle = ARTICLES.find(function(a){return a.cat==="Platform Guides";});
+  var xlinkBox = xlinkArticle ? '<div class="xlink-box">💡 '+tr("d_xlink")+' <a href="#" onclick="showArticle('+xlinkArticle.id+');return false;">“'+xlinkArticle.title+'”</a></div>' : '';
+
+  var html = '<div class="container">'+
+    '<a href="#" class="back-link" onclick="showView(\'search\');return false;">\u2190 '+(LANG==="ko"?"결과로 돌아가기":"Back to results")+'</a>'+
+    '<div class="detail-top">'+
+      '<div class="detail-cover" style="'+coverStyle(t.id)+'"><span class="ti">'+initials(t.titleEn)+'</span></div>'+
+      '<div class="detail-titles">'+
+        '<h1>'+t.titleEn+'</h1>'+
+        '<p class="ko-title">'+t.titleKo+(t.alt.length?" \u00B7 "+t.alt.join(", "):"")+'</p>'+
+        '<div class="meta-grid">'+
+          '<div class="meta-item"><div class="meta-label">'+tr("d_author_artist")+'</div><div class="meta-val">'+t.author+' / '+t.artist+'</div></div>'+
+          '<div class="meta-item"><div class="meta-label">'+tr("d_publisher")+'</div><div class="meta-val">'+t.publisher+'</div></div>'+
+          '<div class="meta-item"><div class="meta-label">'+tr("d_run")+'</div><div class="meta-val">'+t.run+'</div></div>'+
+          '<div class="meta-item"><div class="meta-label">'+tr("d_chapters")+'</div><div class="meta-val">'+t.chapters+(t.schedule?(' \u00B7 '+t.schedule):'')+'</div></div>'+
+        '</div>'+
+        '<span class="status-pill status-'+t.status+'">'+tr("d_status_lbl")+' '+t.status+'</span>'+
+        '<div class="tagrow">'+genreTags+catTags+warnTags+'<span class="tag-age">'+t.age+'</span></div>'+
+      '</div>'+
+    '</div>'+
+
+    '<div class="detail-section">'+
+      '<h2>'+tr("d_desc")+'</h2>'+
+      '<p class="synopsis">'+t.synopsis+'</p>'+
+      '<div class="why-read">'+tr("d_why")+' '+t.whyRead+'</div>'+
+    '</div>'+
+
+    '<div class="detail-section">'+
+      '<h2>'+tr("d_legal")+' <a href="#" class="report-link" onclick="reportIssue(\''+t.titleEn.replace(/'/g,"\\'")+'\');return false;">\u26A0 '+(LANG==="ko"?"오류 신고":"Report an issue")+'</a></h2>'+
+      '<div class="platform-list">'+platformRows+'</div>'+
+      xlinkBox+
+    '</div>'+
+
+    '<div class="detail-section">'+
+      '<h2>'+tr("d_ratings")+'</h2>'+
+      '<div class="rating-row">'+
+        '<div class="rating-chip"><div class="rc-label">AniList</div><div class="rc-val">'+t.ratingAL+'</div></div>'+
+        '<div class="rating-chip"><div class="rc-label">MangaUpdates</div><div class="rc-val">'+t.ratingMU+'</div></div>'+
+      '</div>'+
+      '<p class="reception-text">'+t.reception+'</p>'+
+      awardsHTML+
+    '</div>'+
+
+    '<div class="detail-section">'+
+      '<h2>'+tr("d_adapt")+'</h2>'+
+      '<div class="adapt-list">'+adaptRows+'</div>'+
+    '</div>'+
+
+    '<div class="detail-section">'+
+      '<h2>'+tr("d_similar")+'</h2>'+
+      '<div class="mini-grid">'+similarItems+'</div>'+
+    '</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML = html;
+}
+
+/* ---------------- RENDER: ARTICLES ---------------- */
+function renderArticles(){
+  var filtered = ARTICLES.filter(function(a){ return state.articleFilter==="All" || a.cat===state.articleFilter; });
+  var chips = ARTICLE_CATS.map(function(c){
+    return '<button class="filter-chip'+(state.articleFilter===c?" active":"")+'" onclick="setArticleFilter(\''+c.replace(/'/g,"\\'")+'\')">'+c+'</button>';
+  }).join("");
+  var cards = filtered.map(function(a){
+    var color = ARTICLE_CAT_COLORS[a.cat] || "#2F5FEF";
+    var icon = ARTICLE_ICONS[a.cat] || '<circle cx="12" cy="12" r="8"/>';
+    return '<div class="article-card-lg" onclick="showArticle('+a.id+')" tabindex="0" role="button">'+
+      '<div class="ac-visual" style="background:'+color+';">'+
+        '<svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">'+icon+'</svg>'+
+      '</div>'+
+      '<div class="ac-body">'+
+        '<span class="ac-cat" style="color:'+color+';">'+a.cat+'</span>'+
+        '<h3 class="ac-title">'+a.title+'</h3>'+
+        '<p class="ac-excerpt">'+a.excerpt+'</p>'+
+        '<div class="ac-foot"><span class="ac-time">'+a.readTime+'</span><span class="ac-cta'+(a.full?'':' soon')+'">'+(a.full?tr("art_read"):tr("art_soon"))+'</span></div>'+
+      '</div>'+
+    '</div>';
+  }).join("");
+  var html = '<div class="container">'+
+    '<div class="results-header"><h2>'+tr("art_title")+'</h2><div class="count">'+tr("art_sub")+'</div></div>'+
+    '<div class="article-filters">'+chips+'</div>'+
+    '<div class="article-list-lg">'+(cards || '<div class="no-results">'+tr("art_none")+'</div>')+'</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML = html;
+}
+function setArticleFilter(c){ state.articleFilter=c; renderArticles(); }
+
+function sampleBody(a){
+  if(LANG==="ko"){
+    return [
+      "이 기사는 프리뷰용 자리표시자 본문입니다. 실제 글은 사이트 정식 오픈 시 작성됩니다.",
+      "“"+a.title+"”은(는) "+a.cat+" 카테고리에 속하며, 정식 버전에서는 자료와 분석, 그리고 관련 작품·플랫폼으로의 내부 링크가 함께 제공될 예정입니다.",
+      "레이아웃과 흐름을 보여주기 위한 데모 텍스트이며, 본문 내용은 실제가 아닙니다."
+    ];
+  }
+  return [
+    "This is placeholder body text for the preview. The full article will be written when the site goes live.",
+    "“"+a.title+"” sits in the "+a.cat+" category. The real version will carry original reporting and analysis, plus internal links to relevant series and platform pages.",
+    "This sample text exists only to show the reader layout and flow — the content itself is not real."
+  ];
+}
+function renderArticleReader(){
+  var a = ARTICLES.find(function(x){return x.id===state.articleId;});
+  if(!a){ showView("articles"); return; }
+  var paras = a.full ? a.body : sampleBody(a);
+  var note = a.full ? '' : '<div class="sample-body-note">'+(LANG==="ko"?"샘플 기사 — 본문은 프리뷰용 자리표시자입니다.":"Sample article — body text is a preview placeholder.")+'</div>';
+  var html = '<div class="container">'+
+    '<a href="#" class="back-link" onclick="showView(\'articles\');return false;">\u2190 '+(LANG==="ko"?"아티클로 돌아가기":"Back to articles")+'</a>'+
+    '<div class="article-reader">'+
+      '<div class="a-cat">'+a.cat+'</div>'+
+      '<h1>'+a.title+'</h1>'+
+      '<div class="a-meta">'+a.readTime+' \u00B7 '+tr("editorial")+'</div>'+
+      note+
+      '<div class="a-body">'+paras.map(function(p){return '<p>'+p+'</p>';}).join("")+'</div>'+
+    '</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML = html;
+}
+
+/* ---------------- RENDER: STAY SAFE ---------------- */
+function setDevice(d){ activeDevice=d; renderStaySafe(); }
+function toggleCheck(i){
+  checkedState[activeDevice+i] = !checkedState[activeDevice+i];
+  renderStaySafe();
+}
+function renderStaySafe(){
+  var tabs = DEVICES.map(function(d){
+    return '<button class="device-tab'+(activeDevice===d?" active":"")+'" onclick="setDevice(\''+d+'\')">'+d+'</button>';
+  }).join("");
+  var threatCards = THREATS.map(function(th){
+    return '<div class="threat-card"><div class="tc-icon">'+th.icon+'</div><h3>'+th.title+'</h3><p>'+th.desc+'</p></div>';
+  }).join("");
+  var checks = CHECKLIST[activeDevice].map(function(c,i){
+    var on = !!checkedState[activeDevice+i];
+    return '<div class="check-item"><div class="check-box'+(on?" checked":"")+'" onclick="toggleCheck('+i+')">'+(on?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+'</div><div class="check-text'+(on?" checked":"")+'">'+c+'</div></div>';
+  }).join("");
+  var steps = REMEDIATION[activeDevice].map(function(s,i){
+    return '<div class="step-row"><div class="step-num">'+(i+1)+'</div><div class="step-text">'+s+'</div></div>';
+  }).join("");
+
+  var html = '<div class="container">'+
+    '<div class="results-header"><h2>'+tr("ss_title")+'</h2></div>'+
+    '<p class="staysafe-intro">'+tr("ss_intro")+'</p>'+
+    '<div class="section-label-row"><span class="section-label">'+tr("ss_threats")+'</span></div>'+
+    '<div class="threat-grid">'+threatCards+'</div>'+
+    '<div class="device-tabs">'+tabs+'</div>'+
+    '<div class="section-label-row"><span class="section-label">'+tr("ss_checklist")+' \u2014 '+activeDevice+'</span></div>'+
+    '<div class="checklist">'+checks+'</div>'+
+    '<div class="section-label-row"><span class="section-label">'+tr("ss_exposed")+' \u2014 '+activeDevice+'</span></div>'+
+    '<div class="remediation-steps">'+steps+'</div>'+
+    '<div class="xlink-box" style="margin-top:28px;">\uD83D\uDD17 '+tr("ss_more")+' <a href="#" onclick="showView(\'articles\');return false;">Articles</a></div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML = html;
+}
+
+/* ---------------- RENDER: ABOUT ---------------- */
+function renderAbout(){
+  var html = '<div class="container"><div class="about-wrap">'+
+    '<div class="about-hero">'+
+      '<h1>'+tr("ab_h1")+'</h1>'+
+      '<p>Most readers don\u2019t choose piracy because they want to skip paying creators \u2014 they choose it because finding the legal option is often slower and more confusing than finding the illegal one. A series can be free on one platform, paid on another, and region-locked somewhere else, with nobody collecting that information in one place.</p>'+
+      '<p>Fairtoon is that one place: a search engine that exists to make the legal way to read a series at least as easy to find as the illegal one.</p>'+
+      '<p>It\u2019s an independent, single-person project, not affiliated with or paid by any platform it lists.</p>'+
+    '</div>'+
+    '<div class="about-stats">'+
+      '<div class="about-stat"><div class="num">150\u2013300</div><div class="lbl">'+tr("ab_planned")+'</div></div>'+
+      '<div class="about-stat"><div class="num">6</div><div class="lbl">'+tr("ab_platforms")+'</div></div>'+
+      '<div class="about-stat"><div class="num">EN / KO</div><div class="lbl">'+tr("ab_langs")+'</div></div>'+
+    '</div>'+
+    '<div class="section-label-row"><span class="section-label">'+tr("ab_faq")+'</span></div>'+
+    '<div class="faq-item"><h3>Is Fairtoon affiliated with WEBTOON, Tapas, or any other platform?</h3><p>No. Fairtoon is independent and isn\u2019t paid by any platform for how it ranks or lists them.</p></div>'+
+    '<div class="faq-item"><h3>Why isn\u2019t every webtoon in the database?</h3><p>A smaller, accurately-maintained list beats a huge, outdated one. Coverage grows over time, prioritized by popularity and how reliable the data is.</p></div>'+
+    '<div class="faq-item"><h3>I found outdated or wrong information \u2014 what do I do?</h3><p>Use the \u201CReport an issue\u201D link on any series page. Listings are also re-checked on a routine schedule.</p></div>'+
+    '<div class="faq-item"><h3>Is this preview using real, current data?</h3><p>No \u2014 this build uses a small set of sample listings to test layout and design. The live database is built and verified separately.</p></div>'+
+  '</div></div>';
+  document.getElementById("mainContent").innerHTML = html;
+}
+
+/* ---------------- MAIN RENDER DISPATCH ---------------- */
+function render(){
+  renderDispatch();
+  var mc=document.getElementById("mainContent");
+  if(mc){ mc.classList.remove("view-anim"); void mc.offsetWidth; mc.classList.add("view-anim"); }
+}
+function renderDispatch(){
+  if(state.view==="home") renderHome();
+  else if(state.view==="search") renderSearch();
+  else if(state.view==="detail") renderDetail();
+  else if(state.view==="articles") renderArticles();
+  else if(state.view==="article") renderArticleReader();
+  else if(state.view==="staysafe") renderStaySafe();
+  else if(state.view==="about") renderAbout();
+}
+
+/* header search submits on Enter */
+document.getElementById("headerSearchInput").addEventListener("keydown",function(e){
+  if(e.key==="Enter" && acState.active<0){ runSearch(this.value); }
+});
+attachAutocomplete(document.getElementById("headerSearchInput"));
+
+render();
+document.querySelectorAll(".nav-link").forEach(function(el){
+  el.classList.toggle("active", el.getAttribute("data-view")===state.view);
+});
+updateLangSlider();
+</script>
 </body>
 </html>
