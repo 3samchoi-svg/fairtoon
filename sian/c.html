@@ -1,0 +1,499 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fairtoon — 한국 웹툰 합법 가이드</title>
+<meta name="description" content="이 웹툰, 어디서 합법으로 볼 수 있을까? Fairtoon 합법 플랫폼 인덱스.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Song+Myung&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0d0f12;
+    --ink-2:#3a3f47;
+    --ink-3:#6b727d;
+    --line:#e3e5ea;
+    --line-2:#eef0f3;
+    --paper:#fbfbf9;
+    --paper-2:#ffffff;
+    --accent:#2f5fef;
+    --accent-soft:#eaf0ff;
+    --free:#0e8f5e;
+    --wait:#b5740a;
+    --paid:#5a4ad1;
+    --r:3px;
+    --maxw:1180px;
+    --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --sans:'Noto Sans KR',-apple-system,BlinkMacSystemFont,sans-serif;
+    --serif:'Song Myung',serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--paper);color:var(--ink);
+    font-family:var(--sans);font-weight:400;line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%}
+  ::selection{background:var(--accent);color:#fff}
+
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+  .mono{font-family:var(--mono);font-weight:400;letter-spacing:.02em}
+  .label{
+    font-family:var(--mono);font-size:11px;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--ink-3);
+  }
+
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;background:rgba(251,251,249,.86);
+    backdrop-filter:saturate(180%) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;gap:28px;height:62px}
+  .brand{display:flex;align-items:baseline;gap:9px;font-weight:900;font-size:19px;letter-spacing:-.02em}
+  .brand .dot{width:7px;height:7px;background:var(--accent);border-radius:50%;display:inline-block;transform:translateY(-1px)}
+  .brand small{font-family:var(--mono);font-size:10px;font-weight:400;letter-spacing:.12em;color:var(--ink-3)}
+  nav.links{display:flex;gap:4px;margin-left:8px}
+  nav.links a{
+    font-size:13.5px;color:var(--ink-2);padding:7px 11px;border-radius:var(--r);
+    transition:color .15s,background .15s;font-weight:500;
+  }
+  nav.links a:hover{color:var(--ink);background:var(--line-2)}
+  nav.links a.active{color:var(--accent)}
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .search-mini{
+    display:flex;align-items:center;gap:8px;border:1px solid var(--line);
+    background:var(--paper-2);border-radius:var(--r);padding:7px 11px;
+    color:var(--ink-3);font-size:12.5px;cursor:text;transition:border-color .15s;min-width:150px;
+  }
+  .search-mini:hover{border-color:var(--ink-3)}
+  .search-mini .mono{font-size:10px;border:1px solid var(--line);border-radius:3px;padding:1px 5px;margin-left:auto}
+  .lang{display:flex;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;font-family:var(--mono);font-size:11px}
+  .lang button{border:0;background:transparent;padding:6px 9px;cursor:pointer;color:var(--ink-3);letter-spacing:.05em}
+  .lang button.on{background:var(--ink);color:#fff}
+  .hamb{display:none}
+
+  /* ---------- Hero ---------- */
+  .hero{border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+  .hero::before{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:linear-gradient(var(--line-2) 1px,transparent 1px),linear-gradient(90deg,var(--line-2) 1px,transparent 1px);
+    background-size:54px 54px;mask-image:radial-gradient(circle at 70% 18%,#000,transparent 72%);
+    -webkit-mask-image:radial-gradient(circle at 70% 18%,#000,transparent 72%);opacity:.7;
+  }
+  .hero-in{padding:84px 0 70px;position:relative}
+  .eyebrow{display:flex;align-items:center;gap:10px;margin-bottom:26px}
+  .eyebrow .bar{width:26px;height:1px;background:var(--ink)}
+  .hero h1{
+    font-family:var(--serif);font-weight:400;font-size:clamp(34px,6.2vw,62px);
+    line-height:1.12;letter-spacing:-.01em;margin:0 0 22px;max-width:14ch;
+  }
+  .hero h1 .em{color:var(--accent)}
+  .hero p.lead{font-size:16px;color:var(--ink-2);max-width:50ch;margin:0 0 36px;line-height:1.7}
+  .searchbar{
+    display:flex;align-items:center;gap:12px;background:var(--paper-2);
+    border:1.5px solid var(--ink);border-radius:6px;padding:6px 6px 6px 18px;
+    max-width:620px;box-shadow:6px 6px 0 rgba(13,15,18,.06);transition:box-shadow .2s,transform .2s;
+  }
+  .searchbar:focus-within{box-shadow:6px 6px 0 var(--accent-soft);transform:translateY(-1px)}
+  .searchbar svg{flex:0 0 auto;color:var(--ink-3)}
+  .searchbar input{
+    flex:1;border:0;background:transparent;font-family:var(--sans);font-size:15.5px;
+    color:var(--ink);padding:12px 0;min-width:0;
+  }
+  .searchbar input::placeholder{color:var(--ink-3)}
+  .searchbar input:focus{outline:none}
+  .searchbar button{
+    flex:0 0 auto;background:var(--accent);color:#fff;border:0;border-radius:4px;
+    padding:13px 22px;font-family:var(--sans);font-weight:700;font-size:14px;cursor:pointer;
+    display:flex;align-items:center;gap:7px;transition:background .15s;
+  }
+  .searchbar button:hover{background:#234ed1}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:22px;max-width:620px}
+  .chips .ttl{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;color:var(--ink-3);text-transform:uppercase;margin-right:4px}
+  .chip{
+    border:1px solid var(--line);background:var(--paper-2);border-radius:100px;
+    padding:6px 13px;font-size:12.5px;color:var(--ink-2);cursor:pointer;
+    transition:all .15s;font-weight:500;
+  }
+  .chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+
+  /* ---------- generic section ---------- */
+  section{border-bottom:1px solid var(--line)}
+  .sec-pad{padding:74px 0}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:44px}
+  .sec-head .idx{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.1em;margin-bottom:10px}
+  .sec-head h2{font-family:var(--serif);font-weight:400;font-size:clamp(26px,3.6vw,38px);margin:0;letter-spacing:-.01em;line-height:1.2}
+  .sec-head .sub{font-size:14px;color:var(--ink-3);max-width:34ch;text-align:right}
+
+  /* ---------- How it works ---------- */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line);border-left:1px solid var(--line)}
+  .step{border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:34px 30px;position:relative;background:var(--paper-2);transition:background .2s}
+  .step:hover{background:var(--paper)}
+  .step .num{font-family:var(--mono);font-size:13px;color:var(--accent);letter-spacing:.1em;margin-bottom:20px}
+  .step .ic{width:34px;height:34px;margin-bottom:18px;color:var(--ink)}
+  .step h3{font-size:18px;font-weight:700;margin:0 0 9px;letter-spacing:-.01em}
+  .step p{font-size:13.5px;color:var(--ink-2);margin:0;line-height:1.7}
+
+  /* ---------- Discover cards ---------- */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  .card{
+    border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--paper-2);
+    display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s,border-color .2s;
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 14px 34px -16px rgba(13,15,18,.28);border-color:var(--ink-3)}
+  .cover{aspect-ratio:3/4;position:relative;display:flex;align-items:flex-end;padding:14px;color:#fff;overflow:hidden}
+  .cover .ord{position:absolute;top:12px;left:13px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;opacity:.85}
+  .cover .price{
+    position:absolute;top:11px;right:11px;font-family:var(--mono);font-size:10.5px;font-weight:500;
+    letter-spacing:.04em;padding:4px 9px;border-radius:100px;background:rgba(255,255,255,.92);color:var(--ink);
+  }
+  .cover .price.free{color:var(--free)} .cover .price.wait{color:var(--wait)} .cover .price.paid{color:var(--paid)}
+  .cover h3{font-family:var(--serif);font-weight:400;font-size:23px;margin:0;line-height:1.15;text-shadow:0 1px 14px rgba(0,0,0,.35)}
+  .c1{background:linear-gradient(150deg,#1b2a4a,#3a5fb0 60%,#6f8fd8)}
+  .c2{background:linear-gradient(150deg,#3a1d52,#7b3aa0 55%,#c06fb0)}
+  .c3{background:linear-gradient(150deg,#10243a,#1f6b6b 55%,#3fb59a)}
+  .c4{background:linear-gradient(150deg,#4a2410,#b06a1f 55%,#e0a850)}
+  .card-body{padding:15px 15px 17px;display:flex;flex-direction:column;gap:11px;flex:1}
+  .card-body .author{font-size:12.5px;color:var(--ink-3)}
+  .card-body .author b{color:var(--ink-2);font-weight:500}
+  .tags{display:flex;flex-wrap:wrap;gap:6px}
+  .tag{font-family:var(--mono);font-size:10px;letter-spacing:.04em;border:1px solid var(--line);border-radius:3px;padding:2px 7px;color:var(--ink-3)}
+  .plats{display:flex;gap:6px;margin-top:auto;padding-top:11px;border-top:1px solid var(--line-2)}
+  .pbadge{
+    font-family:var(--mono);font-size:10px;font-weight:500;letter-spacing:.03em;
+    padding:3px 8px;border-radius:3px;color:#fff;
+  }
+  .pb-naver{background:#03c75a} .pb-kakao{background:#3a1d1d} .pb-lezhin{background:#ec374a} .pb-ridi{background:#1f8ce6}
+
+  /* ---------- Creator voices ---------- */
+  .voices{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:18px}
+  .vcard{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--paper-2);display:flex;flex-direction:column}
+  .vshort{position:relative;aspect-ratio:16/10;background:linear-gradient(135deg,#0d0f12,#23304d 70%,#2f5fef);display:flex;align-items:flex-end;padding:22px;color:#fff;overflow:hidden}
+  .vshort::after{content:"";position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 3px)}
+  .play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:62px;height:62px;border-radius:50%;background:rgba(255,255,255,.16);
+    border:1.5px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;
+    backdrop-filter:blur(3px);transition:transform .2s,background .2s;cursor:pointer;z-index:2;
+  }
+  .vshort:hover .play{transform:translate(-50%,-50%) scale(1.08);background:rgba(255,255,255,.28)}
+  .play svg{margin-left:3px}
+  .vshort .badge{position:absolute;top:16px;left:18px;z-index:2}
+  .vshort .badge .mono{color:#fff;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);padding:4px 9px;border-radius:100px;font-size:10px;letter-spacing:.1em}
+  .vshort .cap{position:relative;z-index:2;font-family:var(--serif);font-size:19px;line-height:1.35;margin:0}
+  .vshort .run{position:absolute;bottom:16px;right:18px;z-index:2;font-family:var(--mono);font-size:11px;opacity:.8}
+  .quote{padding:26px 24px;display:flex;flex-direction:column;gap:16px;flex:1}
+  .quote .qm{font-family:var(--serif);font-size:40px;line-height:.6;color:var(--accent);height:22px}
+  .quote p{font-size:15px;line-height:1.7;color:var(--ink);margin:0;flex:1}
+  .quote .who{display:flex;align-items:center;gap:10px;padding-top:14px;border-top:1px solid var(--line-2)}
+  .quote .av{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,#2f5fef,#7b3aa0)}
+  .quote .who b{font-size:13px;font-weight:700}
+  .quote .who span{font-family:var(--mono);font-size:10.5px;color:var(--ink-3);letter-spacing:.06em}
+
+  /* ---------- Awareness ---------- */
+  .aware{background:var(--ink);color:#fff;border-bottom:1px solid var(--ink)}
+  .aware-in{padding:78px 0;display:grid;grid-template-columns:1.1fr .9fr;gap:54px;align-items:center;position:relative}
+  .aware .label{color:#ff5a52}
+  .aware h2{font-family:var(--serif);font-weight:400;font-size:clamp(28px,4.4vw,46px);margin:16px 0 0;line-height:1.18;letter-spacing:-.01em}
+  .aware h2 b{color:#ff7a72;font-weight:400}
+  .risks{display:flex;flex-direction:column;gap:0;border-top:1px solid rgba(255,255,255,.16)}
+  .risk{display:flex;gap:16px;align-items:baseline;padding:16px 2px;border-bottom:1px solid rgba(255,255,255,.16)}
+  .risk .rn{font-family:var(--mono);font-size:11px;color:#ff7a72;letter-spacing:.1em;flex:0 0 auto;width:30px}
+  .risk b{font-size:15px;font-weight:700;flex:0 0 110px}
+  .risk span{font-size:13.5px;color:#c4c8d0;line-height:1.6}
+  .aware .cta{
+    margin-top:30px;display:inline-flex;align-items:center;gap:10px;background:#fff;color:var(--ink);
+    border-radius:5px;padding:14px 24px;font-weight:700;font-size:14.5px;transition:transform .15s,background .15s;
+  }
+  .aware .cta:hover{transform:translateX(4px)}
+  .aware .myth{font-family:var(--mono);font-size:12px;color:#9aa0ab;margin-top:18px;letter-spacing:.02em}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--paper);padding:48px 0 40px}
+  .foot{display:flex;flex-wrap:wrap;gap:24px;justify-content:space-between;align-items:flex-start}
+  .foot .brand{font-size:17px}
+  .foot nav{display:flex;flex-wrap:wrap;gap:6px 20px;font-size:13px}
+  .foot nav a{color:var(--ink-2)}
+  .foot nav a:hover{color:var(--accent)}
+  .disc{margin-top:30px;padding-top:22px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11px;color:var(--ink-3);letter-spacing:.02em;line-height:1.7}
+
+  /* ---------- fixed badge ---------- */
+  .sian-badge{
+    position:fixed;right:16px;bottom:16px;z-index:80;
+    font-family:var(--mono);font-size:11px;letter-spacing:.04em;
+    background:var(--ink);color:#fff;padding:8px 13px;border-radius:100px;
+    box-shadow:0 6px 18px -6px rgba(0,0,0,.4);display:flex;align-items:center;gap:8px;
+  }
+  .sian-badge .d{width:6px;height:6px;border-radius:50%;background:var(--accent)}
+
+  /* ---------- Responsive ---------- */
+  @media(max-width:980px){
+    .cards{grid-template-columns:repeat(2,1fr)}
+    .voices{grid-template-columns:1fr 1fr}
+    .vcard.lead{grid-column:1/-1}
+    .aware-in{grid-template-columns:1fr;gap:34px}
+  }
+  @media(max-width:760px){
+    nav.links,.search-mini{display:none}
+    .hamb{display:flex;width:38px;height:38px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper-2);align-items:center;justify-content:center;cursor:pointer}
+    .nav-right{gap:10px}
+    .steps{grid-template-columns:1fr}
+    .voices{grid-template-columns:1fr}
+    .sec-head{flex-direction:column;align-items:flex-start}
+    .sec-head .sub{text-align:left}
+    .searchbar button span{display:none}
+    .searchbar button{padding:13px 15px}
+    .risk{flex-wrap:wrap;gap:6px 16px}
+    .risk b{flex:0 0 auto}
+  }
+  @media(max-width:480px){
+    .wrap{padding:0 18px}
+    .cards{grid-template-columns:1fr}
+    .hero-in{padding:58px 0 50px}
+  }
+</style>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#" aria-label="Fairtoon 홈">Fairtoon<span class="dot"></span><small>INDEX</small></a>
+    <nav class="links" aria-label="주요 메뉴">
+      <a href="#" class="active">홈</a>
+      <a href="#discover">Discover</a>
+      <a href="#voices">작가의 목소리</a>
+      <a href="#">Articles</a>
+      <a href="#aware">Stay Safe</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="nav-right">
+      <button class="search-mini" aria-label="검색">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        작품 검색<span class="mono">⌘K</span>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button class="on" aria-pressed="true">KO</button>
+        <button aria-pressed="false">EN</button>
+      </div>
+      <button class="hamb" aria-label="메뉴 열기">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-in">
+      <div class="eyebrow">
+        <span class="bar"></span>
+        <span class="label">한국 웹툰 합법 가이드 · 2026</span>
+      </div>
+      <h1>이 웹툰, 어디서<br><span class="em">합법</span>으로 볼 수 있을까?</h1>
+      <p class="lead">작품 하나만 입력하면 어느 공식 플랫폼에서 볼 수 있는지, 무료인지 기다무인지, 왜 합법인지까지 한 번에. Fairtoon은 흩어진 정식 연재처를 모아 보여주는 합법 인덱스입니다.</p>
+
+      <form class="searchbar" role="search" onsubmit="return false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" aria-label="작품명 검색" placeholder="작품명을 입력하세요 — 예: 화산귀환">
+        <button type="submit">찾기<span>→</span></button>
+      </form>
+
+      <div class="chips">
+        <span class="ttl">인기 검색</span>
+        <button class="chip">화산귀환</button>
+        <button class="chip">전지적 독자 시점</button>
+        <button class="chip">나 혼자만 레벨업</button>
+        <button class="chip">신의 탑</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section class="sec-pad">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="idx">/ 작동 방식</div>
+          <h2>세 단계면 충분합니다</h2>
+        </div>
+        <p class="sub">검색에서 합법 시청까지, 마찰 없이 곧장 연결합니다.</p>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="num">① STEP</div>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+          <h3>찾는다</h3>
+          <p>보고 싶은 작품을 검색하세요. 제목만 입력하면 정식 연재처 목록이 곧바로 정리되어 나타납니다.</p>
+        </div>
+        <div class="step">
+          <div class="num">② STEP</div>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          <h3>합법으로 바로 간다</h3>
+          <p>네이버·카카오·레진·리디 등 공식 플랫폼으로 한 번에 이동. 광고도, 위험한 사이트도 거치지 않습니다.</p>
+        </div>
+        <div class="step">
+          <div class="num">③ STEP</div>
+          <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+          <h3>왜 합법인지 안다</h3>
+          <p>무료·기다무·유료의 차이와 그 수익이 작가에게 돌아가는 구조를 투명하게 보여드립니다.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVER -->
+  <section class="sec-pad" id="discover">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="idx">/ Discover</div>
+          <h2>합법으로 보는 추천작</h2>
+        </div>
+        <p class="sub">가격·가용성은 최종 확인일 기준으로 표기됩니다.</p>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <div class="cover c1">
+            <span class="ord mono">No.01</span>
+            <span class="price free">무료</span>
+            <h3>화산귀환</h3>
+          </div>
+          <div class="card-body">
+            <div class="author">글·그림 <b>비가 · LICO</b></div>
+            <div class="tags"><span class="tag">무협</span><span class="tag">액션</span></div>
+            <div class="plats"><span class="pbadge pb-naver">NAVER</span><span class="pbadge pb-kakao">KAKAO</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="cover c2">
+            <span class="ord mono">No.02</span>
+            <span class="price wait">기다무</span>
+            <h3>전지적<br>독자 시점</h3>
+          </div>
+          <div class="card-body">
+            <div class="author">글·그림 <b>싱숑 · 슬리피-C</b></div>
+            <div class="tags"><span class="tag">판타지</span><span class="tag">드라마</span></div>
+            <div class="plats"><span class="pbadge pb-naver">NAVER</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="cover c3">
+            <span class="ord mono">No.03</span>
+            <span class="price wait">기다무</span>
+            <h3>나 혼자만<br>레벨업</h3>
+          </div>
+          <div class="card-body">
+            <div class="author">글·그림 <b>현군 · 장성락</b></div>
+            <div class="tags"><span class="tag">액션</span><span class="tag">판타지</span></div>
+            <div class="plats"><span class="pbadge pb-kakao">KAKAO</span></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="cover c4">
+            <span class="ord mono">No.04</span>
+            <span class="price paid">유료</span>
+            <h3>신의 탑</h3>
+          </div>
+          <div class="card-body">
+            <div class="author">글·그림 <b>SIU</b></div>
+            <div class="tags"><span class="tag">판타지</span><span class="tag">액션</span></div>
+            <div class="plats"><span class="pbadge pb-naver">NAVER</span><span class="pbadge pb-ridi">RIDI</span></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- CREATOR VOICES -->
+  <section class="sec-pad" id="voices">
+    <div class="wrap">
+      <div class="sec-head">
+        <div>
+          <div class="idx">/ 작가의 목소리</div>
+          <h2>그린 사람의 이야기</h2>
+        </div>
+        <p class="sub">한 컷 뒤에는 누군가의 생계가 있습니다.</p>
+      </div>
+      <div class="voices">
+        <article class="vcard lead">
+          <div class="vshort">
+            <div class="badge"><span class="mono">SHORTS · 작가 A</span></div>
+            <div class="play" role="button" aria-label="인터뷰 재생">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+            <p class="cap">"한 회 그리는 데 사흘,<br>그게 0원이 됩니다."</p>
+            <span class="run mono">01:24</span>
+          </div>
+        </article>
+        <article class="vcard">
+          <div class="quote">
+            <span class="qm">"</span>
+            <p>불법으로 보는 독자도 제 팬이에요. 그래서 더 안타깝습니다. 응원해주시는 마음이 작가에게 닿으려면 정식 연재처에서 봐주셔야 해요.</p>
+            <div class="who"><span class="av"></span><div><b>작가 A</b> · <span>인기 판타지 연재 중</span></div></div>
+          </div>
+        </article>
+        <article class="vcard">
+          <div class="quote">
+            <span class="qm">"</span>
+            <p>조회수는 높은데 수익은 바닥일 때, 다음 화를 그릴 힘이 빠집니다. 합법 조회 한 번이 연재를 이어가게 하는 진짜 힘이에요.</p>
+            <div class="who"><span class="av"></span><div><b>작가 B</b> · <span>로맨스 신인 작가</span></div></div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- AWARENESS -->
+  <section class="aware" id="aware">
+    <div class="wrap aware-in">
+      <div>
+        <span class="label">STAY SAFE</span>
+        <h2>불법 사이트, 진짜<br><b>'무료'</b>일까?</h2>
+        <p class="myth">// 클릭 한 번의 대가는 생각보다 큽니다.</p>
+        <a class="cta" href="#">Stay Safe 보기 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      </div>
+      <div class="risks">
+        <div class="risk"><span class="rn">R1</span><b>악성코드</b><span>무료 뷰어·다운로드 링크에 숨은 멀웨어가 기기를 감염시킵니다.</span></div>
+        <div class="risk"><span class="rn">R2</span><b>결제사기</b><span>가짜 '무료 가입' 뒤에 숨은 자동결제·소액결제 피해가 잇따릅니다.</span></div>
+        <div class="risk"><span class="rn">R3</span><b>계정탈취</b><span>로그인을 유도해 SNS·금융 계정 정보까지 통째로 노립니다.</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot">
+      <div>
+        <a class="brand" href="#">Fairtoon<span class="dot"></span><small>INDEX</small></a>
+      </div>
+      <nav aria-label="푸터 메뉴">
+        <a href="#discover">Discover</a>
+        <a href="#voices">작가의 목소리</a>
+        <a href="#">Articles</a>
+        <a href="#aware">Stay Safe</a>
+        <a href="#">About</a>
+      </nav>
+    </div>
+    <p class="disc">© 2026 Fairtoon · 한국 웹툰 합법 가이드 · 가격·가용성은 최종 확인일 기준 (실시간 아님)</p>
+  </div>
+</footer>
+
+<div class="sian-badge"><span class="d"></span>시안 C · Index · 샘플 데이터</div>
+
+<script>
+  // 최소한의 인터랙션: 언어 토글, 인기 검색 칩 → 검색창 채우기
+  document.querySelectorAll('.lang button').forEach(function(b){
+    b.addEventListener('click',function(){
+      document.querySelectorAll('.lang button').forEach(function(x){x.classList.remove('on');x.setAttribute('aria-pressed','false');});
+      b.classList.add('on');b.setAttribute('aria-pressed','true');
+    });
+  });
+  var input=document.querySelector('.searchbar input');
+  document.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click',function(){ if(input){ input.value=c.textContent; input.focus(); } });
+  });
+</script>

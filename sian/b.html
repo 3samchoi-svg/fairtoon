@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fairtoon · 시안 B — Playground</title>
+<meta name="description" content="이 웹툰, 어디서 합법으로 볼 수 있을까? — 한국 웹툰 합법 가이드 (시안 B · Playground)" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#23203a;
+    --ink-soft:#5b5673;
+    --paper:#fff7ec;
+    --cream:#fffdf8;
+    --blue:#3d6bff;
+    --blue-deep:#2747c9;
+    --coral:#ff6b6b;
+    --mint:#2bd4a8;
+    --yellow:#ffd23f;
+    --purple:#9b6bff;
+    --pink:#ff8fcf;
+    --line:#23203a;
+    --shadow:#23203a;
+    --r-lg:30px;
+    --r-md:22px;
+    --r-sm:14px;
+    --ff-display:'Jua', sans-serif;
+    --ff-hand:'Gaegu', cursive;
+    --ff-body:'Noto Sans KR', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--ff-body);
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(255,210,63,.22), transparent 32%),
+      radial-gradient(circle at 88% 4%, rgba(43,212,168,.20), transparent 30%),
+      radial-gradient(circle at 70% 92%, rgba(155,107,255,.16), transparent 36%),
+      var(--paper);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+    overflow-x:hidden;
+  }
+  /* subtle dotted paper grain */
+  body::before{
+    content:"";
+    position:fixed; inset:0;
+    background-image:radial-gradient(rgba(35,32,58,.05) 1px, transparent 1px);
+    background-size:22px 22px;
+    pointer-events:none; z-index:0;
+  }
+
+  a{color:inherit;text-decoration:none;}
+  img,svg{max-width:100%;display:block;}
+  ::selection{background:var(--yellow);color:var(--ink);}
+
+  :focus-visible{
+    outline:3px dashed var(--blue);
+    outline-offset:3px;
+    border-radius:6px;
+  }
+
+  .wrap{width:min(1180px,92vw);margin-inline:auto;position:relative;z-index:1;}
+
+  /* ============ buttons & chips ============ */
+  .btn{
+    font-family:var(--ff-display);
+    font-size:1.05rem;
+    border:3px solid var(--line);
+    border-radius:999px;
+    padding:.7em 1.4em;
+    background:var(--cream);
+    color:var(--ink);
+    cursor:pointer;
+    display:inline-flex;align-items:center;gap:.45em;
+    box-shadow:4px 4px 0 var(--shadow);
+    transition:transform .12s ease, box-shadow .12s ease, background .2s;
+    line-height:1;
+  }
+  .btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--shadow);}
+  .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--shadow);}
+  .btn--blue{background:var(--blue);color:#fff;}
+  .btn--coral{background:var(--coral);color:#fff;}
+  .btn--yellow{background:var(--yellow);}
+  .btn--mint{background:var(--mint);color:#08372b;}
+
+  .chip{
+    font-family:var(--ff-body);
+    font-weight:700;
+    font-size:.86rem;
+    border:2.5px solid var(--line);
+    border-radius:999px;
+    padding:.45em 1em;
+    background:var(--cream);
+    box-shadow:2px 2px 0 var(--shadow);
+    cursor:pointer;
+    transition:transform .1s ease, background .2s;
+    white-space:nowrap;
+  }
+  .chip:hover{transform:translateY(-2px);}
+  .chip .star{color:var(--coral);}
+
+  /* ============ header ============ */
+  header{
+    position:sticky;top:0;z-index:30;
+    background:rgba(255,247,236,.82);
+    backdrop-filter:blur(8px);
+    border-bottom:3px solid var(--line);
+  }
+  .topbar{display:flex;align-items:center;gap:1.2rem;padding:.85rem 0;}
+  .brand{
+    font-family:var(--ff-display);
+    font-size:1.7rem;
+    display:flex;align-items:center;gap:.4rem;
+    color:var(--ink);
+  }
+  .brand .blob{
+    width:34px;height:34px;border-radius:12px 14px 10px 16px;
+    background:conic-gradient(from 30deg, var(--coral), var(--yellow), var(--mint), var(--blue), var(--purple), var(--coral));
+    border:3px solid var(--line);
+    display:grid;place-items:center;
+    font-size:.95rem;color:#fff;
+    transform:rotate(-8deg);
+    box-shadow:2px 2px 0 var(--shadow);
+  }
+  .brand b{color:var(--blue);}
+  nav.main{display:flex;gap:.3rem;margin-left:.6rem;flex-wrap:wrap;}
+  nav.main a{
+    font-weight:700;font-size:.95rem;padding:.4rem .7rem;border-radius:10px;
+    transition:background .15s,color .15s;
+  }
+  nav.main a:hover{background:var(--yellow);}
+  nav.main a.active{color:var(--blue);}
+  .top-tools{margin-left:auto;display:flex;align-items:center;gap:.55rem;}
+  .search-mini{
+    display:flex;align-items:center;gap:.4rem;
+    border:2.5px solid var(--line);border-radius:999px;
+    padding:.4rem .8rem;background:var(--cream);
+    box-shadow:2px 2px 0 var(--shadow);
+    font-weight:700;font-size:.85rem;color:var(--ink-soft);
+  }
+  .lang{
+    display:flex;border:2.5px solid var(--line);border-radius:999px;overflow:hidden;
+    box-shadow:2px 2px 0 var(--shadow);font-family:var(--ff-display);
+  }
+  .lang button{border:0;background:var(--cream);padding:.38rem .7rem;cursor:pointer;font-family:inherit;font-size:.85rem;color:var(--ink-soft);}
+  .lang button.on{background:var(--blue);color:#fff;}
+
+  .hamb{display:none;}
+
+  /* ============ hero ============ */
+  .hero{padding:3.4rem 0 2.6rem;text-align:center;position:relative;}
+  .hero .kick{
+    font-family:var(--ff-hand);font-weight:700;font-size:1.25rem;color:var(--blue-deep);
+    background:var(--yellow);display:inline-block;padding:.2em .8em;border:2.5px solid var(--line);
+    border-radius:999px;transform:rotate(-2deg);box-shadow:3px 3px 0 var(--shadow);
+  }
+  .hero h1{
+    font-family:var(--ff-display);
+    font-size:clamp(2.2rem,6vw,4rem);
+    line-height:1.12;
+    margin:1.1rem auto .4rem;
+    max-width:14ch;
+    color:var(--ink);
+  }
+  .hero h1 .hl{position:relative;color:var(--blue);white-space:nowrap;}
+  .hero h1 .hl::after{
+    content:"";position:absolute;left:-2%;right:-2%;bottom:.06em;height:.32em;
+    background:var(--mint);z-index:-1;border-radius:4px;transform:rotate(-1.2deg);
+  }
+  .hero p.sub{font-size:1.08rem;color:var(--ink-soft);max-width:34ch;margin:.4rem auto 1.7rem;font-weight:500;}
+
+  .searchbar{
+    display:flex;align-items:center;gap:.6rem;
+    width:min(640px,94%);margin:0 auto;
+    background:var(--cream);border:3.5px solid var(--line);border-radius:999px;
+    padding:.55rem .6rem .55rem 1.3rem;
+    box-shadow:7px 7px 0 var(--shadow);
+  }
+  .searchbar .mag{font-size:1.4rem;}
+  .searchbar input{
+    flex:1;border:0;background:transparent;font-family:var(--ff-body);font-size:1.05rem;
+    color:var(--ink);min-width:0;
+  }
+  .searchbar input::placeholder{color:#a39db8;}
+  .searchbar input:focus{outline:none;}
+  .searchbar .go{
+    font-family:var(--ff-display);background:var(--coral);color:#fff;border:3px solid var(--line);
+    border-radius:999px;padding:.65em 1.2em;cursor:pointer;box-shadow:3px 3px 0 var(--shadow);
+    transition:transform .1s;font-size:1rem;
+  }
+  .searchbar .go:hover{transform:translateY(-2px);}
+  .pops{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1.2rem;align-items:center;}
+  .pops .lab{font-family:var(--ff-hand);font-weight:700;color:var(--ink-soft);font-size:1rem;}
+
+  /* floating sticker decorations */
+  .sticker{position:absolute;font-family:var(--ff-display);border:3px solid var(--line);
+    border-radius:16px;padding:.4em .7em;box-shadow:4px 4px 0 var(--shadow);font-size:.95rem;
+    z-index:0;animation:bob 4s ease-in-out infinite;}
+  .sticker.s1{top:6%;left:4%;background:var(--coral);color:#fff;transform:rotate(-10deg);}
+  .sticker.s2{top:14%;right:5%;background:var(--mint);color:#08372b;transform:rotate(9deg);animation-delay:.6s;}
+  .sticker.s3{bottom:8%;left:7%;background:var(--purple);color:#fff;transform:rotate(7deg);animation-delay:1.1s;}
+  .sticker.s4{bottom:16%;right:6%;background:var(--yellow);transform:rotate(-7deg);animation-delay:1.6s;}
+  @keyframes bob{0%,100%{translate:0 0}50%{translate:0 -10px}}
+  @media (max-width:760px){.sticker{display:none;}}
+
+  /* ============ section heading ============ */
+  .sec{padding:3.2rem 0;position:relative;}
+  .sec-head{display:flex;align-items:baseline;gap:.7rem;margin-bottom:1.6rem;flex-wrap:wrap;}
+  .sec-head .num{
+    font-family:var(--ff-display);background:var(--blue);color:#fff;border:3px solid var(--line);
+    width:42px;height:42px;border-radius:14px;display:grid;place-items:center;font-size:1.2rem;
+    box-shadow:3px 3px 0 var(--shadow);transform:rotate(-6deg);flex:none;
+  }
+  .sec-head h2{font-family:var(--ff-display);font-size:clamp(1.6rem,3.5vw,2.4rem);margin:0;color:var(--ink);}
+  .sec-head .note{font-family:var(--ff-hand);font-weight:700;color:var(--ink-soft);font-size:1.05rem;}
+
+  /* ============ how it works ============ */
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;}
+  .step{
+    background:var(--cream);border:3px solid var(--line);border-radius:var(--r-lg);
+    padding:1.6rem 1.4rem;box-shadow:6px 6px 0 var(--shadow);position:relative;
+    transition:transform .14s;
+  }
+  .step:hover{transform:translate(-3px,-3px);}
+  .step .ico{
+    width:64px;height:64px;border-radius:20px;display:grid;place-items:center;font-size:2rem;
+    border:3px solid var(--line);box-shadow:3px 3px 0 var(--shadow);margin-bottom:1rem;
+  }
+  .step:nth-child(1) .ico{background:var(--yellow);}
+  .step:nth-child(2) .ico{background:var(--mint);}
+  .step:nth-child(3) .ico{background:var(--pink);}
+  .step .tag{font-family:var(--ff-hand);font-weight:700;color:var(--blue-deep);font-size:1.05rem;}
+  .step h3{font-family:var(--ff-display);font-size:1.4rem;margin:.2rem 0 .5rem;}
+  .step p{margin:0;color:var(--ink-soft);font-size:.95rem;}
+  .step .big-no{position:absolute;top:1rem;right:1.3rem;font-family:var(--ff-display);font-size:2.6rem;color:rgba(35,32,58,.08);}
+
+  /* ============ discover cards ============ */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1.3rem;}
+  .card{
+    background:var(--cream);border:3px solid var(--line);border-radius:var(--r-md);
+    box-shadow:6px 6px 0 var(--shadow);overflow:hidden;display:flex;flex-direction:column;
+    transition:transform .14s;
+  }
+  .card:hover{transform:translate(-3px,-3px);}
+  .cover{height:180px;position:relative;display:grid;place-items:center;border-bottom:3px solid var(--line);}
+  .cover .cv-title{font-family:var(--ff-display);color:#fff;font-size:1.5rem;text-align:center;padding:0 .8rem;text-shadow:2px 2px 0 rgba(0,0,0,.18);line-height:1.2;}
+  .c1{background:linear-gradient(135deg,#ff6b6b,#ffb14d);}
+  .c2{background:linear-gradient(135deg,#3d6bff,#9b6bff);}
+  .c3{background:linear-gradient(135deg,#23203a,#5b5673);}
+  .c4{background:linear-gradient(135deg,#2bd4a8,#3d6bff);}
+  .price{
+    position:absolute;top:.7rem;left:.7rem;font-family:var(--ff-display);font-size:.85rem;
+    border:2.5px solid var(--line);border-radius:999px;padding:.25em .8em;box-shadow:2px 2px 0 var(--shadow);
+  }
+  .price.free{background:var(--mint);color:#08372b;}
+  .price.wait{background:var(--yellow);color:var(--ink);}
+  .price.paid{background:var(--coral);color:#fff;}
+  .card-body{padding:1rem 1.1rem 1.2rem;display:flex;flex-direction:column;gap:.55rem;flex:1;}
+  .card-body h3{font-family:var(--ff-display);font-size:1.25rem;margin:0;}
+  .card-body .author{color:var(--ink-soft);font-size:.88rem;font-weight:500;margin-top:-.3rem;}
+  .genres{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .gtag{font-size:.74rem;font-weight:700;border:2px solid var(--line);border-radius:999px;padding:.18em .65em;background:var(--paper);}
+  .plats{display:flex;gap:.35rem;flex-wrap:wrap;margin-top:auto;padding-top:.4rem;}
+  .plat{font-size:.72rem;font-weight:700;color:#fff;border-radius:8px;padding:.22em .55em;border:2px solid var(--line);}
+  .p-naver{background:#03c75a;}
+  .p-kakao{background:#3d2c1e;}
+  .p-lezhin{background:#1b1b1b;}
+  .p-toon{background:var(--purple);}
+
+  /* ============ creators ============ */
+  .creators{display:grid;grid-template-columns:1.3fr 1fr;gap:1.3rem;align-items:stretch;}
+  .shorts{
+    border:3px solid var(--line);border-radius:var(--r-lg);overflow:hidden;
+    box-shadow:6px 6px 0 var(--shadow);position:relative;min-height:340px;
+    background:linear-gradient(160deg,#9b6bff,#3d6bff 60%,#23203a);
+    display:flex;flex-direction:column;justify-content:flex-end;color:#fff;padding:1.5rem;
+  }
+  .shorts .badge-ab{position:absolute;top:1rem;left:1rem;font-family:var(--ff-display);background:var(--yellow);color:var(--ink);border:2.5px solid var(--line);border-radius:999px;padding:.2em .8em;box-shadow:2px 2px 0 var(--shadow);}
+  .shorts .tag-shorts{position:absolute;top:1rem;right:1rem;font-family:var(--ff-display);font-size:.8rem;background:rgba(255,255,255,.16);border:2px solid rgba(255,255,255,.6);border-radius:999px;padding:.25em .7em;}
+  .play{
+    position:absolute;top:42%;left:50%;translate:-50% -50%;
+    width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.95);
+    border:3px solid var(--line);display:grid;place-items:center;cursor:pointer;
+    box-shadow:4px 4px 0 rgba(0,0,0,.25);transition:transform .12s;
+  }
+  .play:hover{transform:translate(-50%,-50%) scale(1.07);}
+  .play::after{content:"";border-style:solid;border-width:14px 0 14px 24px;border-color:transparent transparent transparent var(--blue);margin-left:6px;}
+  .shorts .cap{font-family:var(--ff-display);font-size:1.35rem;line-height:1.3;position:relative;z-index:2;}
+  .shorts .cap small{display:block;font-family:var(--ff-body);font-weight:500;font-size:.85rem;opacity:.85;margin-top:.4rem;}
+
+  .quote-stack{display:flex;flex-direction:column;gap:1.3rem;}
+  .quote{
+    background:var(--cream);border:3px solid var(--line);border-radius:var(--r-md);
+    box-shadow:6px 6px 0 var(--shadow);padding:1.3rem;flex:1;display:flex;flex-direction:column;justify-content:center;
+    position:relative;
+  }
+  .quote .mark{font-family:var(--ff-display);font-size:3rem;line-height:.6;color:var(--coral);}
+  .quote p{font-family:var(--ff-hand);font-weight:700;font-size:1.18rem;margin:.4rem 0 .8rem;color:var(--ink);}
+  .quote .who{display:flex;align-items:center;gap:.6rem;font-weight:700;font-size:.9rem;}
+  .quote .av{width:38px;height:38px;border-radius:50%;border:2.5px solid var(--line);box-shadow:2px 2px 0 var(--shadow);}
+  .av-a{background:linear-gradient(135deg,var(--coral),var(--yellow));}
+  .av-b{background:linear-gradient(135deg,var(--mint),var(--blue));}
+
+  /* ============ awareness band ============ */
+  .aware{
+    background:repeating-linear-gradient(45deg,var(--ink),var(--ink) 22px,#2c2945 22px,#2c2945 44px);
+    border:3px solid var(--line);border-radius:var(--r-lg);
+    box-shadow:8px 8px 0 var(--shadow);
+    padding:2.6rem 2rem;color:#fff;text-align:center;position:relative;overflow:hidden;
+  }
+  .aware .warn{font-family:var(--ff-display);background:var(--yellow);color:var(--ink);display:inline-block;
+    border:2.5px solid #000;border-radius:12px;padding:.2em .8em;transform:rotate(-2deg);box-shadow:3px 3px 0 #000;}
+  .aware h2{font-family:var(--ff-display);font-size:clamp(1.8rem,4.5vw,2.8rem);margin:1rem 0 .6rem;color:#fff;}
+  .aware h2 .q{color:var(--yellow);}
+  .aware p{max-width:46ch;margin:0 auto 1.6rem;color:#e8e5f5;font-weight:500;}
+  .risk-row{display:flex;gap:.7rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.7rem;}
+  .risk{font-family:var(--ff-display);font-size:.95rem;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.5);
+    border-radius:999px;padding:.4em 1em;display:flex;align-items:center;gap:.4em;}
+
+  /* ============ footer ============ */
+  footer{padding:2.6rem 0 3rem;border-top:3px dashed var(--line);margin-top:3rem;}
+  .foot-in{display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+  footer .brand{font-size:1.4rem;}
+  footer .disc{color:var(--ink-soft);font-size:.85rem;max-width:52ch;font-weight:500;}
+
+  /* fixed badge */
+  .sian-badge{
+    position:fixed;right:14px;bottom:14px;z-index:50;
+    font-family:var(--ff-display);font-size:.82rem;
+    background:var(--coral);color:#fff;border:2.5px solid var(--line);
+    border-radius:999px;padding:.5em 1em;box-shadow:3px 3px 0 var(--shadow);
+    transform:rotate(-3deg);
+  }
+
+  /* ============ responsive ============ */
+  @media (max-width:980px){
+    .cards{grid-template-columns:repeat(2,1fr);}
+    .creators{grid-template-columns:1fr;}
+  }
+  @media (max-width:860px){
+    nav.main,.search-mini{display:none;}
+    .hamb{display:inline-grid;place-items:center;width:42px;height:42px;border:2.5px solid var(--line);
+      border-radius:12px;background:var(--cream);box-shadow:2px 2px 0 var(--shadow);font-size:1.3rem;cursor:pointer;}
+  }
+  @media (max-width:680px){
+    .steps{grid-template-columns:1fr;}
+    .cards{grid-template-columns:1fr;}
+    .searchbar{flex-wrap:wrap;border-radius:24px;}
+    .searchbar input{width:100%;order:2;padding:.4rem 0;}
+    .searchbar .go{order:3;flex:1;justify-content:center;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap topbar">
+    <a href="#" class="brand"><span class="blob">★</span>Fair<b>toon</b></a>
+    <nav class="main">
+      <a href="#" class="active">홈</a>
+      <a href="#discover">Discover</a>
+      <a href="#voice">작가의 목소리</a>
+      <a href="#">Articles</a>
+      <a href="#safe">Stay Safe</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="top-tools">
+      <span class="search-mini">🔍 검색</span>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button class="on" aria-pressed="true">KO</button>
+        <button aria-pressed="false">EN</button>
+      </div>
+      <button class="hamb" aria-label="메뉴 열기">☰</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <span class="sticker s1">합법!</span>
+  <span class="sticker s2">무료 ✓</span>
+  <span class="sticker s3">기다무 🕒</span>
+  <span class="sticker s4">안전 🛡️</span>
+  <div class="wrap">
+    <span class="kick">🎨 한국 웹툰 합법 가이드</span>
+    <h1>이 웹툰, 어디서 <span class="hl">합법으로</span> 볼 수 있을까?</h1>
+    <p class="sub">작품 이름만 입력하면, 무료로 볼 수 있는 곳까지 한 번에 찾아줘요.</p>
+
+    <form class="searchbar" role="search" onsubmit="return false;">
+      <span class="mag" aria-hidden="true">🔍</span>
+      <input type="search" aria-label="작품명 검색" placeholder="작품명을 입력하세요 — 예: 화산귀환" />
+      <button class="go" type="submit">찾기!</button>
+    </form>
+
+    <div class="pops">
+      <span class="lab">인기 검색 →</span>
+      <button class="chip"><span class="star">★</span> 화산귀환</button>
+      <button class="chip"><span class="star">★</span> 전지적 독자 시점</button>
+      <button class="chip"><span class="star">★</span> 나 혼자만 레벨업</button>
+      <button class="chip"><span class="star">★</span> 신의 탑</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="sec wrap">
+  <div class="sec-head">
+    <span class="num" aria-hidden="true">?</span>
+    <h2>Fairtoon, 이렇게 써요</h2>
+    <span class="note">딱 3단계면 끝!</span>
+  </div>
+  <div class="steps">
+    <div class="step">
+      <span class="big-no" aria-hidden="true">01</span>
+      <div class="ico">🔎</div>
+      <span class="tag">STEP 1</span>
+      <h3>찾는다</h3>
+      <p>보고 싶은 작품 이름만 검색하세요. 어디서 연재 중인지 싹 모아드려요.</p>
+    </div>
+    <div class="step">
+      <span class="big-no" aria-hidden="true">02</span>
+      <div class="ico">🚀</div>
+      <span class="tag">STEP 2</span>
+      <h3>합법으로 바로 간다</h3>
+      <p>네이버·카카오·레진… 정식 연재처로 한 번에 이동. 무료·기다무도 표시!</p>
+    </div>
+    <div class="step">
+      <span class="big-no" aria-hidden="true">03</span>
+      <div class="ico">💡</div>
+      <span class="tag">STEP 3</span>
+      <h3>왜 합법인지 안다</h3>
+      <p>내 돈·내 기기를 지키고, 작가에게도 도움이 되는 이유를 쉽게 알려드려요.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DISCOVER ============ -->
+<section class="sec wrap" id="discover">
+  <div class="sec-head">
+    <span class="num" aria-hidden="true">★</span>
+    <h2>합법으로 보는 추천작</h2>
+    <span class="note">지금 정식 연재 중!</span>
+  </div>
+  <div class="cards">
+
+    <article class="card">
+      <div class="cover c1">
+        <span class="price free">무료</span>
+        <span class="cv-title">화산귀환</span>
+      </div>
+      <div class="card-body">
+        <h3>화산귀환</h3>
+        <p class="author">비가 · LICO</p>
+        <div class="genres"><span class="gtag">무협</span><span class="gtag">액션</span></div>
+        <div class="plats"><span class="plat p-naver">NAVER</span><span class="plat p-toon">웹툰</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover c2">
+        <span class="price wait">기다무</span>
+        <span class="cv-title">전지적<br>독자 시점</span>
+      </div>
+      <div class="card-body">
+        <h3>전지적 독자 시점</h3>
+        <p class="author">싱숑 · 슬리피-C</p>
+        <div class="genres"><span class="gtag">판타지</span><span class="gtag">드라마</span></div>
+        <div class="plats"><span class="plat p-naver">NAVER</span><span class="plat p-kakao">KAKAO</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover c3">
+        <span class="price wait">기다무</span>
+        <span class="cv-title">나 혼자만<br>레벨업</span>
+      </div>
+      <div class="card-body">
+        <h3>나 혼자만 레벨업</h3>
+        <p class="author">현군 · 장성락</p>
+        <div class="genres"><span class="gtag">액션</span><span class="gtag">판타지</span></div>
+        <div class="plats"><span class="plat p-kakao">KAKAO</span></div>
+      </div>
+    </article>
+
+    <article class="card">
+      <div class="cover c4">
+        <span class="price paid">유료</span>
+        <span class="cv-title">신의 탑</span>
+      </div>
+      <div class="card-body">
+        <h3>신의 탑</h3>
+        <p class="author">SIU</p>
+        <div class="genres"><span class="gtag">판타지</span><span class="gtag">모험</span></div>
+        <div class="plats"><span class="plat p-naver">NAVER</span><span class="plat p-toon">웹툰</span></div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ============ CREATOR VOICE ============ -->
+<section class="sec wrap" id="voice">
+  <div class="sec-head">
+    <span class="num" aria-hidden="true">♥</span>
+    <h2>작가의 목소리</h2>
+    <span class="note">만든 사람의 진짜 이야기</span>
+  </div>
+  <div class="creators">
+
+    <div class="shorts">
+      <span class="badge-ab">작가 A</span>
+      <span class="tag-shorts">▶ SHORTS</span>
+      <button class="play" aria-label="인터뷰 영상 재생"></button>
+      <div class="cap">
+        “한 회 그리는 데 사흘, 그게 0원이 됩니다.”
+        <small>작가 A · 인터뷰 쇼츠 (샘플)</small>
+      </div>
+    </div>
+
+    <div class="quote-stack">
+      <blockquote class="quote">
+        <span class="mark" aria-hidden="true">“</span>
+        <p>불법으로 보는 독자도 제 팬이에요. 그래서 더 안타깝습니다.</p>
+        <span class="who"><span class="av av-a" aria-hidden="true"></span>작가 A · 연재 5년차</span>
+      </blockquote>
+      <blockquote class="quote">
+        <span class="mark" aria-hidden="true">“</span>
+        <p>정식 연재처에서 본 ‘좋아요’ 하나가, 다음 화를 그릴 힘이 돼요.</p>
+        <span class="who"><span class="av av-b" aria-hidden="true"></span>작가 B · 신인 작가</span>
+      </blockquote>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ AWARENESS BAND ============ -->
+<section class="sec wrap" id="safe">
+  <div class="aware">
+    <span class="warn">⚠️ 잠깐!</span>
+    <h2>불법 사이트, 진짜 <span class="q">‘무료’</span>일까?</h2>
+    <p>광고 한 번에 악성코드가 깔리고, 가짜 결제창에 카드번호가 새고, 로그인 한 번에 계정이 털립니다. 공짜처럼 보여도, 가장 비싼 선택일 수 있어요.</p>
+    <div class="risk-row">
+      <span class="risk">🦠 악성코드</span>
+      <span class="risk">💳 결제사기</span>
+      <span class="risk">🔓 계정탈취</span>
+    </div>
+    <a href="#" class="btn btn--yellow">Stay Safe 보기 →</a>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap foot-in">
+    <a href="#" class="brand"><span class="blob">★</span>Fair<b>toon</b></a>
+    <p class="disc">© 2026 Fairtoon · 한국 웹툰 합법 가이드 · 가격·가용성은 최종 확인일 기준 (실시간 아님)</p>
+  </div>
+</footer>
+
+<div class="sian-badge">시안 B · Playground · 샘플 데이터</div>
+
+<script>
+  // minimal: KO/EN toggle visual state only
+  document.querySelectorAll('.lang button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.lang button').forEach(function(x){
+        x.classList.remove('on'); x.setAttribute('aria-pressed','false');
+      });
+      b.classList.add('on'); b.setAttribute('aria-pressed','true');
+    });
+  });
+  // popular chip → fill the search box
+  document.querySelectorAll('.pops .chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      var input = document.querySelector('.searchbar input');
+      input.value = c.textContent.replace(/[★\s]+/,'').trim();
+      input.focus();
+    });
+  });
+</script>
+</body>
+</html>
