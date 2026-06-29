@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Fairtoon — 이 웹툰, 어디서 합법으로 볼까?</title>
+<meta name="description" content="한국 웹툰 합법 가이드. 데이터로 보는 불법 이용의 진짜 비용." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#0a0e1a;
+    --ink-2:#1d2438;
+    --paper:#f5f3ec;
+    --paper-2:#ece8dc;
+    --line:#d8d2c2;
+    --line-strong:#c2bba7;
+    --blue:#2F5FEF;
+    --blue-deep:#1a3bc4;
+    --blue-soft:#e2e9ff;
+    --harm:#e0492f;
+    --harm-soft:#f9e3dd;
+    --amber:#e8a73b;
+    --muted:#5c6478;
+    --mono:'IBM Plex Mono', ui-monospace, monospace;
+    --sans:'Noto Sans KR', system-ui, sans-serif;
+    --maxw:1180px;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    background:var(--paper);
+    color:var(--ink);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+    /* fine grid texture */
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size:46px 46px;
+    background-position:-1px -1px;
+  }
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 24px;}
+  a{color:inherit;text-decoration:none;}
+  .mono{font-family:var(--mono);font-feature-settings:"tnum";}
+  .eyebrow{
+    font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--blue);font-weight:600;display:inline-flex;align-items:center;gap:8px;
+  }
+  .eyebrow::before{content:"";width:22px;height:2px;background:var(--blue);display:inline-block;}
+  .eyebrow.harm{color:var(--harm);}
+  .eyebrow.harm::before{background:var(--harm);}
+
+  :focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:3px;}
+
+  /* ---------- Header ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(245,243,236,.86);
+    backdrop-filter:blur(10px);
+    border-bottom:1.5px solid var(--ink);
+  }
+  .head-row{display:flex;align-items:center;gap:24px;height:62px;}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:20px;letter-spacing:-.02em;}
+  .brand .dot{
+    width:13px;height:13px;background:var(--blue);border-radius:3px;
+    box-shadow:3px 3px 0 var(--ink);
+  }
+  nav.main{display:flex;gap:22px;margin-left:14px;}
+  nav.main a{font-size:13.5px;font-weight:500;color:var(--ink-2);position:relative;padding:4px 0;}
+  nav.main a:hover{color:var(--blue);}
+  nav.main a.active{color:var(--ink);font-weight:700;}
+  nav.main a.active::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;background:var(--blue);}
+  .head-tools{margin-left:auto;display:flex;align-items:center;gap:12px;}
+  .search-mini{
+    display:flex;align-items:center;gap:7px;border:1.5px solid var(--line-strong);
+    background:#fff;border-radius:8px;padding:7px 11px;color:var(--muted);font-size:12.5px;
+    cursor:pointer;transition:border-color .15s;
+  }
+  .search-mini:hover{border-color:var(--ink);}
+  .search-mini svg{width:14px;height:14px;}
+  .lang{display:flex;border:1.5px solid var(--ink);border-radius:8px;overflow:hidden;font-family:var(--mono);font-size:11px;font-weight:600;}
+  .lang button{background:none;border:none;padding:6px 9px;cursor:pointer;color:var(--ink);}
+  .lang button.on{background:var(--ink);color:var(--paper);}
+
+  /* ---------- Hero ---------- */
+  .hero{padding:54px 0 30px;position:relative;}
+  .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:start;}
+  h1.hero-h{
+    font-size:clamp(34px,4.6vw,58px);line-height:1.06;font-weight:900;letter-spacing:-.03em;margin:18px 0 0;
+  }
+  h1.hero-h .hl{
+    background:linear-gradient(transparent 62%, var(--blue-soft) 62%);
+    padding:0 2px;
+  }
+  .hero-sub{font-size:16px;color:var(--ink-2);max-width:30em;margin:18px 0 0;}
+  .searchbar{
+    margin-top:26px;display:flex;align-items:center;background:#fff;
+    border:2px solid var(--ink);border-radius:12px;box-shadow:5px 5px 0 var(--ink);
+    overflow:hidden;max-width:520px;
+  }
+  .searchbar svg{width:18px;height:18px;margin:0 4px 0 16px;color:var(--muted);flex:none;}
+  .searchbar input{
+    flex:1;border:none;outline:none;font-family:var(--sans);font-size:15px;padding:15px 8px;background:none;color:var(--ink);
+  }
+  .searchbar input::placeholder{color:#9aa0b0;}
+  .searchbar button{
+    border:none;background:var(--blue);color:#fff;font-family:var(--sans);font-weight:700;font-size:14px;
+    padding:0 22px;align-self:stretch;cursor:pointer;transition:background .15s;
+  }
+  .searchbar button:hover{background:var(--blue-deep);}
+  .chips{margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  .chips .lbl{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.05em;margin-right:2px;}
+  .chip{
+    border:1.5px solid var(--line-strong);background:var(--paper-2);border-radius:20px;padding:6px 13px;
+    font-size:12.5px;font-weight:500;cursor:pointer;transition:all .15s;
+  }
+  .chip:hover{border-color:var(--blue);color:var(--blue);background:#fff;}
+
+  /* hero stat panel */
+  .stat-panel{
+    background:var(--ink);color:var(--paper);border-radius:14px;padding:26px 26px 22px;
+    box-shadow:7px 7px 0 rgba(10,14,26,.18);position:relative;overflow:hidden;
+  }
+  .stat-panel::after{
+    content:"예시 데이터";position:absolute;top:14px;right:-30px;transform:rotate(38deg);
+    background:var(--amber);color:var(--ink);font-family:var(--mono);font-size:9.5px;font-weight:700;
+    letter-spacing:.12em;padding:3px 36px;
+  }
+  .sp-head{font-family:var(--mono);font-size:11px;letter-spacing:.16em;color:#8b93ab;text-transform:uppercase;}
+  .stat-item{padding:15px 0;border-bottom:1px solid rgba(255,255,255,.12);}
+  .stat-item:last-child{border-bottom:none;}
+  .stat-num{font-family:var(--mono);font-weight:700;font-size:clamp(28px,3.4vw,40px);line-height:1;letter-spacing:-.02em;}
+  .stat-num.harm{color:#ff7d63;}
+  .stat-num.blue{color:#88a4ff;}
+  .stat-num .u{font-size:.5em;color:#aab1c6;font-weight:500;margin-left:4px;}
+  .stat-lbl{font-size:12.5px;color:#c3c8d6;margin-top:5px;}
+  /* mini bar inside panel */
+  .minibar{margin-top:9px;height:7px;background:rgba(255,255,255,.1);border-radius:4px;overflow:hidden;display:flex;}
+  .minibar i{display:block;height:100%;}
+  .src-note{font-family:var(--mono);font-size:10px;color:#737b94;margin-top:14px;letter-spacing:.03em;}
+
+  /* ---------- Section frame ---------- */
+  section{padding:64px 0;border-top:1.5px solid var(--line-strong);}
+  .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:34px;}
+  .sec-head h2{font-size:clamp(26px,3vw,36px);font-weight:900;letter-spacing:-.025em;margin:10px 0 0;line-height:1.1;}
+  .sec-head p{color:var(--muted);font-size:14px;max-width:34em;margin:8px 0 0;}
+  .index{font-family:var(--mono);font-size:12px;color:var(--line-strong);font-weight:600;}
+
+  /* ---------- Value cards ---------- */
+  .values{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1.5px solid var(--ink);border-radius:14px;overflow:hidden;background:#fff;}
+  .vcard{padding:28px 26px 30px;border-right:1.5px solid var(--line);position:relative;}
+  .vcard:last-child{border-right:none;}
+  .vcard .vi{width:42px;height:42px;border-radius:10px;background:var(--blue-soft);display:grid;place-items:center;margin-bottom:16px;}
+  .vcard .vi svg{width:22px;height:22px;color:var(--blue);}
+  .vcard h3{font-size:17px;font-weight:700;margin:0 0 8px;letter-spacing:-.01em;}
+  .vcard p{font-size:13.5px;color:var(--ink-2);margin:0;}
+  .vcard .vtag{font-family:var(--mono);font-size:10px;color:var(--muted);position:absolute;top:18px;right:18px;letter-spacing:.1em;}
+
+  /* ---------- Discover ---------- */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+  .wcard{background:#fff;border:1.5px solid var(--line-strong);border-radius:12px;overflow:hidden;transition:transform .15s, box-shadow .15s;display:flex;flex-direction:column;}
+  .wcard:hover{transform:translateY(-4px);box-shadow:6px 8px 0 var(--ink);border-color:var(--ink);}
+  .cover{height:158px;position:relative;display:flex;align-items:flex-end;padding:12px;}
+  .cover .badge-price{
+    position:absolute;top:11px;left:11px;font-family:var(--mono);font-size:10.5px;font-weight:700;
+    padding:4px 9px;border-radius:6px;letter-spacing:.04em;
+  }
+  .bp-free{background:#fff;color:var(--blue);border:1.5px solid var(--blue);}
+  .bp-wait{background:var(--amber);color:var(--ink);}
+  .bp-paid{background:var(--ink);color:#fff;}
+  .cover h4{color:#fff;font-size:18px;font-weight:900;margin:0;text-shadow:0 2px 12px rgba(0,0,0,.5);letter-spacing:-.02em;}
+  .wbody{padding:13px 14px 15px;display:flex;flex-direction:column;gap:10px;flex:1;}
+  .wbody .author{font-size:12px;color:var(--muted);}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;}
+  .tag{font-size:10.5px;font-family:var(--mono);background:var(--paper-2);border:1px solid var(--line);padding:3px 7px;border-radius:5px;color:var(--ink-2);}
+  .platforms{display:flex;gap:5px;margin-top:auto;flex-wrap:wrap;}
+  .pf{font-size:10px;font-weight:700;font-family:var(--mono);border:1.5px solid var(--line);border-radius:5px;padding:3px 7px;color:var(--ink-2);background:var(--paper);}
+
+  /* ---------- Creator voice ---------- */
+  .voice-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;}
+  .video-card{
+    border-radius:14px;overflow:hidden;position:relative;border:1.5px solid var(--ink);
+    background:linear-gradient(135deg,#1a2138,#2F5FEF 160%);min-height:340px;display:flex;flex-direction:column;justify-content:flex-end;padding:24px;color:#fff;
+  }
+  .video-card::before{content:"";position:absolute;inset:0;background:
+    radial-gradient(circle at 70% 28%, rgba(136,164,255,.4), transparent 50%);}
+  .play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);
+    width:68px;height:68px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;
+    box-shadow:0 8px 30px rgba(0,0,0,.35);cursor:pointer;transition:transform .15s;
+  }
+  .play:hover{transform:translate(-50%,-60%) scale(1.08);}
+  .play svg{width:26px;height:26px;color:var(--ink);margin-left:4px;}
+  .video-card .vlabel{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;color:#cfe;position:relative;text-transform:uppercase;}
+  .video-card .vquote{position:relative;font-size:21px;font-weight:700;line-height:1.32;margin:10px 0 0;letter-spacing:-.02em;}
+  .video-card .vdur{position:relative;font-family:var(--mono);font-size:11px;color:#b9c2e0;margin-top:12px;}
+
+  .qcol{display:flex;flex-direction:column;gap:18px;}
+  .quote-card{background:#fff;border:1.5px solid var(--line-strong);border-radius:12px;padding:20px 22px;position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;}
+  .quote-card .qmark{font-family:var(--mono);font-size:40px;color:var(--blue-soft);line-height:.6;font-weight:700;}
+  .quote-card blockquote{margin:6px 0 14px;font-size:15.5px;font-weight:500;line-height:1.5;letter-spacing:-.01em;}
+  .qauthor{display:flex;align-items:center;gap:10px;}
+  .qavatar{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--blue),#88a4ff);flex:none;}
+  .qavatar.b{background:linear-gradient(135deg,var(--harm),var(--amber));}
+  .qname{font-size:12.5px;font-weight:700;}
+  .qrole{font-size:11px;color:var(--muted);}
+
+  /* income chart strip */
+  .income{margin-top:18px;background:var(--ink);color:var(--paper);border-radius:12px;padding:20px 22px;}
+  .income .ih{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:#8b93ab;text-transform:uppercase;margin-bottom:14px;}
+  .barrow{display:flex;align-items:center;gap:12px;margin-bottom:12px;font-size:12.5px;}
+  .barrow .bl{width:96px;flex:none;color:#c3c8d6;}
+  .bartrack{flex:1;height:18px;background:rgba(255,255,255,.08);border-radius:5px;overflow:hidden;}
+  .bartrack i{display:block;height:100%;border-radius:5px;}
+  .barrow .bv{width:58px;text-align:right;font-family:var(--mono);font-weight:600;flex:none;}
+
+  /* ---------- Awareness ---------- */
+  .aware{background:var(--ink);color:var(--paper);border-radius:0;border-top:1.5px solid var(--ink);}
+  .aware .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:46px;align-items:center;}
+  .aware h2{font-size:clamp(26px,3vw,38px);font-weight:900;letter-spacing:-.025em;line-height:1.1;margin:14px 0 0;}
+  .aware h2 .warn{color:#ff7d63;}
+  .aware p{color:#c3c8d6;font-size:14.5px;margin:16px 0 0;max-width:32em;}
+  .threats{display:flex;gap:10px;margin-top:22px;flex-wrap:wrap;}
+  .threat{border:1.5px solid rgba(255,255,255,.2);border-radius:9px;padding:11px 14px;font-size:13px;font-weight:600;display:flex;align-items:center;gap:9px;}
+  .threat svg{width:16px;height:16px;color:#ff7d63;flex:none;}
+  .cta{
+    margin-top:26px;display:inline-flex;align-items:center;gap:9px;background:var(--harm);color:#fff;
+    font-weight:700;font-size:15px;padding:14px 24px;border-radius:10px;cursor:pointer;transition:transform .15s;border:none;
+    box-shadow:5px 5px 0 rgba(255,125,99,.3);
+  }
+  .cta:hover{transform:translate(-2px,-2px);box-shadow:7px 7px 0 rgba(255,125,99,.3);}
+  .cta svg{width:18px;height:18px;}
+  /* donut */
+  .donut-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;}
+  .donut{position:relative;width:230px;height:230px;}
+  .donut .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;}
+  .donut .center .big{font-family:var(--mono);font-size:46px;font-weight:700;color:#ff7d63;line-height:1;}
+  .donut .center .small{font-size:12px;color:#c3c8d6;margin-top:4px;}
+  .donut-cap{font-family:var(--mono);font-size:10.5px;color:#737b94;letter-spacing:.04em;text-align:center;}
+
+  /* ---------- Footer ---------- */
+  footer{background:var(--paper-2);border-top:1.5px solid var(--ink);padding:40px 0 48px;}
+  .foot-row{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start;}
+  .foot-brand{display:flex;align-items:center;gap:9px;font-weight:900;font-size:18px;}
+  .foot-links{display:flex;gap:28px;flex-wrap:wrap;}
+  .foot-col h5{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0 0 10px;}
+  .foot-col a{display:block;font-size:13px;color:var(--ink-2);margin-bottom:7px;}
+  .foot-col a:hover{color:var(--blue);}
+  .foot-note{margin-top:30px;padding-top:20px;border-top:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--muted);line-height:1.7;}
+
+  /* fixed badge */
+  .sian-badge{
+    position:fixed;bottom:18px;right:18px;z-index:80;
+    background:var(--ink);color:var(--paper);font-family:var(--mono);font-size:11px;font-weight:600;
+    padding:9px 14px;border-radius:9px;letter-spacing:.04em;
+    box-shadow:0 6px 20px rgba(0,0,0,.25);border:1.5px solid var(--blue);
+    display:flex;align-items:center;gap:8px;
+  }
+  .sian-badge .pip{width:7px;height:7px;border-radius:50%;background:var(--amber);}
+
+  /* reveal */
+  .rv{opacity:0;transform:translateY(16px);transition:opacity .7s ease, transform .7s ease;}
+  .rv.in{opacity:1;transform:none;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:980px){
+    .hero-grid{grid-template-columns:1fr;gap:32px;}
+    .values{grid-template-columns:1fr;}
+    .vcard{border-right:none;border-bottom:1.5px solid var(--line);}
+    .vcard:last-child{border-bottom:none;}
+    .cards{grid-template-columns:repeat(2,1fr);}
+    .voice-grid,.aware .wrap{grid-template-columns:1fr;}
+    nav.main{display:none;}
+  }
+  @media (max-width:560px){
+    .cards{grid-template-columns:1fr;}
+    .head-tools .search-mini span{display:none;}
+    h1.hero-h{font-size:32px;}
+    .searchbar{box-shadow:3px 3px 0 var(--ink);}
+    body{background-size:36px 36px;}
+  }
+  @media (prefers-reduced-motion:reduce){.rv{transition:none;opacity:1;transform:none;}}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap head-row">
+    <a class="brand" href="#"><span class="dot"></span>Fairtoon</a>
+    <nav class="main">
+      <a href="#" class="active">홈</a>
+      <a href="#discover">Discover</a>
+      <a href="#voice">작가의 목소리</a>
+      <a href="#">Articles</a>
+      <a href="#aware">Stay Safe</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="head-tools">
+      <div class="search-mini" tabindex="0" role="button" aria-label="검색">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <span>작품 검색</span>
+      </div>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button class="on" aria-pressed="true">KO</button>
+        <button aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" style="border-top:none;">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">한국 웹툰 합법 가이드 · 데이터 리포트</span>
+      <h1 class="hero-h">이 웹툰,<br>어디서 <span class="hl">합법으로</span><br>볼 수 있을까?</h1>
+      <p class="hero-sub">작품 하나로 흩어진 합법 플랫폼을 한 번에. 무료·기다무·유료까지 비교해 보고, 정당하게 보는 길을 찾으세요.</p>
+
+      <form class="searchbar" onsubmit="return false;" role="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" placeholder="작품명을 입력하세요 — 예: 화산귀환" aria-label="작품명 검색" />
+        <button type="submit">합법 보기 →</button>
+      </form>
+
+      <div class="chips">
+        <span class="lbl">인기 검색</span>
+        <button class="chip">화산귀환</button>
+        <button class="chip">전지적 독자 시점</button>
+        <button class="chip">나 혼자만 레벨업</button>
+        <button class="chip">신의 탑</button>
+      </div>
+    </div>
+
+    <!-- data panel -->
+    <aside class="stat-panel" aria-label="예시 통계 패널">
+      <div class="sp-head">불법 이용의 비용 · 한눈에</div>
+      <div class="stat-item">
+        <div class="stat-num harm">2.1<span class="u">억 회 / 월</span></div>
+        <div class="stat-lbl">불법 웹툰 사이트 추정 월 방문</div>
+        <div class="minibar"><i style="width:84%;background:#ff7d63;"></i><i style="width:16%;background:rgba(255,255,255,.15);"></i></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num harm">₩3,800<span class="u">만 / 작가·연</span></div>
+        <div class="stat-lbl">작가 1인이 잃는 것으로 추정되는 연 수익</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num blue">72<span class="u">%</span></div>
+        <div class="stat-lbl">"합법 경로를 알면 옮기겠다"고 답한 비율</div>
+        <div class="minibar"><i style="width:72%;background:#88a4ff;"></i><i style="width:28%;background:rgba(255,255,255,.15);"></i></div>
+      </div>
+      <div class="src-note">※ 모든 수치는 컨셉 시연용 예시(sample) · 실제 통계 아님</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ VALUE ============ -->
+<section id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">왜 Fairtoon인가</span>
+        <h2>복잡한 합법 이용을,<br>한 화면으로 단순하게.</h2>
+      </div>
+      <span class="index">/ 01 — VALUE</span>
+    </div>
+
+    <div class="values rv">
+      <div class="vcard">
+        <span class="vtag">A</span>
+        <div class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+        <h3>흩어진 합법 플랫폼을 한곳에</h3>
+        <p>네이버·카카오·레진 등 어디서 합법으로 볼 수 있는지, 작품 하나로 한 번에 모아 보여줍니다.</p>
+      </div>
+      <div class="vcard">
+        <span class="vtag">B</span>
+        <div class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg></div>
+        <h3>무료·기다무·유료 한눈에</h3>
+        <p>가격과 이용 조건을 나란히 비교해, 가장 합리적인 경로를 스스로 고를 수 있게 합니다.</p>
+      </div>
+      <div class="vcard">
+        <span class="vtag">C</span>
+        <div class="vi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z"/></svg></div>
+        <h3>정당하게 보면 작가에게 보상이</h3>
+        <p>합법 이용은 곧 창작자의 수익. 당신의 한 번의 정주행이 다음 화를 만드는 힘이 됩니다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DISCOVER ============ -->
+<section id="discover">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">합법으로 보는 추천작</span>
+        <h2>지금, 정당하게 정주행.</h2>
+        <p>가격·플랫폼은 최종 확인일 기준이며 실시간이 아닙니다. 보기 전 플랫폼에서 다시 확인하세요.</p>
+      </div>
+      <span class="index">/ 02 — DISCOVER</span>
+    </div>
+
+    <div class="cards rv">
+      <!-- card 1 -->
+      <article class="wcard">
+        <div class="cover" style="background:linear-gradient(150deg,#c2410c,#7c2d12 60%,#0a0e1a);">
+          <span class="badge-price bp-wait">기다무</span>
+          <h4>화산귀환</h4>
+        </div>
+        <div class="wbody">
+          <div class="author">비가 · LICO</div>
+          <div class="tags"><span class="tag">#무협</span><span class="tag">#액션</span></div>
+          <div class="platforms"><span class="pf">NAVER</span><span class="pf">시리즈</span></div>
+        </div>
+      </article>
+      <!-- card 2 -->
+      <article class="wcard">
+        <div class="cover" style="background:linear-gradient(150deg,#1d4ed8,#1e1b4b 60%,#0a0e1a);">
+          <span class="badge-price bp-free">무료</span>
+          <h4>전지적 독자 시점</h4>
+        </div>
+        <div class="wbody">
+          <div class="author">싱숑 · 슬리피-C</div>
+          <div class="tags"><span class="tag">#판타지</span><span class="tag">#아포칼립스</span></div>
+          <div class="platforms"><span class="pf">NAVER</span></div>
+        </div>
+      </article>
+      <!-- card 3 -->
+      <article class="wcard">
+        <div class="cover" style="background:linear-gradient(150deg,#7e22ce,#581c87 55%,#0a0e1a);">
+          <span class="badge-price bp-paid">유료</span>
+          <h4>나 혼자만 레벨업</h4>
+        </div>
+        <div class="wbody">
+          <div class="author">현군 · 장성락(REDICE)</div>
+          <div class="tags"><span class="tag">#판타지</span><span class="tag">#헌터</span></div>
+          <div class="platforms"><span class="pf">카카오</span><span class="pf">카카오페이지</span></div>
+        </div>
+      </article>
+      <!-- card 4 -->
+      <article class="wcard">
+        <div class="cover" style="background:linear-gradient(150deg,#0e7490,#155e75 55%,#0a0e1a);">
+          <span class="badge-price bp-wait">기다무</span>
+          <h4>신의 탑</h4>
+        </div>
+        <div class="wbody">
+          <div class="author">SIU</div>
+          <div class="tags"><span class="tag">#판타지</span><span class="tag">#모험</span></div>
+          <div class="platforms"><span class="pf">NAVER</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREATOR VOICE ============ -->
+<section id="voice">
+  <div class="wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">작가의 목소리</span>
+        <h2>화면 너머에는,<br>사람이 있습니다.</h2>
+      </div>
+      <span class="index">/ 03 — VOICES</span>
+    </div>
+
+    <div class="voice-grid rv">
+      <!-- shorts video -->
+      <div class="video-card">
+        <div class="play" role="button" tabindex="0" aria-label="인터뷰 영상 재생">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </div>
+        <span class="vlabel">SHORTS · 작가 인터뷰</span>
+        <p class="vquote">"한 회 그리는 데 사흘,<br>그게 0원이 됩니다."</p>
+        <span class="vdur">▶ 00:48 · 작가 A 인터뷰</span>
+      </div>
+
+      <!-- quotes -->
+      <div class="qcol">
+        <div class="quote-card">
+          <div class="qmark">"</div>
+          <blockquote>불법으로 보는 독자도 제 팬이에요. 그래서 더 안타깝습니다.</blockquote>
+          <div class="qauthor">
+            <span class="qavatar"></span>
+            <div><div class="qname">작가 A</div><div class="qrole">연재 7년차 · 판타지</div></div>
+          </div>
+        </div>
+        <div class="quote-card">
+          <div class="qmark">"</div>
+          <blockquote>정당하게 본 한 화가, 다음 화를 그릴 이유가 됩니다.</blockquote>
+          <div class="qauthor">
+            <span class="qavatar b"></span>
+            <div><div class="qname">작가 B</div><div class="qrole">데뷔 3년차 · 로맨스</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- income comparison chart -->
+    <div class="income rv" aria-label="수익 비교 예시 차트">
+      <div class="ih">조회 1만 회당 작가에게 돌아가는 추정 수익 · 예시</div>
+      <div class="barrow">
+        <span class="bl">합법 플랫폼</span>
+        <span class="bartrack"><i style="width:92%;background:linear-gradient(90deg,#88a4ff,#2F5FEF);"></i></span>
+        <span class="bv" style="color:#88a4ff;">100%</span>
+      </div>
+      <div class="barrow">
+        <span class="bl">불법 사이트</span>
+        <span class="bartrack"><i style="width:3%;background:#ff7d63;"></i></span>
+        <span class="bv" style="color:#ff7d63;">≈ 0%</span>
+      </div>
+      <div class="src-note" style="color:#737b94;">※ 비율은 구조를 보여주기 위한 예시값 · 실제 정산은 플랫폼·계약별로 다름</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AWARENESS ============ -->
+<section id="aware" class="aware">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow harm">Stay Safe · 위험 경고</span>
+      <h2>불법 사이트,<br>진짜 <span class="warn">'무료'</span>일까?</h2>
+      <p>광고로 도배된 무료 뒤에는 비용이 숨어 있습니다. 악성코드 감염, 결제 사기, 계정 탈취 — 당신의 기기와 지갑이 진짜 대가를 치릅니다.</p>
+      <div class="threats">
+        <span class="threat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7v6c0 5 3.5 8 9 9 5.5-1 9-4 9-9V7z"/><path d="M12 8v4M12 16h.01"/></svg>악성코드 감염</span>
+        <span class="threat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>결제 사기</span>
+        <span class="threat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>계정 탈취</span>
+      </div>
+      <button class="cta">Stay Safe 가이드 보기
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+    </div>
+
+    <!-- donut chart -->
+    <div class="donut-wrap rv">
+      <div class="donut">
+        <svg viewBox="0 0 120 120" style="transform:rotate(-90deg);">
+          <circle cx="60" cy="60" r="50" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="16"/>
+          <circle cx="60" cy="60" r="50" fill="none" stroke="#ff7d63" stroke-width="16"
+                  stroke-dasharray="314" stroke-dashoffset="69" stroke-linecap="butt"/>
+        </svg>
+        <div class="center">
+          <span class="big">78%</span>
+          <span class="small">불법 스트리밍 사이트에서<br>악성 광고·스크립트 1건 이상 탐지</span>
+        </div>
+      </div>
+      <span class="donut-cap">※ 컨셉 시연용 예시 수치 · 실측 데이터 아님</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-row">
+      <div style="max-width:280px;">
+        <div class="foot-brand"><span class="dot" style="width:13px;height:13px;background:var(--blue);border-radius:3px;box-shadow:3px 3px 0 var(--ink);"></span>Fairtoon</div>
+        <p style="font-size:13px;color:var(--muted);margin-top:12px;">데이터로 보는 한국 웹툰 합법 가이드. 정당한 이용이 창작을 지킵니다.</p>
+      </div>
+      <div class="foot-links">
+        <div class="foot-col">
+          <h5>탐색</h5>
+          <a href="#discover">Discover</a>
+          <a href="#voice">작가의 목소리</a>
+          <a href="#">Articles</a>
+        </div>
+        <div class="foot-col">
+          <h5>안전</h5>
+          <a href="#aware">Stay Safe</a>
+          <a href="#">위험 사례</a>
+          <a href="#">신고하기</a>
+        </div>
+        <div class="foot-col">
+          <h5>소개</h5>
+          <a href="#">About</a>
+          <a href="#">데이터 출처</a>
+          <a href="#">문의</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-note">
+      © 2026 Fairtoon · 한국 웹툰 합법 가이드 · 수치는 예시 · 가격·가용성은 최종 확인일 기준 (실시간 아님)
+    </div>
+  </div>
+</footer>
+
+<!-- fixed sian badge -->
+<div class="sian-badge"><span class="pip"></span>시안 G · Data · 샘플 데이터</div>
+
+<script>
+  // accessible search chip → fill input
+  document.querySelectorAll('.chip').forEach(function(c){
+    c.addEventListener('click', function(){
+      var inp = document.querySelector('.searchbar input');
+      if(inp){ inp.value = c.textContent.trim(); inp.focus(); }
+    });
+  });
+  // lang toggle (visual only)
+  document.querySelectorAll('.lang button').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.lang button').forEach(function(x){x.classList.remove('on');x.setAttribute('aria-pressed','false');});
+      b.classList.add('on');b.setAttribute('aria-pressed','true');
+    });
+  });
+  // scroll reveal
+  if('IntersectionObserver' in window){
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+    },{threshold:.15});
+    document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+  } else {
+    document.querySelectorAll('.rv').forEach(function(el){el.classList.add('in');});
+  }
+</script>
+</body>
+</html>

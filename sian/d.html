@@ -1,0 +1,761 @@
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fairtoon — 합법 웹툰 스트리밍 가이드</title>
+<meta name="description" content="이 웹툰, 어디서 합법으로 볼 수 있을까? 흩어진 합법 플랫폼을 한곳에 모아 보여주는 웹툰 합법 가이드." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --bg: #07080f;
+    --bg-2: #0c0e1a;
+    --panel: #11131f;
+    --panel-2: #161a2b;
+    --line: rgba(255, 255, 255, 0.08);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --text: #f3f5fb;
+    --muted: #9aa2bd;
+    --dim: #6b7290;
+    --accent: #2f5fef;
+    --accent-2: #5b8cff;
+    --accent-glow: #4d7bff;
+    --vivid: #ff4d6d;
+    --gold: #ffc857;
+    --green: #2fd29a;
+    --radius: 14px;
+    --shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.7);
+    --kr: "Noto Sans KR", system-ui, sans-serif;
+    --en: "Archivo", "Noto Sans KR", sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--kr);
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ambient glow + grain */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(900px 600px at 80% -5%, rgba(47, 95, 239, 0.22), transparent 60%),
+      radial-gradient(700px 500px at 0% 10%, rgba(255, 77, 109, 0.1), transparent 55%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  a { color: inherit; text-decoration: none; }
+  img { max-width: 100%; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent-2);
+    outline-offset: 3px;
+    border-radius: 6px;
+  }
+
+  .wrap { max-width: 1280px; margin: 0 auto; padding: 0 28px; position: relative; z-index: 2; }
+
+  /* ===== Header ===== */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(16px);
+    background: linear-gradient(180deg, rgba(7, 8, 15, 0.92), rgba(7, 8, 15, 0.55));
+    border-bottom: 1px solid var(--line);
+  }
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    height: 70px;
+  }
+  .brand {
+    font-family: var(--en);
+    font-weight: 900;
+    font-size: 25px;
+    letter-spacing: -0.5px;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .brand .dot {
+    width: 11px; height: 11px; border-radius: 3px;
+    background: linear-gradient(135deg, var(--accent-2), var(--vivid));
+    box-shadow: 0 0 16px var(--accent-glow);
+  }
+  .brand b { color: var(--accent-2); }
+  nav.links { display: flex; gap: 4px; flex: 1; }
+  nav.links a {
+    font-size: 14.5px;
+    color: var(--muted);
+    padding: 8px 13px;
+    border-radius: 9px;
+    font-weight: 500;
+    transition: color 0.18s, background 0.18s;
+  }
+  nav.links a:hover { color: var(--text); background: rgba(255, 255, 255, 0.05); }
+  nav.links a.active { color: var(--text); }
+
+  .head-tools { display: flex; align-items: center; gap: 12px; }
+  .search-btn {
+    width: 40px; height: 40px;
+    display: grid; place-items: center;
+    border: 1px solid var(--line-strong);
+    border-radius: 11px;
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--muted);
+    cursor: pointer;
+    transition: 0.18s;
+  }
+  .search-btn:hover { color: var(--text); border-color: var(--accent-2); }
+  .lang {
+    display: flex;
+    border: 1px solid var(--line-strong);
+    border-radius: 11px;
+    overflow: hidden;
+    font-family: var(--en);
+    font-weight: 700;
+    font-size: 12.5px;
+  }
+  .lang button {
+    background: transparent; border: 0; color: var(--dim);
+    padding: 9px 12px; cursor: pointer; transition: 0.18s;
+  }
+  .lang button.on { background: var(--accent); color: #fff; }
+
+  /* ===== Hero ===== */
+  .hero {
+    position: relative;
+    padding: 64px 0 30px;
+    overflow: hidden;
+  }
+  .hero-card {
+    position: relative;
+    border-radius: 24px;
+    overflow: hidden;
+    min-height: 520px;
+    display: flex;
+    align-items: flex-end;
+    border: 1px solid var(--line);
+    box-shadow: var(--shadow);
+  }
+  /* cinematic gradient "art" */
+  .hero-art {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 90% at 78% 18%, #3b5bd9 0%, transparent 45%),
+      radial-gradient(90% 80% at 95% 80%, #ff4d6d 0%, transparent 42%),
+      conic-gradient(from 200deg at 70% 40%, #1a2a6b, #2f5fef 30%, #0a1030 70%);
+  }
+  .hero-art::after {
+    content: "";
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(115deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 26px),
+      linear-gradient(180deg, transparent 30%, rgba(7,8,15,0.55) 70%, rgba(7,8,15,0.95) 100%);
+  }
+  .hero-inner {
+    position: relative;
+    padding: 48px 52px 52px;
+    max-width: 760px;
+  }
+  .badge-feat {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--en); font-weight: 700; font-size: 12px;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--gold);
+    background: rgba(255, 200, 87, 0.1);
+    border: 1px solid rgba(255, 200, 87, 0.3);
+    padding: 6px 13px; border-radius: 99px;
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-size: clamp(30px, 5vw, 52px);
+    line-height: 1.12;
+    font-weight: 900;
+    letter-spacing: -1px;
+    margin-bottom: 14px;
+    text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+  }
+  .hero h1 .hl {
+    background: linear-gradient(120deg, var(--accent-2), #aebfff);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p.sub {
+    color: #cdd3e8;
+    font-size: 16.5px;
+    max-width: 540px;
+    margin-bottom: 26px;
+  }
+  .searchbar {
+    display: flex;
+    background: rgba(11, 13, 22, 0.78);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--line-strong);
+    border-radius: 14px;
+    padding: 7px 7px 7px 18px;
+    max-width: 560px;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 14px 40px -10px rgba(0,0,0,0.6);
+  }
+  .searchbar svg { color: var(--dim); flex-shrink: 0; }
+  .searchbar input {
+    flex: 1; background: transparent; border: 0; color: var(--text);
+    font-family: var(--kr); font-size: 15.5px; outline: none;
+  }
+  .searchbar input::placeholder { color: var(--dim); }
+  .searchbar button {
+    font-family: var(--kr); font-weight: 700; font-size: 14.5px;
+    background: var(--accent); color: #fff; border: 0;
+    padding: 11px 22px; border-radius: 10px; cursor: pointer;
+    transition: 0.18s; white-space: nowrap;
+  }
+  .searchbar button:hover { background: var(--accent-2); box-shadow: 0 0 24px rgba(91, 140, 255, 0.5); }
+  .chips { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; align-items: center; }
+  .chips .lbl { font-size: 13px; color: var(--dim); margin-right: 4px; }
+  .chip {
+    font-size: 13px; color: #cdd3e8;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--line);
+    padding: 6px 13px; border-radius: 99px;
+    cursor: pointer; transition: 0.18s;
+  }
+  .chip:hover { border-color: var(--accent-2); color: #fff; background: rgba(47, 95, 239, 0.18); }
+
+  /* ===== Section base ===== */
+  section.block { padding: 64px 0 8px; }
+  .sec-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 30px; gap: 20px; }
+  .sec-head h2 {
+    font-size: clamp(22px, 3vw, 30px);
+    font-weight: 900; letter-spacing: -0.5px;
+  }
+  .sec-head .eyebrow {
+    font-family: var(--en); font-weight: 700; font-size: 12px;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--accent-2);
+    display: block; margin-bottom: 8px;
+  }
+  .sec-head p { color: var(--muted); font-size: 14.5px; max-width: 460px; margin-top: 6px; }
+
+  /* ===== Value cards ===== */
+  .values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .vcard {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.22s, border-color 0.22s;
+  }
+  .vcard:hover { transform: translateY(-4px); border-color: var(--line-strong); }
+  .vcard::before {
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: linear-gradient(90deg, var(--accent-2), transparent);
+  }
+  .vicon {
+    width: 48px; height: 48px; border-radius: 13px;
+    display: grid; place-items: center; margin-bottom: 18px;
+    background: rgba(47, 95, 239, 0.14);
+    border: 1px solid rgba(91, 140, 255, 0.25);
+    color: var(--accent-2);
+  }
+  .vcard h3 { font-size: 18px; font-weight: 700; margin-bottom: 9px; letter-spacing: -0.3px; }
+  .vcard p { color: var(--muted); font-size: 14.5px; }
+
+  /* ===== Rail ===== */
+  .rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 248px;
+    gap: 18px;
+    overflow-x: auto;
+    padding: 6px 4px 24px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent) transparent;
+  }
+  .rail::-webkit-scrollbar { height: 8px; }
+  .rail::-webkit-scrollbar-thumb { background: rgba(91, 140, 255, 0.4); border-radius: 99px; }
+  .rail::-webkit-scrollbar-track { background: transparent; }
+
+  .toon {
+    scroll-snap-align: start;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: transform 0.22s, box-shadow 0.22s, border-color 0.22s;
+    cursor: pointer;
+  }
+  .toon:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 26px 50px -18px rgba(0, 0, 0, 0.8);
+    border-color: var(--line-strong);
+  }
+  .cover {
+    position: relative;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+  .cover .pricetag {
+    position: absolute; top: 11px; left: 11px;
+    font-size: 12px; font-weight: 700;
+    padding: 5px 11px; border-radius: 99px;
+    backdrop-filter: blur(8px);
+    z-index: 3;
+  }
+  .pricetag.free { background: rgba(47, 210, 154, 0.2); color: #7af0c8; border: 1px solid rgba(47,210,154,0.4); }
+  .pricetag.wait { background: rgba(255, 200, 87, 0.18); color: var(--gold); border: 1px solid rgba(255,200,87,0.4); }
+  .pricetag.paid { background: rgba(255, 77, 109, 0.18); color: #ff8a9f; border: 1px solid rgba(255,77,109,0.4); }
+  .cover .title-on {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 40px 16px 14px; z-index: 3;
+    background: linear-gradient(transparent, rgba(0,0,0,0.85));
+  }
+  .cover .title-on h4 { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
+  .cover .title-on .author { font-size: 12.5px; color: #c6cce0; margin-top: 2px; }
+  .cover .play-hint {
+    position: absolute; inset: 0; display: grid; place-items: center; z-index: 2;
+    opacity: 0; transition: 0.22s;
+  }
+  .toon:hover .play-hint { opacity: 1; }
+  .play-hint .circ {
+    width: 54px; height: 54px; border-radius: 50%;
+    background: rgba(47, 95, 239, 0.85); backdrop-filter: blur(4px);
+    display: grid; place-items: center; box-shadow: 0 0 30px rgba(47,95,239,0.7);
+  }
+  .toon .meta { padding: 13px 15px 16px; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 11px; }
+  .tag { font-size: 11.5px; color: var(--muted); background: rgba(255,255,255,0.05); padding: 3px 9px; border-radius: 6px; border: 1px solid var(--line); }
+  .platforms { display: flex; gap: 6px; flex-wrap: wrap; }
+  .pf {
+    font-family: var(--en); font-size: 10.5px; font-weight: 700; letter-spacing: 0.3px;
+    padding: 4px 9px; border-radius: 6px;
+    border: 1px solid var(--line-strong);
+    color: #d4d9ec;
+  }
+  .pf.naver { background: rgba(47, 210, 154, 0.12); border-color: rgba(47,210,154,0.3); color: #6fe6b8; }
+  .pf.kakao { background: rgba(255, 200, 87, 0.12); border-color: rgba(255,200,87,0.3); color: #ffd47a; }
+  .pf.lezhin { background: rgba(255, 77, 109, 0.12); border-color: rgba(255,77,109,0.3); color: #ff8a9f; }
+
+  /* cover gradients */
+  .g1 { background: conic-gradient(from 120deg at 35% 30%, #b91d2e, #ff5b3a 35%, #2b0a12 75%), radial-gradient(circle at 70% 80%, #ffb347, transparent 50%); }
+  .g2 { background: linear-gradient(150deg, #0b1e4d, #2f5fef 45%, #00d4ff 110%), radial-gradient(circle at 20% 20%, rgba(255,255,255,0.25), transparent 40%); }
+  .g3 { background: conic-gradient(from 220deg at 60% 50%, #1a0033, #6a00ff 30%, #00f0ff 60%, #120024 95%); }
+  .g4 { background: linear-gradient(160deg, #052b2b, #0fa3a3 50%, #ffd166 130%), radial-gradient(circle at 80% 15%, rgba(255,255,255,0.2), transparent 45%); }
+  .g5 { background: conic-gradient(from 40deg at 40% 60%, #3a0d4f, #c2185b 40%, #ff8a00 80%, #1a0822); }
+  .cover .ornament { position:absolute; inset:0; z-index:1; opacity:0.5;
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 16px); }
+
+  /* ===== Creator voices ===== */
+  .creator-grid { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 18px; }
+  .shorts {
+    position: relative; border-radius: var(--radius); overflow: hidden;
+    min-height: 320px; border: 1px solid var(--line);
+    display: flex; align-items: flex-end; cursor: pointer;
+  }
+  .shorts-art {
+    position: absolute; inset: 0;
+    background: linear-gradient(200deg, #1b1140, #2f1d6b 45%, #0a0820),
+      radial-gradient(circle at 70% 25%, rgba(91,140,255,0.45), transparent 50%);
+  }
+  .shorts-art::after { content:""; position:absolute; inset:0;
+    background: repeating-linear-gradient(100deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 22px); }
+  .shorts .play-big {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 3;
+    width: 72px; height: 72px; border-radius: 50%;
+    background: rgba(255,255,255,0.12); backdrop-filter: blur(8px);
+    border: 1.5px solid rgba(255,255,255,0.35);
+    display: grid; place-items: center; transition: 0.22s;
+  }
+  .shorts:hover .play-big { background: var(--accent); transform: translate(-50%, -50%) scale(1.08); box-shadow: 0 0 40px rgba(47,95,239,0.7); }
+  .shorts .cap {
+    position: relative; z-index: 3; padding: 26px 24px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  }
+  .shorts .cap .ribbon { font-family: var(--en); font-size: 11px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color: var(--vivid); margin-bottom: 8px; display:block; }
+  .shorts .cap blockquote { font-size: 19px; font-weight: 700; line-height: 1.4; letter-spacing: -0.4px; }
+  .shorts .cap .who { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+  .qcard {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    display: flex; flex-direction: column;
+  }
+  .qcard .quote-mark { font-family: var(--en); font-size: 52px; line-height: 0.7; color: var(--accent); opacity: 0.4; font-weight: 900; }
+  .qcard blockquote { font-size: 16px; line-height: 1.55; font-weight: 500; margin: 8px 0 auto; letter-spacing: -0.3px; }
+  .qcard .author-row { display: flex; align-items: center; gap: 11px; margin-top: 22px; }
+  .qcard .avatar {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    background: linear-gradient(135deg, var(--accent), var(--vivid));
+  }
+  .qcard .avatar.b { background: linear-gradient(135deg, var(--green), var(--accent-2)); }
+  .qcard .author-row .nm { font-size: 14px; font-weight: 700; }
+  .qcard .author-row .role { font-size: 12px; color: var(--dim); }
+
+  /* ===== Awareness band ===== */
+  .aware {
+    margin: 70px 0 0;
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 77, 109, 0.25);
+  }
+  .aware-bg {
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(120% 120% at 90% 10%, rgba(255, 77, 109, 0.35), transparent 55%),
+      linear-gradient(120deg, #1a0810, #2a0a16 60%, #0a0810);
+  }
+  .aware-bg::after { content:""; position:absolute; inset:0;
+    background: repeating-linear-gradient(45deg, rgba(255,77,109,0.05) 0 1px, transparent 1px 14px); }
+  .aware-inner { position: relative; z-index: 2; padding: 48px 52px; display: flex; gap: 40px; align-items: center; flex-wrap: wrap; }
+  .aware-inner .txt { flex: 1; min-width: 280px; }
+  .aware .warn-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 12.5px; font-weight: 700; color: var(--vivid);
+    background: rgba(255, 77, 109, 0.12); border: 1px solid rgba(255,77,109,0.35);
+    padding: 6px 13px; border-radius: 99px; margin-bottom: 16px;
+  }
+  .aware h2 { font-size: clamp(24px, 3.5vw, 36px); font-weight: 900; letter-spacing: -0.6px; margin-bottom: 14px; }
+  .aware p { color: #e3c7cf; font-size: 15.5px; max-width: 560px; }
+  .risk-tags { display: flex; gap: 10px; flex-wrap: wrap; margin: 20px 0 4px; }
+  .risk-tags span { font-size: 13px; font-weight: 600; color: #ffc1cd; background: rgba(255,77,109,0.1); border: 1px solid rgba(255,77,109,0.3); padding: 6px 13px; border-radius: 9px; }
+  .cta-safe {
+    font-family: var(--kr); font-weight: 700; font-size: 15px;
+    background: #fff; color: #1a0810; border: 0;
+    padding: 15px 28px; border-radius: 12px; cursor: pointer;
+    white-space: nowrap; transition: 0.2s;
+    display: inline-flex; align-items: center; gap: 9px;
+  }
+  .cta-safe:hover { transform: translateY(-2px); box-shadow: 0 16px 36px -10px rgba(255,255,255,0.3); }
+
+  /* ===== Footer ===== */
+  footer {
+    margin-top: 70px;
+    border-top: 1px solid var(--line);
+    padding: 40px 0 56px;
+  }
+  .foot { display: flex; justify-content: space-between; align-items: center; gap: 24px; flex-wrap: wrap; }
+  .foot .brand { font-size: 20px; }
+  .foot p { color: var(--dim); font-size: 13px; max-width: 620px; }
+  .foot-links { display: flex; gap: 18px; font-size: 13px; color: var(--muted); }
+  .foot-links a:hover { color: var(--text); }
+
+  /* ===== Fixed badge ===== */
+  .sian-badge {
+    position: fixed; bottom: 18px; right: 18px; z-index: 100;
+    font-family: var(--en); font-size: 12px; font-weight: 700; letter-spacing: 0.5px;
+    background: rgba(11, 13, 22, 0.9); backdrop-filter: blur(10px);
+    border: 1px solid var(--line-strong); color: var(--accent-2);
+    padding: 9px 15px; border-radius: 99px;
+    box-shadow: 0 10px 30px -8px rgba(0,0,0,0.7);
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width: 1000px) {
+    .values { grid-template-columns: 1fr; }
+    .creator-grid { grid-template-columns: 1fr; }
+    .shorts { min-height: 280px; }
+  }
+  @media (max-width: 820px) {
+    nav.links { display: none; }
+    .hero-inner { padding: 32px 24px 36px; }
+    .aware-inner { padding: 34px 26px; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding: 0 16px; }
+    .searchbar { flex-wrap: wrap; }
+    .searchbar button { width: 100%; }
+    .head-tools .lang { display: none; }
+    .foot { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+
+<header>
+  <div class="wrap nav">
+    <div class="brand"><span class="dot"></span>Fair<b>toon</b></div>
+    <nav class="links">
+      <a href="#" class="active">홈</a>
+      <a href="#discover">Discover</a>
+      <a href="#voices">작가의 목소리</a>
+      <a href="#">Articles</a>
+      <a href="#safe">Stay Safe</a>
+      <a href="#">About</a>
+    </nav>
+    <div class="head-tools">
+      <button class="search-btn" aria-label="검색">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button class="on" aria-pressed="true">KO</button>
+        <button aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-card">
+        <div class="hero-art" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <span class="badge-feat">★ Featured · 합법 가이드</span>
+          <h1>이 웹툰, 어디서 <span class="hl">합법으로</span><br />볼 수 있을까?</h1>
+          <p class="sub">흩어진 합법 플랫폼을 한곳에. 작품 하나를 검색하면 어디서·얼마에 볼 수 있는지 한 번에 비교됩니다.</p>
+          <div class="searchbar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" placeholder="작품명을 입력하세요 — 예: 화산귀환" aria-label="작품 검색" />
+            <button>검색</button>
+          </div>
+          <div class="chips">
+            <span class="lbl">인기 검색</span>
+            <span class="chip">화산귀환</span>
+            <span class="chip">전지적 독자 시점</span>
+            <span class="chip">나 혼자만 레벨업</span>
+            <span class="chip">신의 탑</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VALUES -->
+  <section class="block wrap">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Why Fairtoon</span>
+        <h2>왜 Fairtoon인가</h2>
+      </div>
+    </div>
+    <div class="values">
+      <div class="vcard">
+        <div class="vicon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+        </div>
+        <h3>흩어진 합법 플랫폼을 한곳에</h3>
+        <p>네이버·카카오·레진 등 어디서 합법으로 볼 수 있는지 한 번에 모아 보여줍니다.</p>
+      </div>
+      <div class="vcard">
+        <div class="vicon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h12M3 18h6"/></svg>
+        </div>
+        <h3>무료·기다무·유료 한눈에</h3>
+        <p>가격과 이용 조건을 나란히 비교해, 가장 합리적인 방법을 골라 봅니다.</p>
+      </div>
+      <div class="vcard">
+        <div class="vicon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-4.5-9.5-9C1 9 2.5 5 6 5c2 0 3.2 1.2 4 2.5C10.8 6.2 12 5 14 5c3.5 0 5 4 3.5 7-2.5 4.5-9.5 9-9.5 9z"/></svg>
+        </div>
+        <h3>정당하게 보면 작가에게 보상이</h3>
+        <p>합법 이용은 창작자를 지키는 가장 직접적인 응원입니다. 다음 화를 만드는 힘이 됩니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVER RAIL -->
+  <section class="block wrap" id="discover">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Discover</span>
+        <h2>합법으로 보는 추천작</h2>
+        <p>지금 합법 플랫폼에서 볼 수 있는 인기작. 카드를 좌우로 넘겨 보세요.</p>
+      </div>
+    </div>
+    <div class="rail" role="list">
+      <!-- 1 -->
+      <article class="toon" role="listitem">
+        <div class="cover">
+          <div class="g1" style="position:absolute;inset:0;"></div>
+          <div class="ornament"></div>
+          <span class="pricetag wait">기다무</span>
+          <div class="play-hint"><div class="circ"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+          <div class="title-on"><h4>화산귀환</h4><div class="author">비가 · LICO</div></div>
+        </div>
+        <div class="meta">
+          <div class="tags"><span class="tag">무협</span><span class="tag">액션</span></div>
+          <div class="platforms"><span class="pf naver">NAVER</span><span class="pf kakao">KAKAO</span></div>
+        </div>
+      </article>
+      <!-- 2 -->
+      <article class="toon" role="listitem">
+        <div class="cover">
+          <div class="g2" style="position:absolute;inset:0;"></div>
+          <div class="ornament"></div>
+          <span class="pricetag free">무료</span>
+          <div class="play-hint"><div class="circ"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+          <div class="title-on"><h4>전지적 독자 시점</h4><div class="author">싱숑 · 슬리피-C</div></div>
+        </div>
+        <div class="meta">
+          <div class="tags"><span class="tag">판타지</span><span class="tag">드라마</span></div>
+          <div class="platforms"><span class="pf naver">NAVER</span></div>
+        </div>
+      </article>
+      <!-- 3 -->
+      <article class="toon" role="listitem">
+        <div class="cover">
+          <div class="g3" style="position:absolute;inset:0;"></div>
+          <div class="ornament"></div>
+          <span class="pricetag wait">기다무</span>
+          <div class="play-hint"><div class="circ"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+          <div class="title-on"><h4>나 혼자만 레벨업</h4><div class="author">현군 · 장성락</div></div>
+        </div>
+        <div class="meta">
+          <div class="tags"><span class="tag">액션</span><span class="tag">판타지</span></div>
+          <div class="platforms"><span class="pf kakao">KAKAO</span></div>
+        </div>
+      </article>
+      <!-- 4 -->
+      <article class="toon" role="listitem">
+        <div class="cover">
+          <div class="g4" style="position:absolute;inset:0;"></div>
+          <div class="ornament"></div>
+          <span class="pricetag free">무료</span>
+          <div class="play-hint"><div class="circ"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+          <div class="title-on"><h4>신의 탑</h4><div class="author">SIU</div></div>
+        </div>
+        <div class="meta">
+          <div class="tags"><span class="tag">판타지</span><span class="tag">모험</span></div>
+          <div class="platforms"><span class="pf naver">NAVER</span></div>
+        </div>
+      </article>
+      <!-- 5 -->
+      <article class="toon" role="listitem">
+        <div class="cover">
+          <div class="g5" style="position:absolute;inset:0;"></div>
+          <div class="ornament"></div>
+          <span class="pricetag paid">유료</span>
+          <div class="play-hint"><div class="circ"><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+          <div class="title-on"><h4>재혼 황후</h4><div class="author">알파타르트 · 숨풀</div></div>
+        </div>
+        <div class="meta">
+          <div class="tags"><span class="tag">로맨스</span><span class="tag">궁중</span></div>
+          <div class="platforms"><span class="pf naver">NAVER</span><span class="pf lezhin">LEZHIN</span></div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- CREATOR VOICES -->
+  <section class="block wrap" id="voices">
+    <div class="sec-head">
+      <div>
+        <span class="eyebrow">Creator Voices</span>
+        <h2>작가의 목소리</h2>
+        <p>화면 너머의 창작자들이 직접 전하는 이야기.</p>
+      </div>
+    </div>
+    <div class="creator-grid">
+      <div class="shorts" role="button" tabindex="0" aria-label="작가 인터뷰 영상 재생">
+        <div class="shorts-art" aria-hidden="true"></div>
+        <div class="play-big"><svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>
+        <div class="cap">
+          <span class="ribbon">▶ Interview Shorts · 02:14</span>
+          <blockquote>“한 회 그리는 데 사흘, 그게 0원이 됩니다.”</blockquote>
+          <div class="who">웹툰 작가 인터뷰 시리즈</div>
+        </div>
+      </div>
+      <div class="qcard">
+        <div class="quote-mark">“</div>
+        <blockquote>불법으로 보는 독자도 제 팬이에요. 그래서 더 안타깝습니다.</blockquote>
+        <div class="author-row">
+          <div class="avatar"></div>
+          <div><div class="nm">작가 A</div><div class="role">연재 웹툰 작가</div></div>
+        </div>
+      </div>
+      <div class="qcard">
+        <div class="quote-mark">“</div>
+        <blockquote>정당한 조회 하나하나가 다음 화를 그릴 용기가 됩니다.</blockquote>
+        <div class="author-row">
+          <div class="avatar b"></div>
+          <div><div class="nm">작가 B</div><div class="role">신인 작가 · 데뷔작 연재 중</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AWARENESS BAND -->
+  <section class="wrap" id="safe">
+    <div class="aware">
+      <div class="aware-bg" aria-hidden="true"></div>
+      <div class="aware-inner">
+        <div class="txt">
+          <span class="warn-pill">⚠ Stay Safe</span>
+          <h2>불법 사이트, 진짜 ‘무료’일까?</h2>
+          <p>광고를 가장한 악성코드, 결제 정보를 노리는 가짜 결제창, 로그인 정보를 빼가는 계정탈취. ‘공짜’의 대가는 생각보다 큽니다. 당신의 기기와 지갑이 먼저 위험해질 수 있습니다.</p>
+          <div class="risk-tags">
+            <span>악성코드 감염</span>
+            <span>결제 사기</span>
+            <span>계정 탈취</span>
+          </div>
+        </div>
+        <button class="cta-safe">
+          Stay Safe 보기
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <div class="brand"><span class="dot"></span>Fair<b>toon</b></div>
+      <p style="margin-top:12px;">© 2026 Fairtoon · 한국 웹툰 합법 가이드 · 가격·가용성은 최종 확인일 기준 (실시간 아님)</p>
+    </div>
+    <div class="foot-links">
+      <a href="#discover">Discover</a>
+      <a href="#voices">작가의 목소리</a>
+      <a href="#safe">Stay Safe</a>
+      <a href="#">About</a>
+    </div>
+  </div>
+</footer>
+
+<div class="sian-badge">시안 D · OTT · 샘플 데이터</div>
+
+<script>
+  // chip → fill search input (progressive enhancement only)
+  document.querySelectorAll('.chip').forEach(function (c) {
+    c.addEventListener('click', function () {
+      var input = document.querySelector('.searchbar input');
+      if (input) { input.value = c.textContent; input.focus(); }
+    });
+  });
+  // lang toggle (visual only)
+  document.querySelectorAll('.lang button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      document.querySelectorAll('.lang button').forEach(function (x) {
+        x.classList.remove('on'); x.setAttribute('aria-pressed', 'false');
+      });
+      b.classList.add('on'); b.setAttribute('aria-pressed', 'true');
+    });
+  });
+</script>

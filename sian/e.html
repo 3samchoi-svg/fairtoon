@@ -1,0 +1,712 @@
+<!--
+  Fairtoon — 시안 E "Warm Library / Curation"
+  Single self-contained HTML mockup. No external JS, no external images.
+-->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fairtoon · 합법으로 보는 웹툰 서재</title>
+<meta name="description" content="이 웹툰, 어디서 합법으로 볼 수 있을까? — 흩어진 합법 플랫폼을 한곳에 모아 보여주는 큐레이션 서재.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Noto+Serif+KR:wght@400;500;600;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<style>
+  :root{
+    /* warm library palette */
+    --paper:#f3ead8;          /* page cream */
+    --paper-2:#ece0c8;        /* deeper cream */
+    --card:#fbf6ea;           /* card ivory */
+    --ink:#2e251c;            /* near-black brown ink */
+    --ink-soft:#5a4d3c;       /* secondary text */
+    --ink-faint:#8a7a64;      /* tertiary */
+    --line:#d8c8a8;           /* hairlines */
+    --line-soft:#e3d7bd;
+    --accent:#9a3324;         /* literary vermilion / 인주 red */
+    --accent-2:#3f5a3c;       /* moss green secondary */
+    --gold:#b48a3e;           /* aged gold */
+    --shadow: 28px 28px 60px rgba(70,52,28,.16);
+    --radius:14px;
+    --maxw:1180px;
+    --serif:"Noto Serif KR", serif;
+    --serif-soft:"Gowun Batang", serif;
+    --sans:"Noto Sans KR", sans-serif;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:var(--sans);
+    color:var(--ink);
+    background:var(--paper);
+    -webkit-font-smoothing:antialiased;
+    line-height:1.6;
+    overflow-x:hidden;
+    /* subtle paper grain */
+    background-image:
+      radial-gradient(circle at 20% 12%, rgba(180,138,62,.06), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(154,51,36,.05), transparent 45%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+  a{color:inherit;text-decoration:none}
+  img{max-width:100%}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 28px}
+
+  :focus-visible{
+    outline:2.5px solid var(--accent);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  /* ---------- decorative ornament ---------- */
+  .ornament{
+    font-family:var(--serif);
+    color:var(--gold);
+    letter-spacing:.5em;
+    font-size:.7rem;
+    text-transform:uppercase;
+    display:flex;align-items:center;gap:14px;
+  }
+  .ornament::before,.ornament::after{
+    content:"";height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--line),transparent);
+  }
+  .ornament.left::before{display:none}
+  .eyebrow{
+    font-family:var(--serif-soft);
+    color:var(--accent);
+    font-size:.82rem;
+    letter-spacing:.22em;
+    font-weight:700;
+    text-transform:uppercase;
+    margin:0 0 14px;
+  }
+
+  /* ---------- header ---------- */
+  header.site{
+    position:sticky;top:0;z-index:50;
+    background:rgba(243,234,216,.86);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--line-soft);
+  }
+  .nav{
+    display:flex;align-items:center;gap:28px;
+    height:74px;
+  }
+  .brand{
+    font-family:var(--serif);
+    font-weight:900;
+    font-size:1.5rem;
+    letter-spacing:-.01em;
+    display:flex;align-items:center;gap:10px;
+    white-space:nowrap;
+  }
+  .brand .mark{
+    width:30px;height:30px;border-radius:7px;
+    background:
+      linear-gradient(135deg,var(--accent),#7a2317);
+    color:var(--paper);
+    display:grid;place-items:center;
+    font-size:1rem;font-family:var(--serif-soft);font-weight:700;
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.12), 0 4px 10px rgba(154,51,36,.3);
+  }
+  .brand .mark::after{content:"F"}
+  .brand em{font-style:normal;color:var(--accent)}
+  nav.links{display:flex;gap:26px;margin-left:14px}
+  nav.links a{
+    font-size:.95rem;color:var(--ink-soft);font-weight:500;
+    position:relative;padding:4px 0;
+  }
+  nav.links a::after{
+    content:"";position:absolute;left:0;right:100%;bottom:-2px;height:1.5px;
+    background:var(--accent);transition:right .28s ease;
+  }
+  nav.links a:hover{color:var(--ink)}
+  nav.links a:hover::after,nav.links a[aria-current]::after{right:0}
+  nav.links a[aria-current]{color:var(--ink)}
+
+  .nav-right{margin-left:auto;display:flex;align-items:center;gap:14px}
+  .icon-btn{
+    width:40px;height:40px;border-radius:50%;
+    border:1px solid var(--line);background:var(--card);
+    display:grid;place-items:center;cursor:pointer;color:var(--ink-soft);
+    transition:.2s;
+  }
+  .icon-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .lang{
+    display:flex;border:1px solid var(--line);border-radius:999px;overflow:hidden;
+    font-family:var(--serif-soft);font-size:.8rem;background:var(--card);
+  }
+  .lang button{
+    border:0;background:transparent;padding:7px 13px;cursor:pointer;color:var(--ink-faint);font-family:inherit;
+  }
+  .lang button[aria-pressed="true"]{background:var(--accent);color:var(--paper)}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:78px 0 60px;overflow:hidden}
+  .hero::before{
+    /* soft bookshelf glow */
+    content:"";position:absolute;inset:0;z-index:0;
+    background:
+      radial-gradient(70% 60% at 78% 30%, rgba(180,138,62,.18), transparent 70%),
+      radial-gradient(55% 50% at 10% 90%, rgba(63,90,60,.10), transparent 70%);
+    pointer-events:none;
+  }
+  .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.15fr .85fr;gap:54px;align-items:center}
+  .hero h1{
+    font-family:var(--serif);
+    font-weight:900;
+    font-size:clamp(2.3rem,4.6vw,3.7rem);
+    line-height:1.22;
+    letter-spacing:-.02em;
+    margin:18px 0 22px;
+  }
+  .hero h1 .quiet{color:var(--ink-soft);font-weight:600}
+  .hero h1 .mark-red{
+    color:var(--accent);position:relative;white-space:nowrap;
+  }
+  .hero h1 .mark-red::after{
+    content:"";position:absolute;left:-2%;right:-2%;bottom:.08em;height:.42em;
+    background:rgba(154,51,36,.14);z-index:-1;border-radius:3px;
+  }
+  .hero p.lede{
+    font-family:var(--serif-soft);
+    font-size:1.12rem;color:var(--ink-soft);max-width:30ch;margin:0 0 30px;
+  }
+
+  /* search */
+  .searchbar{
+    display:flex;align-items:center;gap:12px;
+    background:var(--card);border:1.5px solid var(--line);
+    border-radius:999px;padding:8px 8px 8px 22px;
+    box-shadow:0 10px 30px rgba(70,52,28,.10);
+    max-width:560px;transition:.25s;
+  }
+  .searchbar:focus-within{border-color:var(--accent);box-shadow:0 12px 34px rgba(154,51,36,.18)}
+  .searchbar svg{flex:none;color:var(--ink-faint)}
+  .searchbar input{
+    flex:1;border:0;background:transparent;font-family:var(--sans);
+    font-size:1rem;color:var(--ink);padding:10px 0;min-width:0;
+  }
+  .searchbar input::placeholder{color:var(--ink-faint)}
+  .searchbar input:focus{outline:none}
+  .search-go{
+    border:0;cursor:pointer;flex:none;
+    background:var(--accent);color:var(--paper);
+    border-radius:999px;padding:12px 24px;font-family:var(--serif-soft);font-weight:700;font-size:.95rem;
+    transition:.2s;
+  }
+  .search-go:hover{background:#7a2317}
+  .chips{display:flex;flex-wrap:wrap;gap:9px;margin-top:18px;align-items:center}
+  .chips .label{font-size:.82rem;color:var(--ink-faint);font-family:var(--serif-soft);margin-right:4px}
+  .chip{
+    font-size:.85rem;border:1px solid var(--line);background:rgba(251,246,234,.6);
+    border-radius:999px;padding:6px 14px;color:var(--ink-soft);cursor:pointer;transition:.18s;
+  }
+  .chip:hover{border-color:var(--accent);color:var(--accent);background:var(--card)}
+
+  /* hero stacked-books art */
+  .hero-art{position:relative;height:380px}
+  .book{
+    position:absolute;border-radius:6px 12px 12px 6px;
+    box-shadow:var(--shadow);
+    border-left:7px solid rgba(0,0,0,.18);
+    display:flex;align-items:flex-end;padding:18px;
+    color:var(--paper);font-family:var(--serif);font-weight:700;font-size:1.05rem;
+    overflow:hidden;
+  }
+  .book::before{content:"";position:absolute;inset:0;background:linear-gradient(transparent,rgba(0,0,0,.32))}
+  .book span{position:relative;z-index:1;line-height:1.2}
+  .b1{width:178px;height:248px;left:6%;top:8%;background:linear-gradient(150deg,#9a3324,#5c1c14);transform:rotate(-6deg);z-index:3}
+  .b2{width:172px;height:236px;right:8%;top:0;background:linear-gradient(150deg,#3f5a3c,#22351f);transform:rotate(5deg);z-index:2}
+  .b3{width:200px;height:150px;left:30%;bottom:2%;background:linear-gradient(150deg,#b48a3e,#7d5c1f);transform:rotate(-2deg);z-index:4}
+  .legal-seal{
+    position:absolute;right:2%;bottom:8%;z-index:5;
+    width:96px;height:96px;border-radius:50%;
+    background:var(--paper);border:2px solid var(--accent);
+    display:grid;place-items:center;text-align:center;
+    font-family:var(--serif-soft);color:var(--accent);font-weight:700;font-size:.7rem;line-height:1.3;
+    box-shadow:0 8px 20px rgba(154,51,36,.25);
+    transform:rotate(-8deg);
+  }
+
+  /* ---------- section shell ---------- */
+  section{padding:74px 0}
+  .sec-head{max-width:680px;margin-bottom:44px}
+  .sec-head h2{
+    font-family:var(--serif);font-weight:800;
+    font-size:clamp(1.7rem,3vw,2.4rem);line-height:1.3;letter-spacing:-.01em;margin:0 0 12px;
+  }
+  .sec-head p{color:var(--ink-soft);font-family:var(--serif-soft);font-size:1.05rem;margin:0}
+  .sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+
+  /* ---------- value cards ---------- */
+  .values{background:var(--paper-2);border-block:1px solid var(--line-soft);position:relative}
+  .value-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+  .value{
+    background:var(--card);border:1px solid var(--line-soft);border-radius:var(--radius);
+    padding:34px 30px;position:relative;transition:.3s;
+    box-shadow:0 2px 0 rgba(255,255,255,.5) inset;
+  }
+  .value:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(70,52,28,.14)}
+  .value .gl{
+    font-family:var(--serif);font-size:2.4rem;color:var(--accent);opacity:.5;line-height:1;
+    margin-bottom:14px;
+  }
+  .value h3{font-family:var(--serif);font-weight:700;font-size:1.28rem;margin:0 0 10px;line-height:1.4}
+  .value p{color:var(--ink-soft);font-size:.96rem;margin:0}
+  .value::after{
+    content:"";position:absolute;left:30px;right:30px;bottom:0;height:3px;border-radius:3px;
+    background:linear-gradient(90deg,var(--accent),transparent);transform:scaleX(0);transform-origin:left;transition:.3s;
+  }
+  .value:hover::after{transform:scaleX(1)}
+
+  /* ---------- discover / bookshelf ---------- */
+  .discover-top{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;margin-bottom:36px;flex-wrap:wrap}
+  .ghost-link{font-family:var(--serif-soft);color:var(--accent);font-weight:700;font-size:.95rem;border-bottom:1.5px solid currentColor;padding-bottom:2px}
+  .shelf{display:grid;grid-template-columns:repeat(4,1fr);gap:24px}
+  .toon{
+    background:var(--card);border:1px solid var(--line-soft);border-radius:var(--radius);overflow:hidden;
+    display:flex;flex-direction:column;transition:.3s;
+  }
+  .toon:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(70,52,28,.18)}
+  .cover{
+    aspect-ratio:3/4;position:relative;display:flex;align-items:flex-end;padding:16px;
+    color:#fff;overflow:hidden;
+  }
+  .cover::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,rgba(0,0,0,.5))}
+  .cover .cv-title{position:relative;z-index:2;font-family:var(--serif);font-weight:700;font-size:1.25rem;line-height:1.25;text-shadow:0 2px 8px rgba(0,0,0,.35)}
+  /* decorative cover textures */
+  .cover .deco{position:absolute;inset:0;z-index:1;opacity:.85}
+  .cv1{background:linear-gradient(160deg,#7d1f15,#c0492f)}
+  .cv1 .deco{background:radial-gradient(circle at 70% 25%,rgba(255,220,180,.35),transparent 55%),repeating-linear-gradient(45deg,rgba(0,0,0,.07) 0 12px,transparent 12px 24px)}
+  .cv2{background:linear-gradient(160deg,#1f3a52,#2f6f8f)}
+  .cv2 .deco{background:radial-gradient(circle at 30% 20%,rgba(180,220,255,.4),transparent 50%),repeating-radial-gradient(circle at 80% 80%,rgba(255,255,255,.08) 0 2px,transparent 2px 16px)}
+  .cv3{background:linear-gradient(160deg,#2a2140,#5a3d7a)}
+  .cv3 .deco{background:radial-gradient(circle at 50% 30%,rgba(170,140,255,.45),transparent 55%),linear-gradient(120deg,rgba(255,255,255,.05),transparent)}
+  .cv4{background:linear-gradient(160deg,#243b2e,#3f7a52)}
+  .cv4 .deco{background:radial-gradient(circle at 65% 30%,rgba(200,255,210,.35),transparent 55%),repeating-linear-gradient(90deg,rgba(255,255,255,.05) 0 1px,transparent 1px 18px)}
+  .price-tag{
+    position:absolute;top:14px;left:14px;z-index:3;
+    font-family:var(--serif-soft);font-weight:700;font-size:.74rem;
+    padding:5px 11px;border-radius:999px;backdrop-filter:blur(4px);
+    background:rgba(251,246,234,.92);color:var(--ink);border:1px solid rgba(0,0,0,.06);
+  }
+  .price-tag.free{color:var(--accent-2)}
+  .price-tag.wait{color:var(--gold)}
+  .price-tag.paid{color:var(--accent)}
+
+  .toon-body{padding:16px 18px 20px;display:flex;flex-direction:column;flex:1}
+  .toon-body .author{font-size:.85rem;color:var(--ink-faint);font-family:var(--serif-soft);margin-bottom:10px}
+  .genres{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+  .genre{font-size:.72rem;border:1px solid var(--line);border-radius:5px;padding:3px 8px;color:var(--ink-soft)}
+  .platforms{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
+  .pf{
+    font-size:.7rem;font-weight:700;font-family:var(--sans);
+    padding:4px 9px;border-radius:6px;color:#fff;letter-spacing:.02em;
+  }
+  .pf.naver{background:#03c75a}
+  .pf.kakao{background:#1d1d1f}
+  .pf.lezhin{background:#e4007e}
+  .pf.ridi{background:#1f8ce6}
+
+  /* ---------- creator voice ---------- */
+  .voice{background:var(--ink);color:var(--paper);position:relative;overflow:hidden}
+  .voice::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 80% at 80% 20%,rgba(180,138,62,.16),transparent 70%)}
+  .voice .wrap{position:relative;z-index:1}
+  .voice .eyebrow{color:var(--gold)}
+  .voice .sec-head h2{color:var(--paper)}
+  .voice .sec-head p{color:rgba(243,234,216,.7)}
+  .voice-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:26px}
+  .video-card{
+    border-radius:var(--radius);overflow:hidden;position:relative;min-height:340px;
+    background:linear-gradient(160deg,#3a2c1c,#1c140c);
+    display:flex;align-items:flex-end;padding:30px;
+    border:1px solid rgba(180,138,62,.25);
+  }
+  .video-card::before{
+    content:"";position:absolute;inset:0;
+    background:
+      radial-gradient(circle at 30% 30%,rgba(154,51,36,.35),transparent 55%),
+      repeating-linear-gradient(115deg,rgba(255,255,255,.03) 0 3px,transparent 3px 22px);
+  }
+  .play{
+    position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    width:84px;height:84px;border-radius:50%;
+    background:rgba(243,234,216,.95);display:grid;place-items:center;cursor:pointer;
+    box-shadow:0 10px 30px rgba(0,0,0,.4);transition:.25s;z-index:2;
+  }
+  .play:hover{transform:translate(-50%,-50%) scale(1.08);background:var(--paper)}
+  .play svg{margin-left:5px;color:var(--accent)}
+  .video-cap{position:relative;z-index:2}
+  .video-cap .tag{font-family:var(--serif-soft);font-size:.78rem;color:var(--gold);letter-spacing:.15em;margin-bottom:8px}
+  .video-cap .quote{font-family:var(--serif);font-weight:700;font-size:1.4rem;line-height:1.4;max-width:22ch;margin:0}
+  .quote-stack{display:flex;flex-direction:column;gap:22px}
+  .qcard{
+    background:rgba(251,246,234,.05);border:1px solid rgba(180,138,62,.22);
+    border-radius:var(--radius);padding:26px;position:relative;flex:1;
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .qcard .mark-q{font-family:var(--serif);font-size:3rem;color:var(--gold);opacity:.5;line-height:.6;height:.5em}
+  .qcard blockquote{font-family:var(--serif-soft);font-size:1.08rem;line-height:1.6;margin:8px 0 16px;color:var(--paper)}
+  .qcard .who{display:flex;align-items:center;gap:11px}
+  .qcard .ava{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--accent));display:grid;place-items:center;font-family:var(--serif);font-weight:700;font-size:.9rem;color:#fff}
+  .qcard .who b{font-family:var(--sans);font-size:.9rem;font-weight:500}
+  .qcard .who span{font-size:.78rem;color:rgba(243,234,216,.55);display:block}
+
+  /* ---------- awareness hook ---------- */
+  .aware .wrap{
+    display:grid;grid-template-columns:1fr 1fr;gap:46px;align-items:center;
+    background:var(--card);border:1px solid var(--line);border-radius:22px;
+    padding:52px;box-shadow:var(--shadow);
+  }
+  .aware h2{font-family:var(--serif);font-weight:900;font-size:clamp(1.7rem,3vw,2.3rem);line-height:1.32;margin:14px 0 18px}
+  .aware h2 .x{color:var(--accent)}
+  .aware p{color:var(--ink-soft);font-size:1.02rem;margin:0 0 26px}
+  .aware .cta{
+    display:inline-flex;align-items:center;gap:9px;
+    background:var(--accent);color:var(--paper);font-family:var(--serif-soft);font-weight:700;
+    padding:14px 28px;border-radius:999px;font-size:1rem;transition:.2s;
+  }
+  .aware .cta:hover{background:#7a2317;gap:14px}
+  .risk-list{display:flex;flex-direction:column;gap:14px}
+  .risk{
+    display:flex;gap:15px;align-items:flex-start;
+    background:var(--paper);border:1px solid var(--line-soft);border-radius:12px;padding:18px 20px;
+  }
+  .risk .ic{
+    flex:none;width:42px;height:42px;border-radius:11px;
+    background:rgba(154,51,36,.1);color:var(--accent);display:grid;place-items:center;
+  }
+  .risk b{font-family:var(--serif);font-size:1.02rem;display:block;margin-bottom:2px}
+  .risk p{font-size:.88rem;margin:0;color:var(--ink-faint)}
+
+  /* ---------- footer ---------- */
+  footer.site{background:var(--ink);color:rgba(243,234,216,.75);padding:54px 0 40px;margin-top:0}
+  .foot-top{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:flex-start;margin-bottom:34px}
+  footer .brand{color:var(--paper);font-size:1.4rem}
+  .foot-cols{display:flex;gap:54px;flex-wrap:wrap}
+  .foot-cols h4{font-family:var(--serif-soft);color:var(--gold);font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;margin:0 0 14px}
+  .foot-cols a{display:block;font-size:.92rem;margin-bottom:9px;color:rgba(243,234,216,.7)}
+  .foot-cols a:hover{color:var(--paper)}
+  .foot-note{
+    border-top:1px solid rgba(180,138,62,.25);padding-top:22px;
+    font-family:var(--serif-soft);font-size:.85rem;color:rgba(243,234,216,.55);line-height:1.7;
+  }
+
+  /* ---------- fixed badge ---------- */
+  .sian-badge{
+    position:fixed;right:18px;bottom:18px;z-index:99;
+    background:var(--ink);color:var(--paper);
+    font-family:var(--serif-soft);font-size:.78rem;font-weight:700;
+    padding:9px 16px;border-radius:999px;
+    border:1px solid var(--gold);
+    box-shadow:0 8px 24px rgba(0,0,0,.3);
+    letter-spacing:.03em;
+  }
+
+  /* ---------- reveal animation ---------- */
+  .reveal{opacity:0;transform:translateY(22px);animation:rise .8s cubic-bezier(.2,.7,.2,1) forwards}
+  @keyframes rise{to{opacity:1;transform:none}}
+  .d1{animation-delay:.05s}.d2{animation-delay:.15s}.d3{animation-delay:.25s}.d4{animation-delay:.35s}
+  @media (prefers-reduced-motion:reduce){.reveal{animation:none;opacity:1;transform:none}}
+
+  /* ---------- responsive ---------- */
+  @media(max-width:980px){
+    .hero .wrap{grid-template-columns:1fr;gap:36px}
+    .hero-art{height:320px;order:-1}
+    .value-grid{grid-template-columns:1fr}
+    .shelf{grid-template-columns:repeat(2,1fr)}
+    .voice-grid{grid-template-columns:1fr}
+    .aware .wrap{grid-template-columns:1fr;padding:36px 28px;gap:32px}
+    nav.links{display:none}
+  }
+  @media(max-width:560px){
+    .wrap{padding:0 18px}
+    .shelf{grid-template-columns:1fr}
+    .searchbar{flex-wrap:wrap;border-radius:18px;padding:14px}
+    .search-go{width:100%}
+    .foot-cols{gap:30px}
+    .brand{font-size:1.3rem}
+  }
+</style>
+
+<!-- ============ HEADER ============ -->
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#" aria-label="Fairtoon 홈">
+      <span class="mark" aria-hidden="true"></span>Fair<em>toon</em>
+    </a>
+    <nav class="links" aria-label="주요 메뉴">
+      <a href="#" aria-current="page">홈</a>
+      <a href="#discover">Discover</a>
+      <a href="#voice">작가의 목소리</a>
+      <a href="#articles">Articles</a>
+      <a href="#safe">Stay Safe</a>
+      <a href="#about">About</a>
+    </nav>
+    <div class="nav-right">
+      <button class="icon-btn" aria-label="검색">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+      </button>
+      <div class="lang" role="group" aria-label="언어 선택">
+        <button aria-pressed="true">KO</button>
+        <button aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-copy">
+      <p class="ornament left reveal d1">A Curated Reading Library</p>
+      <h1 class="reveal d1">
+        이 한 편의 웹툰,<br>
+        <span class="mark-red">어디서 합법으로</span><br>
+        볼 수 있을까요?
+      </h1>
+      <p class="lede reveal d2">흩어진 합법 플랫폼을 한 권의 서재처럼 정돈했습니다. 제목만 적어 두면, 정당하게 읽는 길을 찾아 드립니다.</p>
+
+      <form class="searchbar reveal d2" role="search" onsubmit="return false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="search" aria-label="작품명 검색" placeholder="작품명을 입력하세요 — 예: 화산귀환">
+        <button class="search-go" type="submit">찾기</button>
+      </form>
+
+      <div class="chips reveal d3">
+        <span class="label">지금 많이 찾는 작품</span>
+        <button class="chip">화산귀환</button>
+        <button class="chip">전지적 독자 시점</button>
+        <button class="chip">나 혼자만 레벨업</button>
+        <button class="chip">신의 탑</button>
+      </div>
+    </div>
+
+    <div class="hero-art reveal d4" aria-hidden="true">
+      <div class="book b1"><span>합법<br>서재</span></div>
+      <div class="book b2"><span>창작의<br>가치</span></div>
+      <div class="book b3"><span>한곳에 모은 길잡이</span></div>
+      <div class="legal-seal">합법<br>큐레이션</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VALUES ============ -->
+<section class="values" id="about">
+  <div class="wrap">
+    <div class="sec-head center reveal">
+      <p class="eyebrow">왜 Fairtoon 인가</p>
+      <h2>잘 정돈된 서재가 주는 세 가지 약속</h2>
+      <p>복잡한 절차가 아니라, 좋은 큐레이션이 만드는 차이입니다.</p>
+    </div>
+    <div class="value-grid">
+      <article class="value reveal d1">
+        <div class="gl">壹</div>
+        <h3>흩어진 합법 플랫폼을 한곳에</h3>
+        <p>어떤 작품을 어디서 합법으로 볼 수 있는지, 여러 플랫폼을 한 번에 모아 보여 드립니다.</p>
+      </article>
+      <article class="value reveal d2">
+        <div class="gl">貳</div>
+        <h3>무료 · 기다무 · 유료 한눈에</h3>
+        <p>가격과 이용 조건을 나란히 비교해, 가장 합리적인 선택을 손쉽게 고를 수 있습니다.</p>
+      </article>
+      <article class="value reveal d3">
+        <div class="gl">參</div>
+        <h3>정당하게 보면 작가에게 보상이</h3>
+        <p>합법적인 한 번의 열람이 창작자를 지킵니다. 좋아하는 이야기가 계속될 수 있도록.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DISCOVER ============ -->
+<section id="discover">
+  <div class="wrap">
+    <div class="discover-top reveal">
+      <div class="sec-head" style="margin-bottom:0">
+        <p class="eyebrow">이 달의 추천 · 에디터의 선택</p>
+        <h2>합법으로 보는 추천작</h2>
+        <p>Fairtoon 에디터가 골라 서가에 올린 작품들.</p>
+      </div>
+      <a class="ghost-link" href="#">서재 전체 둘러보기 →</a>
+    </div>
+
+    <div class="shelf">
+      <!-- 화산귀환 -->
+      <article class="toon reveal d1">
+        <div class="cover cv1">
+          <span class="price-tag wait">기다무</span>
+          <div class="deco"></div>
+          <span class="cv-title">화산귀환</span>
+        </div>
+        <div class="toon-body">
+          <div class="author">비가 원작 · LICO 그림</div>
+          <div class="genres"><span class="genre">무협</span><span class="genre">액션</span></div>
+          <div class="platforms"><span class="pf naver">네이버웹툰</span><span class="pf kakao">카카오페이지</span></div>
+        </div>
+      </article>
+
+      <!-- 전지적 독자 시점 -->
+      <article class="toon reveal d2">
+        <div class="cover cv2">
+          <span class="price-tag free">무료</span>
+          <div class="deco"></div>
+          <span class="cv-title">전지적<br>독자 시점</span>
+        </div>
+        <div class="toon-body">
+          <div class="author">싱숑 원작 · 슬리피-C 그림</div>
+          <div class="genres"><span class="genre">판타지</span><span class="genre">드라마</span></div>
+          <div class="platforms"><span class="pf naver">네이버웹툰</span></div>
+        </div>
+      </article>
+
+      <!-- 나 혼자만 레벨업 -->
+      <article class="toon reveal d3">
+        <div class="cover cv3">
+          <span class="price-tag paid">유료</span>
+          <div class="deco"></div>
+          <span class="cv-title">나 혼자만<br>레벨업</span>
+        </div>
+        <div class="toon-body">
+          <div class="author">현군 원작 · 장성락(REDICE) 그림</div>
+          <div class="genres"><span class="genre">액션</span><span class="genre">판타지</span></div>
+          <div class="platforms"><span class="pf kakao">카카오페이지</span><span class="pf ridi">리디</span></div>
+        </div>
+      </article>
+
+      <!-- 신의 탑 -->
+      <article class="toon reveal d4">
+        <div class="cover cv4">
+          <span class="price-tag free">무료</span>
+          <div class="deco"></div>
+          <span class="cv-title">신의 탑</span>
+        </div>
+        <div class="toon-body">
+          <div class="author">SIU 글 · 그림</div>
+          <div class="genres"><span class="genre">판타지</span><span class="genre">모험</span></div>
+          <div class="platforms"><span class="pf naver">네이버웹툰</span></div>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CREATOR VOICE ============ -->
+<section class="voice" id="voice">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <p class="eyebrow">Creator's Voice</p>
+      <h2>작가의 목소리</h2>
+      <p>이야기를 짓는 사람들의 말을, 그대로 옮겨 담았습니다.</p>
+    </div>
+
+    <div class="voice-grid">
+      <div class="video-card reveal d1">
+        <button class="play" aria-label="인터뷰 영상 재생">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+        </button>
+        <div class="video-cap">
+          <div class="tag">SHORTS · 인터뷰</div>
+          <p class="quote">“한 회 그리는 데 사흘, 그게 0원이 됩니다.”</p>
+        </div>
+      </div>
+
+      <div class="quote-stack">
+        <figure class="qcard reveal d2">
+          <div class="mark-q" aria-hidden="true">“</div>
+          <blockquote>불법으로 보는 독자도 제 팬이에요. 그래서 더 안타깝습니다.</blockquote>
+          <figcaption class="who">
+            <span class="ava">A</span>
+            <span><b>작가 A</b><span>연재 웹툰 작가</span></span>
+          </figcaption>
+        </figure>
+        <figure class="qcard reveal d3">
+          <div class="mark-q" aria-hidden="true">“</div>
+          <blockquote>정식 연재를 이어가려면, 한 분의 정당한 열람이 정말 큰 힘이 됩니다.</blockquote>
+          <figcaption class="who">
+            <span class="ava">B</span>
+            <span><b>작가 B</b><span>스토리 작가</span></span>
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ AWARENESS HOOK ============ -->
+<section class="aware" id="safe">
+  <div class="wrap reveal">
+    <div>
+      <p class="eyebrow">Stay Safe</p>
+      <h2>불법 사이트, 진짜 <span class="x">‘무료’</span>일까요?</h2>
+      <p>광고비 한 푼 없이 운영되는 곳은 없습니다. 무료처럼 보이는 그 한 편의 대가는, 종종 당신의 기기와 계정으로 청구됩니다.</p>
+      <a class="cta" href="#">Stay Safe 보기
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+    <div class="risk-list">
+      <div class="risk">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 6v6c0 5 3.5 8 8 10 4.5-2 8-5 8-10V6z"/><path d="m9 12 2 2 4-4"/></svg></span>
+        <div><b>악성코드 감염</b><p>자동 다운로드·위장 플레이어로 기기를 위협합니다.</p></div>
+      </div>
+      <div class="risk">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18"/></svg></span>
+        <div><b>결제 사기</b><p>가짜 결제창·소액결제 유도로 금전 피해가 발생합니다.</p></div>
+      </div>
+      <div class="risk">
+        <span class="ic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg></span>
+        <div><b>계정 탈취</b><p>로그인 유도와 피싱으로 개인정보가 새어 나갑니다.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="site" id="articles">
+  <div class="wrap">
+    <div class="foot-top">
+      <div style="max-width:280px">
+        <a class="brand" href="#"><span class="mark" aria-hidden="true"></span>Fair<em style="color:var(--gold)">toon</em></a>
+        <p style="font-family:var(--serif-soft);font-size:.92rem;margin:14px 0 0;color:rgba(243,234,216,.6)">합법으로 읽는 즐거움을 위한, 한국 웹툰 큐레이션 서재.</p>
+      </div>
+      <div class="foot-cols">
+        <div>
+          <h4>둘러보기</h4>
+          <a href="#discover">Discover</a>
+          <a href="#voice">작가의 목소리</a>
+          <a href="#articles">Articles</a>
+        </div>
+        <div>
+          <h4>안전하게</h4>
+          <a href="#safe">Stay Safe</a>
+          <a href="#about">About</a>
+          <a href="#">자주 묻는 질문</a>
+        </div>
+        <div>
+          <h4>문의</h4>
+          <a href="#">제보 · 정정 요청</a>
+          <a href="#">제휴 문의</a>
+          <a href="#">이용약관</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-note">
+      © 2026 Fairtoon · 한국 웹툰 합법 가이드 · 가격·가용성은 최종 확인일 기준 (실시간 아님)
+    </div>
+  </div>
+</footer>
+
+<div class="sian-badge">시안 E · Library · 샘플 데이터</div>
+
+<script>
+  /* chips fill the search box — pure progressive enhancement */
+  (function(){
+    var input = document.querySelector('.searchbar input');
+    document.querySelectorAll('.chip').forEach(function(c){
+      c.addEventListener('click', function(){
+        if(input){ input.value = c.textContent; input.focus(); }
+      });
+    });
+  })();
+</script>
