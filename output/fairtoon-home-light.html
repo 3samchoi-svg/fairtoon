@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fairtoon — 합법으로 보는 한국 웹툰</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ TOKENS ============ */
+/* 밝은 테마 (etc/Fairtoon-Preview_7.html 톤앤매너). 액센트=Blue #2F5FEF.
+   라프텔형 홈 구조는 유지하되, 다크/그린 remap을 밝은/블루로 복원. */
+:root{
+  --bg:#FAFAFA;
+  --surface:#FFFFFF;
+  --surface-2:#F5F7FF;
+  --ink:#10182B;
+  --ink-soft:#454D5C;
+  --gray:#646C76;
+  --gray-light:#9AA0AC;
+  --line:#E7E7E5;
+  --line-soft:#EFEFED;
+  --blue:#2F5FEF;         /* accent blue */
+  --blue-dark:#1C3FC4;    /* accent hover */
+  --blue-soft:#F0F2FF;
+  --blue-softer:#F5F7FF;  /* subtle hover surface */
+  --amber:#FFB020;
+  --amber-soft:#FFF6E5;
+  --red:#E5484D;
+  --red-soft:#FDEDEE;
+  --green:#1CA66B;
+  --radius-s:10px;
+  --radius-m:16px;
+  --radius-l:24px;
+  --radius-pill:999px;
+  --shadow-sm:0 1px 2px rgba(16,24,43,.05);
+  --shadow-md:0 10px 30px rgba(16,24,43,.07);
+  --shadow-lg:0 24px 60px rgba(16,24,43,.12);
+  --font-display:'Archivo Black','Arial Black',sans-serif;
+  --font-body:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --maxw:1240px;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  min-height:100vh;
+}
+img,svg{display:block;}
+a{color:inherit;text-decoration:none;}
+button{font-family:inherit;cursor:pointer;border:none;background:none;}
+.container{max-width:var(--maxw);margin:0 auto;padding:0 28px;}
+.hidden{display:none !important;}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px;border-radius:6px;}
+
+/* ============ HEADER ============ */
+header.site-header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(247,246,242,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.header-inner{
+  max-width:var(--maxw);margin:0 auto;padding:14px 28px;
+  display:flex;align-items:center;gap:16px;
+}
+.brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+.brand-mark{
+  width:38px;height:38px;border-radius:11px;background:var(--blue-soft);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.brand-name{font-family:var(--font-display);font-size:19px;letter-spacing:-.3px;color:var(--ink);white-space:nowrap;}
+nav.main-nav{display:flex;align-items:center;gap:1px;flex-shrink:0;}
+.nav-link{
+  font-family:var(--font-body);font-size:12.5px;font-weight:700;letter-spacing:.6px;
+  padding:11px 15px;border-radius:var(--radius-pill);color:var(--gray);
+  transition:background .15s,color .15s;white-space:nowrap;text-transform:uppercase;
+}
+.nav-link:hover{background:var(--blue-softer);color:var(--ink);}
+.nav-link.active{background:var(--blue);color:#fff;}
+.header-right{display:flex;align-items:center;gap:10px;flex-shrink:0;margin-left:auto;}
+.lang-switch{
+  position:relative;display:inline-flex;align-items:center;
+  background:var(--line-soft);border-radius:var(--radius-pill);padding:3px;
+  border:1px solid var(--line);
+}
+.lang-slider{
+  position:absolute;top:3px;left:3px;height:calc(100% - 6px);width:36px;
+  background:var(--blue);border-radius:var(--radius-pill);
+  transition:left .25s cubic-bezier(.4,0,.2,1);z-index:1;
+  box-shadow:0 4px 10px rgba(47,95,239,.3);
+}
+.lang-opt{
+  position:relative;z-index:2;font-family:var(--font-body);font-size:11.5px;font-weight:800;
+  letter-spacing:.4px;padding:7px 13px;border-radius:var(--radius-pill);color:var(--gray);
+  transition:color .2s;min-width:36px;text-align:center;
+}
+.lang-opt.active{color:#fff;}
+.nav-burger{display:none;width:38px;height:38px;border-radius:10px;align-items:center;justify-content:center;background:var(--surface);border:1px solid var(--line);flex-shrink:0;}
+
+/* ============ BUTTONS ============ */
+.btn{
+  font-family:var(--font-body);font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;
+  padding:14px 28px;border-radius:var(--radius-pill);display:inline-flex;
+  align-items:center;gap:8px;transition:transform .12s,box-shadow .12s,background .12s;
+}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 10px 24px rgba(47,95,239,.35);}
+.btn-primary:hover{background:var(--blue-dark);transform:translateY(-1px);}
+.btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);}
+.btn-ghost:hover{border-color:var(--blue);color:var(--blue);}
+.btn-sm{padding:9px 16px;font-size:12.5px;}
+
+/* ============ VIEWS ============ */
+main{min-height:60vh;}
+.view{padding-bottom:80px;}
+
+/* ---- HOME / HERO ---- */
+.hero{padding:92px 28px 20px;text-align:center;}
+.hero .eyebrow{
+  display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:700;color:var(--blue-dark);
+  background:var(--blue-soft);border-radius:var(--radius-pill);padding:7px 16px;margin-bottom:24px;
+}
+.hero h1{
+  font-family:var(--font-display);font-size:clamp(34px,5.6vw,60px);line-height:1.08;
+  letter-spacing:-1.4px;margin:0 auto;max-width:820px;color:var(--ink);
+}
+.hero h1 .accent{color:var(--blue);}
+.hero p.sub{
+  font-size:17px;color:var(--gray);max-width:560px;margin:22px auto 0;line-height:1.6;
+}
+.hero-search-wrap{max-width:640px;margin:36px auto 0;position:relative;}
+.hero-search{
+  display:flex;align-items:center;gap:10px;background:var(--surface);
+  border:1.5px solid var(--line);border-radius:var(--radius-pill);
+  padding:8px 8px 8px 24px;box-shadow:var(--shadow-md);
+}
+.hero-search:focus-within{border-color:var(--blue);}
+.hero-search svg{flex-shrink:0;color:var(--gray-light);}
+.hero-search input{
+  flex:1;border:none;outline:none;background:none;font-size:16px;
+  font-family:var(--font-body);color:var(--ink);min-width:0;
+}
+.hero-search input::placeholder{color:var(--gray-light);}
+.hero-search button{
+  background:var(--blue);color:#fff;font-family:var(--font-body);font-size:13px;font-weight:800;
+  letter-spacing:.5px;text-transform:uppercase;padding:14px 26px;border-radius:var(--radius-pill);flex-shrink:0;
+  transition:background .15s;
+}
+.hero-search button:hover{background:var(--blue-dark);}
+.trending{display:flex;gap:9px;flex-wrap:wrap;justify-content:center;margin-top:20px;}
+.trending span.label{font-size:13px;color:var(--gray-light);align-self:center;margin-right:2px;}
+.chip{
+  font-size:13.5px;color:var(--ink-soft);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius-pill);padding:7px 15px;
+  transition:border-color .15s,color .15s;
+}
+.chip:hover{border-color:var(--blue);color:var(--blue);}
+
+.section-label-row{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 22px;gap:14px;}
+.section-label{font-family:var(--font-display);font-size:14px;letter-spacing:.3px;color:var(--ink);}
+.section-sub{font-size:14px;color:var(--gray);margin:-14px 0 22px;line-height:1.55;max-width:640px;}
+.section-link{font-size:12.5px;color:var(--blue);font-weight:800;white-space:nowrap;text-transform:uppercase;letter-spacing:.5px;}
+
+.home-row{margin-top:56px;padding-top:46px;border-top:1px solid var(--line);}
+
+/* ---- REVENUE COUNTER ---- */
+.counter-band{
+  margin:44px auto 0;max-width:760px;background:#000;color:#fff;border-radius:var(--radius-l);
+  border:1px solid #232323;
+  padding:32px 34px;text-align:center;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+}
+.counter-band::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 120% at 50% 0%,rgba(47,95,239,.28),transparent 60%);pointer-events:none;}
+.counter-band .cb-eyebrow{position:relative;font-size:13.5px;color:#B9C0D4;font-weight:600;margin-bottom:14px;}
+.counter-value{
+  position:relative;font-family:var(--font-display);font-size:clamp(30px,6vw,50px);letter-spacing:-1px;
+  color:#fff;line-height:1;font-variant-numeric:tabular-nums;
+}
+.counter-value .won{font-size:.55em;color:var(--amber);margin-left:6px;}
+.counter-band .cb-note{position:relative;font-size:12px;color:#8B93A8;margin-top:16px;line-height:1.5;}
+.counter-band .cb-actions{position:relative;margin-top:20px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+.cb-btn{font-size:13px;font-weight:700;padding:10px 18px;border-radius:var(--radius-pill);background:rgba(255,255,255,.12);color:#fff;transition:background .15s;}
+.cb-btn:hover{background:rgba(255,255,255,.22);}
+.cb-btn.solid{background:var(--blue);}
+.cb-btn.solid:hover{background:var(--blue-dark);}
+.cb-detail{position:relative;font-size:11.5px;color:#8B93A8;margin-top:14px;text-align:left;max-width:560px;margin-left:auto;margin-right:auto;line-height:1.6;display:none;}
+.cb-detail.open{display:block;}
+.cb-detail a{color:#B9C0D4;text-decoration:underline;}
+.cb-toggle{position:relative;font-size:11.5px;color:#8B93A8;margin-top:10px;text-decoration:underline;}
+
+/* ---- HOW IT WORKS (value strip) ---- */
+.how-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.how-card{position:relative;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);padding:26px 24px;}
+.how-num{font-family:var(--font-display);font-size:13px;color:var(--blue);background:var(--blue-soft);width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.how-card h3{font-family:var(--font-display);font-size:15.5px;letter-spacing:-.3px;margin:0 0 8px;}
+.how-card p{font-size:14px;color:var(--gray);line-height:1.6;margin:0;}
+
+/* ---- AWARENESS HUB ---- */
+.hub-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
+.hub-card{
+  display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--radius-l);padding:26px 24px;cursor:pointer;transition:transform .15s,box-shadow .15s,border-color .15s;
+}
+.hub-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--gray-light);}
+.hub-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;}
+.hub-card h3{font-family:var(--font-display);font-size:16px;letter-spacing:-.3px;margin:0 0 8px;}
+.hub-card p{font-size:14px;color:var(--gray);line-height:1.55;margin:0 0 16px;flex:1;}
+.hub-cta{font-size:13px;font-weight:800;color:var(--blue);}
+
+/* ---- QUIZ BANNER ---- */
+.quiz-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  background:linear-gradient(120deg,#2F5FEF,#7C3AED);border-radius:var(--radius-l);
+  padding:34px 36px;color:#fff;box-shadow:var(--shadow-lg);
+}
+.quiz-banner .qb-text h3{font-family:var(--font-display);font-size:22px;letter-spacing:-.4px;margin:0 0 8px;}
+.quiz-banner .qb-text p{font-size:14.5px;margin:0;color:rgba(255,255,255,.85);line-height:1.55;max-width:520px;}
+.quiz-banner .btn-primary{background:#fff;color:var(--blue-dark);box-shadow:none;}
+.quiz-banner .btn-primary:hover{background:#F0F2FF;}
+
+/* ---- CARDS (curation) ---- */
+.toon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px;}
+.toon-card{
+  background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);
+  overflow:hidden;transition:transform .15s,box-shadow .15s;display:flex;flex-direction:column;
+}
+.toon-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);}
+.toon-cover{
+  aspect-ratio:3/4;width:100%;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;padding:16px;
+}
+.toon-cover .ti{
+  font-family:var(--font-display);color:#fff;font-size:20px;letter-spacing:-.3px;
+  text-align:center;line-height:1.2;text-shadow:0 1px 8px rgba(0,0,0,.22);
+}
+.toon-cover .status-badge{
+  position:absolute;top:10px;left:10px;background:rgba(255,255,255,.92);
+  border-radius:var(--radius-pill);padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);
+}
+.toon-body{padding:16px 16px 18px;display:flex;flex-direction:column;gap:9px;flex:1;}
+.toon-title{font-family:var(--font-display);font-size:15px;letter-spacing:-.2px;line-height:1.25;}
+.toon-author{font-size:12.5px;color:var(--gray);}
+.toon-blurb{font-size:12.5px;color:var(--ink-soft);line-height:1.5;}
+.toon-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.tag{font-size:11px;background:var(--blue-softer);color:var(--blue-dark);border-radius:var(--radius-pill);padding:3px 9px;font-weight:600;}
+.toon-foot{margin-top:auto;padding-top:10px;}
+.legal-link{
+  display:flex;align-items:center;justify-content:center;gap:7px;width:100%;
+  font-size:12.5px;font-weight:800;background:var(--blue-soft);color:var(--blue);
+  padding:11px 14px;border-radius:var(--radius-pill);transition:background .15s,color .15s;
+}
+.legal-link:hover{background:var(--blue);color:#fff;}
+
+/* ---- SEARCH PASSTHROUGH ---- */
+.pass-header{padding:40px 0 10px;}
+.pass-header h2{font-family:var(--font-display);font-size:26px;letter-spacing:-.5px;margin:0 0 8px;}
+.pass-header h2 .q{color:var(--blue);}
+.pass-header p{font-size:15px;color:var(--gray);margin:0;line-height:1.55;}
+.pass-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;margin:28px 0 8px;}
+.pass-card{
+  display:flex;align-items:center;gap:16px;background:var(--surface);border:1px solid var(--line-soft);
+  border-radius:var(--radius-l);padding:18px 20px;transition:box-shadow .15s,border-color .15s,transform .15s;
+}
+.pass-card:hover{box-shadow:var(--shadow-md);border-color:var(--gray-light);transform:translateY(-2px);}
+.pass-logo{
+  width:48px;height:48px;border-radius:13px;flex-shrink:0;color:#fff;font-family:var(--font-display);
+  display:flex;align-items:center;justify-content:center;font-size:17px;
+}
+.pass-meta{min-width:0;flex:1;}
+.pass-name{font-family:var(--font-display);font-size:15px;letter-spacing:-.2px;margin-bottom:3px;}
+.pass-price{font-size:12px;color:var(--gray);line-height:1.4;}
+.pass-go{
+  flex-shrink:0;font-size:12.5px;font-weight:800;color:var(--blue);background:var(--blue-softer);
+  padding:11px 16px;border-radius:var(--radius-pill);white-space:nowrap;transition:background .15s,color .15s;
+}
+.pass-card:hover .pass-go{background:var(--blue);color:#fff;}
+.pass-note{
+  background:var(--amber-soft);border:1px solid #F3E2B4;border-radius:var(--radius-m);
+  padding:14px 18px;font-size:13px;color:#8A6410;line-height:1.55;margin-top:10px;
+}
+.pass-awareness{
+  margin-top:22px;background:var(--blue-softer);border-left:3px solid var(--blue);
+  border-radius:0 var(--radius-m) var(--radius-m) 0;padding:16px 20px;font-size:14px;
+  color:var(--blue-dark);line-height:1.6;
+}
+.pass-awareness a{font-weight:800;text-decoration:underline;}
+.pass-empty{padding:60px 0;text-align:center;color:var(--gray);}
+
+/* ---- PAGE HEADER (generic) ---- */
+.page-header{padding:44px 0 26px;}
+.page-header h1{font-family:var(--font-display);font-size:30px;letter-spacing:-.6px;margin:0 0 10px;}
+.page-header p{font-size:15.5px;color:var(--gray);line-height:1.6;margin:0;max-width:680px;}
+
+/* ---- ARTICLES ---- */
+.article-list-lg{display:flex;flex-direction:column;gap:20px;}
+.article-card-lg{
+  display:flex;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);
+  overflow:hidden;cursor:pointer;transition:box-shadow .15s,border-color .15s;
+}
+.article-card-lg:hover{box-shadow:var(--shadow-md);border-color:var(--gray-light);}
+.ac-visual{width:120px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);color:#fff;font-size:30px;}
+.ac-body{padding:26px 30px;display:flex;flex-direction:column;gap:9px;flex:1;min-width:0;}
+.ac-cat{font-size:11.5px;font-weight:800;letter-spacing:.2px;}
+.ac-title{font-family:var(--font-display);font-size:18.5px;letter-spacing:-.3px;line-height:1.35;margin:0;}
+.ac-excerpt{font-size:14px;color:var(--gray);line-height:1.6;margin:0;max-width:640px;}
+.ac-foot{display:flex;align-items:center;gap:14px;margin-top:auto;padding-top:6px;}
+.ac-time{font-size:12.5px;color:var(--gray-light);}
+.ac-cta{font-size:13px;font-weight:800;color:var(--blue);}
+.ac-cta.soon{color:var(--gray-light);}
+.article-reader{max-width:680px;margin:0 auto;}
+.article-reader .a-cat{font-size:12px;font-weight:800;color:var(--blue);margin-bottom:12px;}
+.article-reader h1{font-family:var(--font-display);font-size:30px;letter-spacing:-.6px;line-height:1.25;margin:0 0 14px;}
+.article-reader .a-concept{font-size:13.5px;color:var(--gray);margin-bottom:6px;}
+.article-reader .a-meta{font-size:13px;color:var(--gray-light);margin-bottom:28px;}
+.article-reader .a-body p{font-size:16px;line-height:1.8;color:var(--ink-soft);margin:0 0 18px;}
+.article-reader .a-body h3{font-family:var(--font-display);font-size:17px;letter-spacing:-.2px;margin:32px 0 12px;}
+.sample-note{font-size:12.5px;color:var(--gray-light);font-style:italic;border-left:2px solid var(--line);padding-left:12px;margin-bottom:22px;}
+.source-box{margin-top:36px;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:18px 22px;}
+.source-box h4{font-family:var(--font-display);font-size:12px;color:var(--gray-light);letter-spacing:.3px;margin:0 0 10px;}
+.source-box ul{margin:0;padding-left:16px;font-size:12.5px;color:var(--gray);line-height:1.8;}
+
+/* ---- CREATOR VOICES ---- */
+.voice-hero{display:flex;gap:30px;flex-wrap:wrap;align-items:center;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);padding:30px;margin-bottom:36px;}
+.voice-video{flex:1;min-width:280px;aspect-ratio:16/9;border-radius:var(--radius-m);background:linear-gradient(135deg,#202229,#2F5FEF);display:flex;align-items:center;justify-content:center;color:#fff;position:relative;}
+.voice-video .play{width:64px;height:64px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+.voice-video .vlabel{position:absolute;bottom:14px;left:16px;font-size:12px;color:rgba(255,255,255,.8);}
+.voice-hero-text{flex:1;min-width:260px;}
+.voice-hero-text .vquote{font-family:var(--font-display);font-size:20px;letter-spacing:-.3px;line-height:1.4;margin:0 0 14px;}
+.voice-hero-text .vby{font-size:14px;color:var(--gray);}
+.shorts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
+.short-card{aspect-ratio:9/16;border-radius:var(--radius-l);overflow:hidden;position:relative;display:flex;align-items:flex-end;cursor:pointer;transition:transform .15s;}
+.short-card:hover{transform:translateY(-3px);}
+.short-card .sc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),transparent 55%);}
+.short-card .sc-text{position:relative;padding:16px;color:#fff;font-size:13px;font-weight:700;line-height:1.4;}
+.short-card .sc-play{position:absolute;top:12px;right:12px;width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;}
+
+/* ---- STAY SAFE ---- */
+.device-tabs{display:flex;gap:8px;margin:28px 0 26px;flex-wrap:wrap;}
+.device-tab{font-size:13.5px;font-weight:600;color:var(--ink-soft);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-pill);padding:9px 18px;}
+.device-tab.active{background:var(--blue);color:#fff;border-color:var(--blue);}
+.threat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:44px;}
+.threat-card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);padding:24px;}
+.threat-card .tc-icon{width:42px;height:42px;border-radius:12px;background:var(--red-soft);display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:20px;}
+.threat-card h3{font-family:var(--font-display);font-size:14.5px;margin:0 0 8px;letter-spacing:-.2px;}
+.threat-card p{font-size:13.5px;color:var(--gray);line-height:1.6;margin:0;}
+.checklist{display:flex;flex-direction:column;border:1px solid var(--line-soft);border-radius:var(--radius-l);overflow:hidden;background:var(--surface);margin-bottom:44px;}
+.check-item{display:flex;align-items:center;gap:14px;padding:16px 20px;border-bottom:1px solid var(--line-soft);}
+.check-item:last-child{border-bottom:none;}
+.check-box{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:background .12s,border-color .12s;}
+.check-box.checked{background:var(--blue);border-color:var(--blue);}
+.check-text{font-size:14.5px;color:var(--ink-soft);}
+.check-text.checked{color:var(--gray-light);text-decoration:line-through;}
+.remediation-steps{display:flex;flex-direction:column;gap:14px;}
+.step-row{display:flex;gap:16px;}
+.step-num{font-family:var(--font-display);font-size:14px;width:32px;height:32px;border-radius:50%;background:var(--blue-soft);color:var(--blue-dark);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.step-text{font-size:14.5px;color:var(--ink-soft);line-height:1.6;padding-top:5px;}
+
+/* ---- ABOUT ---- */
+.about-wrap{max-width:680px;margin:0 auto;}
+.about-hero{padding:44px 0 10px;}
+.about-hero h1{font-family:var(--font-display);font-size:34px;letter-spacing:-.6px;margin:0 0 18px;}
+.about-hero p{font-size:16px;line-height:1.75;color:var(--ink-soft);margin:0 0 16px;}
+.about-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:40px 0;}
+.about-stat{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-m);padding:20px;text-align:center;}
+.about-stat .num{font-family:var(--font-display);font-size:24px;color:var(--blue);letter-spacing:-.5px;}
+.about-stat .lbl{font-size:12px;color:var(--gray);margin-top:4px;line-height:1.4;}
+.faq-item{border-bottom:1px solid var(--line-soft);padding:18px 0;}
+.faq-item h3{font-family:var(--font-display);font-size:15px;margin:0 0 8px;letter-spacing:-.2px;}
+.faq-item p{font-size:14.5px;color:var(--gray);line-height:1.65;margin:0;}
+
+/* ---- QUIZ VIEW ---- */
+.quiz-wrap{max-width:600px;margin:0 auto;padding-top:40px;}
+.quiz-progress{height:6px;background:var(--line-soft);border-radius:var(--radius-pill);margin-bottom:32px;overflow:hidden;}
+.quiz-progress .bar{height:100%;background:var(--blue);border-radius:var(--radius-pill);transition:width .3s;}
+.quiz-q{font-family:var(--font-display);font-size:24px;letter-spacing:-.5px;line-height:1.3;margin:0 0 26px;text-align:center;}
+.quiz-opts{display:flex;flex-direction:column;gap:12px;}
+.quiz-opt{
+  background:var(--surface);border:1.5px solid var(--line);border-radius:var(--radius-m);
+  padding:18px 22px;font-size:15.5px;font-weight:600;color:var(--ink-soft);text-align:left;
+  transition:border-color .15s,background .15s,transform .1s;
+}
+.quiz-opt:hover{border-color:var(--blue);background:var(--blue-softer);transform:translateX(3px);}
+.quiz-result{text-align:center;max-width:560px;margin:0 auto;padding-top:36px;}
+.quiz-result .qr-emoji{font-size:56px;margin-bottom:16px;}
+.quiz-result h2{font-family:var(--font-display);font-size:28px;letter-spacing:-.5px;margin:0 0 6px;}
+.quiz-result .qr-type{color:var(--blue);}
+.quiz-result p{font-size:15.5px;color:var(--gray);line-height:1.65;margin:0 0 24px;}
+.quiz-result .qr-genres{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:28px;}
+.quiz-result .qr-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+
+/* ---- TOAST ---- */
+.toast{
+  position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:#2a2a2a;color:#fff;padding:14px 24px;border-radius:var(--radius-pill);border:1px solid #3a3a3a;
+  font-size:13.5px;font-weight:600;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;
+  transition:opacity .25s,transform .25s;z-index:1000;display:flex;align-items:center;gap:8px;max-width:90vw;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ---- FOOTER ---- */
+footer{border-top:1px solid var(--line);margin-top:60px;}
+.footer-inner{max-width:var(--maxw);margin:0 auto;padding:48px 28px 36px;}
+.footer-top{display:flex;justify-content:space-between;flex-wrap:wrap;gap:36px;margin-bottom:32px;}
+.footer-brand .brand{margin-bottom:10px;}
+.footer-brand p{font-size:13.5px;color:var(--gray);max-width:300px;line-height:1.6;}
+.footer-cols{display:flex;gap:48px;flex-wrap:wrap;}
+.footer-col h4{font-family:var(--font-display);font-size:11.5px;letter-spacing:.3px;color:var(--gray-light);margin:0 0 14px;}
+.footer-col a{display:block;font-size:13.5px;color:var(--ink-soft);margin-bottom:10px;}
+.footer-col a:hover{color:var(--blue);}
+.footer-bottom{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;padding-top:24px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--gray-light);}
+
+/* ---- SPOTLIGHT HERO (Laftel형 · 다크 이머시브) ---- */
+.spotlight{position:relative;overflow:hidden;border-bottom:1px solid var(--line);}
+.spotlight::before{content:"";position:absolute;inset:0;background:
+  radial-gradient(80% 120% at 15% 0%,rgba(47,95,239,.10),transparent 55%),
+  radial-gradient(70% 120% at 90% 10%,rgba(124,58,237,.08),transparent 55%);pointer-events:none;}
+.spotlight-inner{position:relative;max-width:var(--maxw);margin:0 auto;padding:76px 28px 54px;}
+.spotlight .eyebrow{
+  display:inline-flex;align-items:center;gap:7px;font-size:12.5px;font-weight:700;color:var(--blue);
+  background:var(--blue-soft);border-radius:var(--radius-pill);padding:7px 15px;margin-bottom:22px;letter-spacing:.2px;
+}
+.spotlight h1{
+  font-family:var(--font-display);font-size:clamp(36px,6vw,68px);line-height:1.03;
+  letter-spacing:-1.6px;margin:0;max-width:860px;color:var(--ink);
+}
+.spotlight h1 .accent{color:var(--blue);}
+.spotlight p.sub{font-size:17px;color:var(--gray);max-width:560px;margin:20px 0 0;line-height:1.6;}
+.spotlight-search{max-width:600px;margin:32px 0 0;}
+.spotlight-search .hero-search{background:var(--surface);border:1.5px solid var(--line);box-shadow:var(--shadow-md);}
+.spotlight-search .hero-search input{color:var(--ink);}
+.spotlight-search .hero-search:focus-within{border-color:var(--blue);}
+.trending .label{color:var(--gray-light);}
+
+/* ---- GENRE RAIL (태그 디스커버리) ---- */
+.genre-rail{display:flex;gap:10px;overflow-x:auto;padding:4px 0 6px;-ms-overflow-style:none;scrollbar-width:none;}
+.genre-rail::-webkit-scrollbar{display:none;}
+.genre-pill{
+  flex:0 0 auto;font-size:13.5px;font-weight:700;color:var(--ink-soft);background:var(--surface-2);
+  border-radius:var(--radius-pill);padding:10px 18px;transition:background .15s,color .15s,transform .1s;
+}
+.genre-pill:hover{background:var(--blue);color:#fff;transform:translateY(-1px);}
+
+/* ---- SHELF (가로 스크롤 행) ---- */
+.shelf{margin-top:44px;}
+.shelf-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 16px;gap:14px;}
+.shelf-head h2{font-family:var(--font-display);font-size:20px;letter-spacing:-.4px;margin:0;color:var(--ink);display:flex;align-items:center;gap:9px;}
+.shelf-head .more{font-size:12.5px;font-weight:700;color:var(--gray);white-space:nowrap;letter-spacing:.2px;}
+.shelf-head .more:hover{color:var(--blue);}
+.shelf-track{display:flex;gap:16px;overflow-x:auto;padding:2px 0 14px;scroll-snap-type:x proximity;-ms-overflow-style:none;scrollbar-width:none;}
+.shelf-track::-webkit-scrollbar{display:none;}
+.hcard{flex:0 0 176px;width:176px;scroll-snap-align:start;cursor:pointer;transition:transform .15s;}
+.hcard:hover{transform:translateY(-4px);}
+.hcard .hc-cover{aspect-ratio:3/4;border-radius:var(--radius-m);display:flex;align-items:center;justify-content:center;padding:14px;position:relative;overflow:hidden;box-shadow:var(--shadow-md);}
+.hcard .hc-cover .ti{font-family:var(--font-display);color:#fff;font-size:18px;letter-spacing:-.3px;text-align:center;line-height:1.2;text-shadow:0 1px 8px rgba(0,0,0,.3);}
+.hcard .hc-badge{position:absolute;top:9px;left:9px;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);color:var(--blue);border-radius:var(--radius-pill);padding:3px 9px;font-size:10.5px;font-weight:700;}
+.hcard .hc-play{position:absolute;right:10px;bottom:10px;width:40px;height:40px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(6px);transition:opacity .15s,transform .15s;box-shadow:0 6px 16px rgba(0,0,0,.4);}
+.hcard:hover .hc-play{opacity:1;transform:translateY(0);}
+.hcard .hc-title{font-family:var(--font-body);font-size:14px;font-weight:700;color:var(--ink);margin:11px 0 3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hcard .hc-sub{font-size:12px;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* ranking shelf */
+.rank-card{flex:0 0 auto;display:flex;align-items:flex-end;gap:2px;scroll-snap-align:start;cursor:pointer;}
+.rank-card .rk-num{font-family:var(--font-display);font-size:74px;line-height:.8;color:#DDE3F0;letter-spacing:-4px;transition:color .15s;}
+.rank-card:hover .rk-num{color:var(--blue);}
+.rank-card .hcard{flex:0 0 148px;width:148px;}
+/* article card (dark, horizontal) */
+.acard{flex:0 0 300px;width:300px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);overflow:hidden;cursor:pointer;transition:background .15s,transform .15s;}
+.acard:hover{background:var(--surface-2);transform:translateY(-3px);}
+.acard .ac-top{height:96px;display:flex;align-items:center;justify-content:center;font-family:var(--font-display);color:#fff;font-size:30px;}
+.acard .ac-in{padding:18px 20px 20px;}
+.acard .ac-k{font-size:11px;font-weight:800;margin-bottom:8px;}
+.acard .ac-h{font-family:var(--font-display);font-size:15.5px;letter-spacing:-.2px;line-height:1.35;margin:0 0 8px;color:var(--ink);}
+.acard .ac-x{font-size:12.5px;color:var(--gray);line-height:1.55;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+/* voice short in shelf */
+.vshort{flex:0 0 150px;width:150px;aspect-ratio:9/16;border-radius:var(--radius-m);overflow:hidden;position:relative;display:flex;align-items:flex-end;cursor:pointer;scroll-snap-align:start;transition:transform .15s;box-shadow:var(--shadow-md);}
+.vshort:hover{transform:translateY(-4px);}
+.vshort .vs-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),transparent 60%);}
+.vshort .vs-t{position:relative;padding:13px;color:#fff;font-size:12px;font-weight:700;line-height:1.4;}
+
+/* ---- VIEW TRANSITION ---- */
+@keyframes viewIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.view-anim{animation:viewIn .26s cubic-bezier(.22,.61,.36,1);}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width:920px){
+  .how-strip,.hub-grid,.threat-grid{grid-template-columns:1fr;}
+  nav.main-nav{display:none;}
+  .nav-burger{display:flex;}
+}
+@media (max-width:600px){
+  .hero{padding:64px 20px 16px;}
+  .article-card-lg{flex-direction:column;}
+  .ac-visual{width:100%;height:90px;}
+  .quiz-banner{padding:26px 24px;}
+  .about-stats{grid-template-columns:1fr;}
+}
+.mobile-nav{display:none;flex-direction:column;gap:4px;padding:12px 28px 18px;border-bottom:1px solid var(--line);}
+.mobile-nav.open{display:flex;}
+.mobile-nav .nav-link{width:100%;text-align:left;}
+</style>
+</head>
+<body>
+
+<!-- ============ HEADER ============ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#" class="brand" onclick="showView('home');return false;">
+      <span class="brand-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/></svg>
+      </span>
+      <span class="brand-name">FAIRTOON</span>
+    </a>
+    <nav class="main-nav" id="mainNav">
+      <a href="#" class="nav-link active" data-view="home" data-i18n="nav_home">홈</a>
+      <a href="#" class="nav-link" data-view="discover" data-i18n="nav_discover">명작 큐레이션</a>
+      <a href="#" class="nav-link" data-view="voices" data-i18n="nav_voices">작가의 목소리</a>
+      <a href="#" class="nav-link" data-view="articles" data-i18n="nav_articles">아티클</a>
+      <a href="#" class="nav-link" data-view="staysafe" data-i18n="nav_staysafe">안전 수칙</a>
+      <a href="#" class="nav-link" data-view="about" data-i18n="nav_about">소개</a>
+    </nav>
+    <div class="header-right">
+      <div class="lang-switch" id="langSwitch">
+        <span class="lang-slider" id="langSlider"></span>
+        <button type="button" class="lang-opt" data-lang="en" onclick="setLang('en')">EN</button>
+        <button type="button" class="lang-opt active" data-lang="ko" onclick="setLang('ko')">KR</button>
+      </div>
+      <button class="nav-burger" onclick="document.getElementById('mobileNav').classList.toggle('open')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#" class="nav-link" data-view="home" data-i18n="nav_home">홈</a>
+    <a href="#" class="nav-link" data-view="discover" data-i18n="nav_discover">명작 큐레이션</a>
+    <a href="#" class="nav-link" data-view="voices" data-i18n="nav_voices">작가의 목소리</a>
+    <a href="#" class="nav-link" data-view="articles" data-i18n="nav_articles">아티클</a>
+    <a href="#" class="nav-link" data-view="staysafe" data-i18n="nav_staysafe">안전 수칙</a>
+    <a href="#" class="nav-link" data-view="about" data-i18n="nav_about">소개</a>
+  </div>
+</header>
+
+<main id="mainContent"></main>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="brand">
+          <span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
+          <span class="brand-name">FAIRTOON</span>
+        </div>
+        <p id="footerTagline">한국 웹툰을 합법으로 보는 가장 쉬운 길. 왜 합법이어야 하는지부터, 지금 어디서 볼 수 있는지까지.</p>
+      </div>
+      <div class="footer-cols">
+        <div class="footer-col">
+          <h4>SITE</h4>
+          <a href="#" data-view="home" data-i18n="nav_home">홈</a>
+          <a href="#" data-view="discover" data-i18n="nav_discover">명작 큐레이션</a>
+          <a href="#" data-view="articles" data-i18n="nav_articles">아티클</a>
+          <a href="#" data-view="staysafe" data-i18n="nav_staysafe">안전 수칙</a>
+        </div>
+        <div class="footer-col">
+          <h4>LANGUAGE</h4>
+          <a href="#" onclick="setLang('ko');return false;">한국어</a>
+          <a href="#" onclick="setLang('en');return false;">English</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Fairtoon. 비영리 독립 프로젝트.</span>
+      <span id="footerNote">프리뷰 빌드 — 표시된 수치·목록은 기획 확인용 샘플이며 실시간 데이터가 아닙니다.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ======================================================
+   FAIRTOON v2 PREVIEW — 인식 허브 + 검색 패스스루 + 명작 큐레이션
+   기획서: docs/plan.md v2 / docs/경제학콘텐츠_기획.md
+   * 이 빌드는 디자인·구조 프리뷰입니다. 플랫폼 검색 URL 패턴은
+     실측 검증(스파이크) 전 잠정값이며, 하단 PLATFORMS 상수에서 일괄 관리합니다.
+====================================================== */
+
+/* ---------------- PLATFORMS (검색 패스스루 · URL 패턴만 관리) ---------------- */
+/* 주의: search 패턴은 실측 검증 전 잠정값. 깨질 경우 이 상수만 수정. */
+var PLATFORMS = [
+ {key:"naver",       name:"네이버웹툰",   color:"#00DC64", initial:"N",  search:"https://comic.naver.com/search?keyword={q}",     price:{ko:"기본 무료 + 미리보기 유료(쿠키). 완결작 다수 무료.", en:"Mostly free + paid preview. Many completed titles free."}},
+ {key:"kakaopage",   name:"카카오페이지", color:"#FFB900", initial:"K",  search:"https://page.kakao.com/search?keyword={q}",       price:{ko:"기다리면 무료 + 캐시 결제.", en:"Wait-for-free + paid cash."}},
+ {key:"kakaowebtoon",name:"카카오웹툰",   color:"#111214", initial:"KW", search:"https://webtoon.kakao.com/search?keyword={q}",    price:{ko:"기다리면 무료 + 캐시 결제.", en:"Wait-for-free + paid cash."}},
+ {key:"ridi",        name:"리디",         color:"#1F8CE6", initial:"R",  search:"https://ridibooks.com/search?q={q}",             price:{ko:"화별·단권 구매, 대여.", en:"Per-episode / per-volume purchase."}},
+ {key:"lezhin",      name:"레진코믹스",   color:"#111214", initial:"L",  search:"https://www.lezhin.com/ko/search?q={q}",         price:{ko:"코인 결제. 성인·독점작 다수.", en:"Coin-based. Many exclusives."}}
+];
+function platOf(key){ return PLATFORMS.find(function(p){return p.key===key;}) || PLATFORMS[0]; }
+function platLogo(p,size){
+  size=size||44;
+  return '<span class="pass-logo" style="background:'+p.color+';width:'+size+'px;height:'+size+'px;font-size:'+Math.round(size*0.36)+'px;">'+p.initial+'</span>';
+}
+
+/* ---------------- 명작 큐레이션 (완결작 · 정적) ---------------- */
+/* 프리뷰 시드. legal(플랫폼 key) = 대표 합법 플랫폼(딥링크 확인 전 검색 URL로 연결). */
+var COVERS=[["#FF7A59","#FF3D81"],["#2F5BFF","#7C3AED"],["#00C853","#00A0E3"],["#FFB020","#FF5630"],["#7C3AED","#2F5BFF"],["#0EA5A5","#2F5BFF"],["#E5484D","#FFB020"],["#202229","#2F5BFF"],["#FF3D81","#7C3AED"],["#00A0E3","#00C853"],["#FF5630","#E5484D"],["#2F5BFF","#0EA5A5"]];
+function coverStyle(i){var c=COVERS[i%COVERS.length];return "background:linear-gradient(145deg,"+c[0]+","+c[1]+");";}
+var CURATED = [
+ {title:"미생",       author:"윤태호", genres:["드라마","직장"],   blurb:"바둑밖에 모르던 청년의 회사 생존기. 웹툰의 격을 끌어올린 대표작.", legal:"naver"},
+ {title:"신과함께",   author:"주호민", genres:["판타지","드라마"], blurb:"저승 재판으로 삶과 죽음, 제도와 인간을 다시 보게 하는 대서사.", legal:"naver"},
+ {title:"이끼",       author:"윤태호", genres:["스릴러","미스터리"], blurb:"작은 마을에 스민 거대한 위선. 손에 땀을 쥐게 하는 완결 스릴러.", legal:"naver"},
+ {title:"치즈인더트랩",author:"순끼",   genres:["로맨스","드라마"], blurb:"평범한 대학생과 완벽해 보이는 선배. 심리 묘사의 정석.", legal:"naver"},
+ {title:"유미의 세포들",author:"이동건", genres:["로맨스","코미디"], blurb:"머릿속 세포들이 그리는 한 사람의 연애와 성장. 완결의 여운.", legal:"naver"},
+ {title:"조명가게",   author:"강풀",   genres:["미스터리","드라마"], blurb:"골목 조명가게에 얽힌 사람들. 강풀 미스터리의 정점.", legal:"kakaowebtoon"},
+ {title:"노블레스",   author:"손제호·이광수", genres:["액션","판타지"], blurb:"820년을 잠든 귀족의 현대 부활기. 초창기 액션 웹툰의 완결작.", legal:"naver"},
+ {title:"목욕의 신",  author:"하일권", genres:["코미디","드라마"], blurb:"목욕탕을 무대로 한 뜨끈한 성장 코미디. 하일권 유머의 진수.", legal:"naver"},
+ {title:"마음의 소리",author:"조석",   genres:["개그","일상"],     blurb:"천만 독자를 웃긴 국민 개그 웹툰. 완결까지 1000화가 넘는 여정.", legal:"naver"},
+ {title:"데드데이즈", author:"DEY",    genres:["스릴러","좀비"],   blurb:"하루아침에 무너진 도시에서의 생존극. 몰입도 높은 완결 스릴러.", legal:"naver"},
+ {title:"트레이스",   author:"고영훈", genres:["액션","SF"],       blurb:"초능력자들이 뒤섞인 세계의 히어로물. 스케일 큰 완결 액션.", legal:"kakaowebtoon"},
+ {title:"여신강림",   author:"야옹이", genres:["로맨스","코미디"], blurb:"화장으로 감춘 얼굴과 진짜 나. 세대를 사로잡은 완결 로맨스.", legal:"naver"}
+];
+
+/* ---------------- 경제학 렌즈 아티클 (6편 시리즈) ---------------- */
+var ART_CAT_COLORS={"가격차별":"#2F5FEF","공공재":"#1CA66B","수익배분":"#0EA5A5","시장실패":"#E5484D","행동경제":"#7C5CFA","데이터":"#3A3E4A"};
+var ARTICLES = [
+{id:1,cat:"가격차별",concept:"시점 간 가격차별 · 지불의사",title:"기다리면 무료는 사실 ‘가격차별’이다",
+ excerpt:"‘기다무’는 급한 독자는 돈으로, 안 급한 독자는 시간으로 값을 치르게 한다. 경제학 교과서의 가격차별을 한국 웹툰이 대중화한 방식.",
+ readTime:"6분",full:true,
+ body:[
+ "웹툰을 보다 보면 익숙한 문장을 만난다. “지금 결제하고 바로 보기” 또는 “24시간 기다리면 무료.” 같은 화(話)를 두고, 어떤 사람은 돈을 내고 지금 보고, 어떤 사람은 하루를 기다려 공짜로 본다. 아무렇지 않아 보이는 이 장치가 사실 경제학 교과서에 나오는 ‘가격차별(price discrimination)’의 교과서적 사례다.",
+ "가격차별은 같은 상품을 사람마다 다른 가격에 파는 전략이다. 핵심은 ‘지불의사’가 사람마다 다르다는 것. 다음 화가 너무 궁금해 참을 수 없는 독자는 그 조바심에 값을 매길 의사가 있고, 느긋한 독자는 그렇지 않다. 플랫폼은 이 둘을 한 가격으로 묶는 대신, 급한 사람에게는 ‘돈’이라는 가격을, 느긋한 사람에게는 ‘기다림’이라는 가격을 매긴다.",
+ "여기서 ‘기다림’도 엄연한 비용이라는 점이 중요하다. 24시간을 기다린다는 건 그 시간 동안 다른 걸 못 한다는 뜻이고, 무엇보다 ‘지금 바로 보고 싶다’는 욕구를 참는 대가다. 경제학은 이를 시간의 기회비용이라 부른다. 즉 기다무는 겉보기엔 ‘무료’지만, 시간이라는 화폐로 값을 치르는 유료 모델에 가깝다.",
+ "카카오페이지가 2014년 ‘기다리면 무료’를 도입한 뒤 이 모델은 한국 웹툰의 표준이 됐다. 흥미로운 건, 이 설계가 불법 유통과 정면으로 부딪힌다는 점이다. 불법 사이트는 ‘돈도 시간도 안 든다’고 유혹한다. 하지만 그 ‘공짜’의 진짜 가격은 창작 생태계의 붕괴(→ 4편)와 당신 기기의 위험(→ 안전 수칙)으로 청구된다. 어떤 가격을 치를지는 결국 선택의 문제다.",
+ "정리하면, 기다무는 ‘착한 무료’가 아니라 정교한 가격 설계다. 그리고 이 설계가 작동한다는 건, 사람들이 콘텐츠에 값을 치를 의사가 분명히 있다는 증거이기도 하다. 문제는 그 값이 창작자에게 가느냐, 아니면 불법 사이트의 광고 수익으로 새느냐다."
+ ]},
+{id:2,cat:"공공재",concept:"공공재 · 무임승차 · 공유지의 비극",title:"공짜 웹툰의 역설 — 무임승차와 공유지의 비극",
+ excerpt:"웹툰은 한 번 만들면 복제 비용이 0에 가깝다. 그래서 무임승차 유인이 크고, 모두가 그러면 볼 작품 자체가 사라진다.",
+ readTime:"7분",full:true,
+ body:[
+ "경제학에는 ‘공공재’라는 개념이 있다. 한 사람이 더 쓴다고 남이 못 쓰게 되지 않고(비경합성), 돈 안 낸 사람을 막기도 어려운(비배제성) 재화다. 디지털 콘텐츠인 웹툰은 순수 공공재는 아니지만, 그 성질을 상당히 닮았다. 이미 그려진 한 화를 한 명이 더 본다고 해서 추가 제작비가 드는 것도 아니고, 파일 하나가 퍼지면 막기가 대단히 어렵다.",
+ "이런 재화에는 필연적으로 ‘무임승차’ 유인이 생긴다. 남들이 정당하게 값을 치러 창작 생태계가 유지되는 한, 나 하나쯤 공짜로 봐도 티가 안 난다고 느끼기 쉽다. 개인의 계산으로는 합리적이다. 문제는 모두가 똑같이 생각할 때 벌어진다.",
+ "이것이 ‘공유지의 비극’이다. 마을 공유 목초지에 저마다 소를 풀어놓으면, 각자에겐 이득이지만 결국 풀밭은 황폐해진다. 웹툰도 같다. 모두가 무임승차하면 창작자에게 돌아갈 수익이 사라지고, 수익이 없으면 창작할 이유가 사라진다. 그 끝은 ‘볼 만한 새 작품이 더 이상 나오지 않는’ 세계다. 공짜를 누리려던 선택이 공짜로 볼 것 자체를 없애는 역설.",
+ "실제 숫자도 이 방향을 가리킨다. 2023년 웹툰 불법 이용률은 20.4%로 조사됐고, 같은 시기 연재 작가의 소득은 하락세를 보였다(한국콘텐츠진흥원 『2024 웹툰산업 실태조사』). 인과를 단정할 순 없지만, 무임승차가 창작 유인을 갉아먹는다는 이론과 어긋나지 않는다.",
+ "해법의 실마리도 경제학에 있다. 공유지의 비극은 ‘접근을 정당한 통로로 유도’할 때 완화된다. 합법으로 보는 길이 불법만큼 쉬워지면, 굳이 무임승차할 이유가 줄어든다. 이 사이트가 검색 패스스루로 하려는 일이 바로 그것이다(→ 5편)."
+ ]},
+{id:3,cat:"수익배분",concept:"가치사슬 · 수익 배분 · 인센티브",title:"웹툰 1편 결제하면 그 돈은 어디로 가나",
+ excerpt:"독자가 낸 1,000원이 플랫폼·CP·작가로 갈라지는 경로. 합법 결제가 왜 창작자에게 의미 있는지를 감정이 아니라 구조로 설명한다.",
+ readTime:"5분",full:false},
+{id:4,cat:"시장실패",concept:"외부효과 · 시장실패 · 과소공급",title:"불법유통의 진짜 비용",
+ excerpt:"불법유통은 창작자에게 부(負)의 외부효과를 지운다. ‘개인의 공짜’가 어떻게 사회적 손실로 전이되는가 — 그리고 그 규모.",
+ readTime:"7분",full:true,counter:true,
+ body:[
+ "‘나 하나 공짜로 보는 게 뭐가 그리 큰 문제냐’는 말은 절반만 맞다. 나 한 사람의 불법 열람이 특정 작가의 통장에서 정확히 얼마를 빼갔는지는 계산하기 어렵다. 하지만 경제학은 개인 단위가 아니라 ‘전체의 합’을 본다. 그리고 그 합은 결코 작지 않다.",
+ "핵심 개념은 ‘외부효과(externality)’다. 어떤 행동이 시장 거래 밖에서 제3자에게 비용을 지우는 현상이다. 불법 열람은 독자에게는 공짜지만, 그 비용은 거래에 끼지 못한 창작자에게 고스란히 전가된다. 이렇게 비용이 엉뚱한 곳으로 새면 시장은 ‘창작에 대한 정당한 보상’을 제대로 매기지 못하고, 그 결과 사회적으로 필요한 만큼의 창작이 이뤄지지 않는 과소공급, 즉 ‘시장실패’가 일어난다.",
+ "규모를 보자. 한국콘텐츠진흥원 『2024 웹툰산업 실태조사』에 따르면 2023년 웹툰 불법복제 피해규모는 약 4,465억 원으로 추산됐다. 1년 전인 2022년의 3,932억 원보다 늘었다. 산업 자체는 2023년 매출 2조 1,890억 원 규모로 성장했지만, 그 성장의 그늘에서 4천억 원대의 가치가 창작 생태계 밖으로 새고 있다는 뜻이다.",
+ "이 손실을 사람의 단위로 바꾸면 감이 더 온다. 4,465억 원은 웹툰 작가 1인의 연평균 소득(약 8,540만 원, 2023 기준)으로 환산하면 대략 작가 5,200명의 1년 벌이에 해당한다. 아래 카운터는 이 연간 피해액을 초 단위로 환산해, 당신이 이 글을 읽는 동안에도 손실이 쌓이고 있음을 보여준다. 정밀 실측이 아니라 공개 통계에 근거한 ‘추정’임을 분명히 밝힌다.",
+ "외부효과로 인한 시장실패는 보통 세금·규제 같은 외부 개입으로 교정한다. 하지만 웹툰에는 더 직접적인 해법이 있다. 불법으로 새는 열람을 합법 통로로 되돌리는 것. 그것은 규제가 아니라 ‘선택의 마찰을 줄이는 설계’로도 가능하다(→ 5편)."
+ ]},
+{id:5,cat:"행동경제",concept:"행동경제 · 현재편향 · 마찰 · 선택설계",title:"왜 알면서도 불법을 볼까 — 넛지의 경제학",
+ excerpt:"사람들이 불법을 보는 건 대개 도덕의 문제가 아니라 ‘마찰’과 현재편향 탓이다. 마찰을 줄이면 선택이 바뀐다 — 그래서 우리는 이 도구를 만들었다.",
+ readTime:"8분",full:true,
+ body:[
+ "설문을 보면 사람들이 불법 웹툰을 보는 가장 큰 이유는 ‘죄책감이 없어서’가 아니다. 2023년 조사에서 불법 이용의 가장 큰 이유는 ‘비용 부담(약 32.8%)’이었고, ‘콘텐츠에 가치를 못 느껴서’는 12.2%에 그쳤다(한국콘텐츠진흥원). 대부분은 합법이 옳다는 걸 알면서도 불법을 택한다. 왜일까?",
+ "행동경제학은 두 가지를 지목한다. 첫째, ‘현재편향’. 사람은 지금 당장의 편익을 미래의 비용보다 과대평가한다. ‘지금 공짜로 바로 보기’의 유혹은, ‘나중에 창작 생태계가 무너진다’는 먼 비용을 쉽게 이긴다. 둘째, ‘마찰(friction)’. 합법으로 보려면 어느 플랫폼에 있는지 찾고, 앱을 깔고, 결제 수단을 등록해야 한다. 반면 불법 사이트는 검색 한 번이면 끝이다. 이 작은 마찰의 차이가 선택을 가른다.",
+ "여기서 리처드 세일러와 캐스 선스타인의 ‘넛지(nudge)’ 개념이 등장한다. 강제하거나 금지하지 않고, 선택의 환경을 살짝 바꿔 더 나은 선택으로 유도하는 설계다. 핵심 통찰은 명료하다. 사람을 탓하지 말고, 선택의 구조를 바꿔라. 불법이 이기는 이유가 ‘더 쉬워서’라면, 합법을 그만큼 쉽게 만들면 된다.",
+ "그래서 우리는 ‘검색 패스스루’를 만들었다. 작품 이름만 넣으면 네이버웹툰·카카오페이지·리디 등 합법 플랫폼의 검색 결과로 곧장 보내주는 장치다. 카탈로그를 일일이 관리하지 않고도, 합법으로 가는 마찰을 불법 수준까지 낮추는 것이 목표다. 이것은 계몽이 아니라 설계다 — 옳은 선택을 설교하는 대신, 옳은 선택을 가장 쉬운 선택으로 만든다.",
+ "이 프로젝트 자체가 하나의 작은 행동경제학 실험이다. ‘마찰을 줄이면 사람들이 정말 합법으로 옮겨갈까?’ 우리는 그 가설을 믿고 도구를 만들었고, 클릭 데이터로 검증해 나갈 것이다. 인식(왜 합법이어야 하나)에서 행동(그럼 여기서 바로)으로 — 그 다리를 놓는 일이 페어툰이 하려는 전부다."
+ ]},
+{id:6,cat:"데이터",concept:"종합 · 데이터 리터러시",title:"숫자로 보는 한국 웹툰",
+ excerpt:"산업 규모 2.19조, 불법 피해 4,465억, 불법 이용률 20.4%… 한국 웹툰 생태계를 한 페이지 대시보드로.",
+ readTime:"4분",full:false}
+];
+
+/* ---------------- STAY SAFE ---------------- */
+var THREATS = [
+ {icon:"⚠",title:"멀웨어 광고(멀버타이징)",desc:"불법 사이트의 광고 네트워크는 페이지를 여는 것만으로 악성코드를 심는 코드를 실행할 수 있습니다. 클릭하지 않아도 노출됩니다."},
+ {icon:"⟳",title:"가짜 ‘업데이트 하세요’ 팝업",desc:"영상 플레이어가 오래됐다며 설치를 유도하는 팝업. 문제는 당신의 플레이어가 아니라 그 다운로드 파일 자체입니다."},
+ {icon:"🔔",title:"알림 권한 악용",desc:"알림을 한 번 허용하면, 탭을 닫은 뒤에도 잠금화면으로 위장 광고가 계속 날아올 수 있습니다."}
+];
+var DEVICES=["아이폰","갤럭시","맥북","윈도우"];
+var CHECKLIST={
+ "아이폰":["설정 > 알림에서 모르는 사이트의 알림을 끕니다","설정 > Safari > 고급 > 웹사이트 데이터에서 낯선 항목을 지웁니다","설정 > 일반 > VPN 및 기기 관리에서 모르는 프로파일을 삭제합니다","Safari의 ‘가짜 웹사이트 경고’가 켜져 있는지 확인합니다","iOS를 최신 버전으로 유지합니다"],
+ "갤럭시":["설정 > 애플리케이션에서 설치한 기억이 없는 앱을 확인합니다","Chrome > 설정 > 사이트 설정 > 알림에서 모르는 사이트를 제거합니다","Google Play 프로텍트를 켜고 검사를 실행합니다","Play 스토어 외부의 APK 설치를 피합니다","특수 접근 권한(다른 앱 위에 표시 등)을 점검합니다"],
+ "맥북":["시스템 설정 > 알림에서 낯선 항목을 확인합니다","시스템 설정 > 일반 > 로그인 항목에서 모르는 자동 실행을 제거합니다","브라우저 확장 프로그램 중 설치한 적 없는 것을 삭제합니다","개인정보 보호 및 보안 > 프로파일의 미확인 항목을 삭제합니다","macOS와 브라우저를 최신으로 유지합니다"],
+ "윈도우":["설정 > 앱에서 낯선 프로그램을 확인합니다","작업 관리자 > 시작 프로그램에서 새 항목을 점검합니다","Windows 보안의 실시간 보호가 켜져 있는지 확인합니다","브라우저 알림 설정에서 모르는 사이트를 제거합니다","스트리밍·불법 페이지에서 받은 .exe 실행을 피합니다"]
+};
+var REMEDIATION={
+ "아이폰":["설정 > 알림에서 해당 사이트의 권한을 즉시 제거합니다.","설정 > 일반 > VPN 및 기기 관리에서 모르는 구성 프로파일을 삭제합니다.","설정 > Safari에서 최근 방문 기록·데이터를 지웁니다.","비슷한 시기에 로그인한 계정(이메일부터)의 비밀번호를 바꿉니다.","‘플레이어 업데이트’ 파일을 받았다면 열지 말고 삭제 후 재부팅합니다."],
+ "갤럭시":["설정 > 애플리케이션에서 방문 직후 설치된 낯선 앱을 삭제합니다.","Play 프로텍트로 검사를 실행합니다.","특수 접근 권한에서 모르는 앱의 알림 접근을 해제합니다.","Chrome 사이트 설정에서 해당 도메인의 데이터를 지웁니다.","사이트에서 입력한 적 있는 계정 비밀번호를 변경합니다."],
+ "맥북":["브라우저 확장에서 낯선 항목을 제거합니다.","시스템 설정 > 로그인 항목에서 모르는 자동 실행을 삭제합니다.","프로파일 항목 중 직접 설치하지 않은 것을 삭제합니다.","Mac을 재부팅해 내장 보호기능이 새 파일을 재검사하게 합니다.","방문 전후 사용한 계정의 비밀번호를 바꿉니다."],
+ "윈도우":["설정 > 앱에서 최근 설치된 낯선 프로그램을 제거합니다.","작업 관리자 > 시작 프로그램에서 모르는 항목을 비활성화합니다.","Windows 보안으로 전체 검사를 실행합니다.","낯선 확장을 제거하고 해당 도메인의 사이트 데이터를 지웁니다.","방문 전후 사용한 계정(이메일부터) 비밀번호를 변경합니다."]
+};
+var checkedState={};var activeDevice="아이폰";
+
+/* ---------------- 취향 테스트 (정적 퀴즈) ---------------- */
+var QUIZ = [
+ {q:"주말에 웹툰 볼 때, 나는?",opts:[{t:"심장 쫄깃한 긴장감",g:"스릴러"},{t:"설레는 로맨스",g:"로맨스"},{t:"통쾌한 액션",g:"액션"},{t:"배꼽 빠지는 웃음",g:"코미디"}]},
+ {q:"주인공은 이런 사람이면 좋겠다",opts:[{t:"평범하지만 성장하는 사람",g:"드라마"},{t:"압도적으로 강한 사람",g:"액션"},{t:"비밀을 감춘 사람",g:"스릴러"},{t:"엉뚱하고 사랑스러운 사람",g:"코미디"}]},
+ {q:"결말은 이래야 한다",opts:[{t:"여운이 길게 남는 열린 결말",g:"드라마"},{t:"두근두근 해피엔딩",g:"로맨스"},{t:"소름 돋는 반전",g:"스릴러"},{t:"시원하게 다 이기는 사이다",g:"액션"}]},
+ {q:"하루 중 웹툰 보는 시간은?",opts:[{t:"자기 전 감성 충전",g:"로맨스"},{t:"출퇴근·등하교 킬링타임",g:"코미디"},{t:"몰아보기 정주행",g:"스릴러"},{t:"기분 전환용 짧게",g:"일상"}]},
+ {q:"친구에게 추천할 때 나는?",opts:[{t:"“이거 진짜 명작이야”",g:"드라마"},{t:"“심장 나대는 거 봐봐”",g:"로맨스"},{t:"“마지막화 소름이야”",g:"스릴러"},{t:"“그냥 웃겨 죽어”",g:"코미디"}]}
+];
+var QUIZ_RESULTS={
+ "로맨스":{emoji:"💗",type:"설렘 수집가",desc:"당신은 감정선을 따라가는 로맨스 스토리에 가장 크게 반응해요. 완결 명작으로는 『치즈인더트랩』『여신강림』이 딱이에요.",genres:["로맨스","드라마"]},
+ "액션":{emoji:"🔥",type:"사이다 헌터",desc:"통쾌하고 스케일 큰 전개를 좋아하는군요. 완결 명작 『트레이스』『노블레스』를 추천해요.",genres:["액션","판타지"]},
+ "스릴러":{emoji:"🕵️",type:"반전 탐정",desc:"긴장감과 반전에 중독된 타입! 『이끼』『조명가게』『데드데이즈』가 당신을 기다립니다.",genres:["스릴러","미스터리"]},
+ "코미디":{emoji:"😂",type:"웃음 사냥꾼",desc:"가볍고 유쾌한 웹툰이 취향이네요. 『마음의 소리』『목욕의 신』으로 정주행 시작!",genres:["코미디","일상"]},
+ "드라마":{emoji:"🎬",type:"인생작 탐험가",desc:"깊은 서사와 여운을 좇는 당신에겐 『미생』『신과함께』『유미의 세포들』이 인생작이 될 거예요.",genres:["드라마","판타지"]},
+ "일상":{emoji:"☕",type:"소확행 감상러",desc:"잔잔한 일상물로 마음을 채우는 타입. 가벼운 완결작부터 천천히 즐겨보세요.",genres:["일상","코미디"]}
+};
+
+/* ---------------- 수익 유출 카운터 (§4.9-B) ---------------- */
+/* 앵커: 2023 웹툰 불법복제 피해 4,465억 (KOCCA 2024 실태조사). 초 단위 환산. */
+var COUNTER_ANNUAL = 446500000000;           // 4,465억 원
+var COUNTER_PER_SEC = COUNTER_ANNUAL / 31536000; // ≈ 14,159원/초
+var pageLoadTs = Date.now();
+var counterTimer=null;
+function fmtWon(n){ return Math.floor(n).toLocaleString("ko-KR"); }
+function startCounter(elId){
+  stopCounter();
+  var el=document.getElementById(elId);
+  if(!el) return;
+  function tick(){
+    var secs=(Date.now()-pageLoadTs)/1000;
+    var val=secs*COUNTER_PER_SEC;
+    el.innerHTML=fmtWon(val)+'<span class="won">원</span>';
+  }
+  tick();
+  counterTimer=setInterval(tick,90);
+}
+function stopCounter(){ if(counterTimer){clearInterval(counterTimer);counterTimer=null;} }
+function toggleCounterDetail(){ var d=document.getElementById("cbDetail"); if(d) d.classList.toggle("open"); }
+
+/* ---------------- i18n (UI 라벨) ---------------- */
+var LANG="ko";
+var I18N={
+ nav_home:{ko:"홈",en:"Home"},nav_discover:{ko:"명작 큐레이션",en:"Discover"},nav_voices:{ko:"작가의 목소리",en:"Creator Voices"},
+ nav_articles:{ko:"아티클",en:"Articles"},nav_staysafe:{ko:"안전 수칙",en:"Stay Safe"},nav_about:{ko:"소개",en:"About"},
+ view_all:{ko:"전체 보기 →",en:"View all →"}
+};
+function tr(k){var e=I18N[k];return e?(e[LANG]||e.ko):k;}
+function setLang(l){
+  if(l===LANG) return;
+  LANG=l;
+  document.querySelectorAll(".lang-opt").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-lang")===l);});
+  updateLangSlider();
+  document.querySelectorAll("[data-i18n]").forEach(function(el){var k=el.getAttribute("data-i18n");if(I18N[k])el.textContent=I18N[k][l];});
+  if(l==="en") showToast("English preview: navigation labels are translated; Korean webtoon titles & article text stay in Korean.");
+  else showToast("한국어로 전환했습니다.");
+  render();
+}
+function updateLangSlider(){
+  var wrap=document.getElementById("langSwitch"),slider=document.getElementById("langSlider");
+  var activeBtn=wrap?wrap.querySelector(".lang-opt.active"):null;
+  if(!wrap||!slider||!activeBtn) return;
+  var wr=wrap.getBoundingClientRect(),br=activeBtn.getBoundingClientRect();
+  slider.style.width=br.width+"px";slider.style.left=(br.left-wr.left)+"px";
+}
+window.addEventListener("resize",updateLangSlider);
+
+/* ---------------- TOAST ---------------- */
+var toastTimer;
+function showToast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},3000);}
+
+/* ---------------- ROUTER ---------------- */
+var state={view:"home",query:"",articleId:null,quizStep:0,quizScores:{},discoverGenre:"전체"};
+function showView(name){
+  stopCounter();
+  if(name==="discover") state.discoverGenre="전체";
+  state.view=name;
+  document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")===name);});
+  document.getElementById("mobileNav").classList.remove("open");
+  render();window.scrollTo({top:0,behavior:"instant"});
+}
+function runSearch(q){
+  stopCounter();
+  state.query=q;state.view="search";
+  document.querySelectorAll(".nav-link").forEach(function(el){el.classList.remove("active");});
+  render();window.scrollTo({top:0,behavior:"instant"});
+}
+function showArticle(id){stopCounter();state.view="article";state.articleId=id;render();window.scrollTo({top:0,behavior:"instant"});}
+function startQuiz(){stopCounter();state.view="quiz";state.quizStep=0;state.quizScores={};render();window.scrollTo({top:0,behavior:"instant"});}
+
+document.addEventListener("click",function(e){
+  var navEl=e.target.closest("[data-view]");
+  if(navEl&&navEl.tagName==="A"){e.preventDefault();showView(navEl.getAttribute("data-view"));}
+});
+
+/* ---------------- CARD BUILDERS ---------------- */
+function curatedCardHTML(c,i){
+  var p=platOf(c.legal);
+  var url=p.search.replace("{q}",encodeURIComponent(c.title));
+  return '<div class="toon-card">'+
+    '<div class="toon-cover" style="'+coverStyle(i)+'"><span class="status-badge">완결</span><span class="ti">'+c.title+'</span></div>'+
+    '<div class="toon-body">'+
+      '<div class="toon-title">'+c.title+'</div>'+
+      '<div class="toon-author">'+c.author+'</div>'+
+      '<div class="toon-blurb">'+c.blurb+'</div>'+
+      '<div class="toon-tags">'+c.genres.map(function(g){return '<span class="tag">'+g+'</span>';}).join("")+'</div>'+
+      '<div class="toon-foot"><a class="legal-link" href="'+url+'" target="_blank" rel="noopener" onclick="showToast(\''+p.name+' 검색으로 이동합니다 (합법 플랫폼)\')">'+p.name+'에서 보기 ↗</a></div>'+
+    '</div>'+
+  '</div>';
+}
+function articleCardHTML(a){
+  var color=ART_CAT_COLORS[a.cat]||"#2F5FEF";
+  return '<div class="article-card-lg" onclick="showArticle('+a.id+')" tabindex="0" role="button">'+
+    '<div class="ac-visual" style="background:'+color+';">'+a.id+'</div>'+
+    '<div class="ac-body">'+
+      '<span class="ac-cat" style="color:'+color+';">경제학 · '+a.cat+'</span>'+
+      '<h3 class="ac-title">'+a.title+'</h3>'+
+      '<p class="ac-excerpt">'+a.excerpt+'</p>'+
+      '<div class="ac-foot"><span class="ac-time">'+a.readTime+' 읽기</span><span class="ac-cta'+(a.full?'':' soon')+'">'+(a.full?'기사 읽기 →':'준비 중 (샘플) →')+'</span></div>'+
+    '</div>'+
+  '</div>';
+}
+
+/* ---------------- COUNTER BAND ---------------- */
+function counterBandHTML(){
+  return '<div class="counter-band">'+
+    '<div class="cb-eyebrow">당신이 이 페이지를 보는 동안, 창작자에게 가지 못하고 새어나간 돈 (추정)</div>'+
+    '<div class="counter-value" id="revCounter">0<span class="won">원</span></div>'+
+    '<div class="cb-note">2023년 웹툰 불법복제 피해 <b>연 4,465억 원</b>(한국콘텐츠진흥원)을 초 단위로 환산 · 약 14,159원/초</div>'+
+    '<div class="cb-actions">'+
+      '<a class="cb-btn solid" href="#" onclick="showArticle(4);return false;">왜 이렇게 되나 →</a>'+
+      '<span class="cb-toggle" onclick="toggleCounterDetail()">산출 근거 보기</span>'+
+    '</div>'+
+    '<div class="cb-detail" id="cbDetail"><b>추정치</b> — 한국콘텐츠진흥원 『2024 웹툰산업 실태조사』의 2023년 웹툰 불법복제 피해규모(연 4,465억 원)를 1년(31,536,000초)으로 나눠 초당 약 14,159원으로 환산한 값입니다. 실시간 실측이 아니라 공개 통계 기반의 추정이며, 이 손실은 대략 웹툰 작가 5,200명의 1년 소득에 해당합니다.</div>'+
+  '</div>';
+}
+
+/* ---------------- RENDER: HOME ---------------- */
+var HERO_QUERIES=["미생","여신강림","신과함께","치즈인더트랩","이끼","유미의 세포들"];
+var heroTypeIdx=0,heroTypeTimer;
+function startHeroTyping(){
+  clearInterval(heroTypeTimer);
+  var input=document.getElementById("heroSearchInput");
+  if(!input) return;
+  heroTypeTimer=setInterval(function(){heroTypeIdx=(heroTypeIdx+1)%HERO_QUERIES.length;input.setAttribute("placeholder","예: “"+HERO_QUERIES[heroTypeIdx]+"”");},2400);
+}
+var HOME_GENRES=["로맨스","액션","스릴러","판타지","드라마","코미디","일상","미스터리"];
+function openLegal(url,name){showToast(name+" 검색으로 이동합니다 (합법 플랫폼)");window.open(url,"_blank","noopener");}
+function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="discover");});render();window.scrollTo({top:0,behavior:"instant"});}
+function hcardHTML(c,i,badge){
+  var p=platOf(c.legal);var url=p.search.replace("{q}",encodeURIComponent(c.title));
+  return '<div class="hcard" onclick="openLegal(\''+url+'\',\''+p.name+'\')" tabindex="0" role="button" aria-label="'+c.title+'">'+
+    '<div class="hc-cover" style="'+coverStyle(i)+'"><span class="hc-badge">'+(badge||"완결")+'</span><span class="ti">'+c.title+'</span>'+
+      '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>'+
+    '</div>'+
+    '<div class="hc-title">'+c.title+'</div><div class="hc-sub">'+c.author+' · '+c.genres[0]+'</div>'+
+  '</div>';
+}
+function acardHTML(a){
+  var color=ART_CAT_COLORS[a.cat]||"#2F5FEF";
+  return '<div class="acard" onclick="showArticle('+a.id+')" tabindex="0" role="button">'+
+    '<div class="ac-top" style="background:'+color+';">'+a.id+'</div>'+
+    '<div class="ac-in"><div class="ac-k" style="color:'+color+';">경제학 · '+a.cat+'</div><h4 class="ac-h">'+a.title+'</h4><p class="ac-x">'+a.excerpt+'</p></div>'+
+  '</div>';
+}
+function renderHome(){
+  var trending=["미생","여신강림","신과함께","치즈인더트랩","조명가게"];
+  var how=[
+   {t:"작품을 찾는다",d:"보고 싶은 웹툰 제목만 넣으면, 합법으로 볼 수 있는 플랫폼으로 곧장 안내합니다."},
+   {t:"합법으로 바로 간다",d:"네이버웹툰·카카오페이지·리디 등 공식 플랫폼 검색으로 마찰 없이 이동."},
+   {t:"왜 합법인지 안다",d:"경제학 렌즈 아티클과 작가의 목소리로 ‘왜 합법이어야 하는가’를 스스로 납득."}
+  ];
+  var voices=[{t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”",c:0},{t:"“결제 한 번이 다음 화를 만듭니다”",c:1},{t:"“기다무로 봐주시는 것도 큰 힘이에요”",c:4},{t:"“불법 스캔은 그림까지 뭉개져요”",c:8},{t:"“합법이 이렇게 쉬운 줄 몰랐어요”",c:5}];
+  var html=''+
+  '<section class="spotlight"><div class="spotlight-inner">'+
+    '<div class="eyebrow">🇰🇷 한국 웹툰 · 합법으로 보는 가장 쉬운 길</div>'+
+    '<h1>보고 싶은 웹툰,<br><span class="accent">합법으로</span> 어디서 볼지 찾기</h1>'+
+    '<p class="sub">제목만 넣으면 합법 플랫폼으로 바로. 그리고 ‘왜 합법이어야 하는가’를 경제학으로 풀어드립니다.</p>'+
+    '<div class="spotlight-search"><div class="hero-search-wrap">'+
+      '<form class="hero-search" onsubmit="runSearch(document.getElementById(\'heroSearchInput\').value);return false;">'+
+        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'+
+        '<input type="text" id="heroSearchInput" autocomplete="off" placeholder="예: “미생”">'+
+        '<button type="submit">찾기</button>'+
+      '</form></div>'+
+      '<div class="trending"><span class="label">인기 검색:</span>'+trending.map(function(q){return '<button class="chip" onclick="runSearch(\''+q+'\')">'+q+'</button>';}).join("")+'</div>'+
+    '</div>'+
+  '</div></section>'+
+  '<div class="container">'+
+    '<div class="shelf" style="margin-top:28px;"><div class="genre-rail">'+
+      HOME_GENRES.map(function(g){return '<button class="genre-pill" onclick="goGenre(\''+g+'\')">'+g+'</button>';}).join("")+
+    '</div></div>'+
+    '<div class="shelf"><div class="shelf-head"><h2>🔥 지금 인기</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">더보기</a></div>'+
+      '<div class="shelf-track">'+CURATED.slice(0,5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,i,"인기")+'</div>';}).join("")+'</div>'+
+    '</div>'+
+    '<div class="shelf"><div class="shelf-head"><h2>합법으로 보는 완결 명작</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">전체 보기</a></div>'+
+      '<div class="shelf-track">'+CURATED.map(function(c,i){return hcardHTML(c,i);}).join("")+'</div>'+
+    '</div>'+
+    counterBandHTML()+
+    '<div class="shelf"><div class="shelf-head"><h2>📈 경제학으로 읽는 웹툰</h2><a href="#" class="more" onclick="showView(\'articles\');return false;">시리즈 전체</a></div>'+
+      '<div class="shelf-track">'+ARTICLES.map(acardHTML).join("")+'</div>'+
+    '</div>'+
+    '<div class="shelf"><div class="quiz-banner">'+
+      '<div class="qb-text"><h3>🎯 나의 웹툰 취향 테스트</h3><p>5개 질문이면 끝. 내 취향 유형과 딱 맞는 완결 명작을 합법 플랫폼과 함께 추천해드려요.</p></div>'+
+      '<button class="btn btn-primary" onclick="startQuiz()">테스트 시작하기</button>'+
+    '</div></div>'+
+    '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
+      '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort" style="'+coverStyle(v.c)+'" onclick="showView(\'voices\')"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
+    '</div>'+
+    '<div class="shelf" style="margin-top:56px;"><div class="shelf-head"><h2>페어툰은 이렇게 작동합니다</h2></div>'+
+      '<div class="how-strip">'+how.map(function(s,i){return '<div class="how-card"><div class="how-num">'+(i+1)+'</div><h3>'+s.t+'</h3><p>'+s.d+'</p></div>';}).join("")+'</div>'+
+    '</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+  setTimeout(function(){startHeroTyping();startCounter("revCounter");},50);
+}
+
+/* ---------------- RENDER: SEARCH PASSTHROUGH ---------------- */
+function renderSearch(){
+  var q=(state.query||"").trim();
+  var html='<div class="container">';
+  if(!q){
+    html+='<div class="pass-header"><h2>어떤 작품을 찾으세요?</h2><p>보고 싶은 웹툰 제목을 검색하면, 합법 플랫폼 검색 결과로 바로 보내드립니다.</p></div>'+
+      '<div class="hero-search-wrap" style="margin:20px 0 0;">'+
+        '<form class="hero-search" onsubmit="runSearch(document.getElementById(\'passInput\').value);return false;">'+
+          '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#9AA0AC" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="#9AA0AC" stroke-width="2" stroke-linecap="round"/></svg>'+
+          '<input type="text" id="passInput" autocomplete="off" placeholder="예: “미생”"><button type="submit">찾기</button>'+
+        '</form></div></div>';
+    document.getElementById("mainContent").innerHTML=html;
+    setTimeout(function(){var el=document.getElementById("passInput");if(el)el.focus();},50);
+    return;
+  }
+  var cards=PLATFORMS.map(function(p){
+    var url=p.search.replace("{q}",encodeURIComponent(q));
+    return '<a class="pass-card" href="'+url+'" target="_blank" rel="noopener" onclick="showToast(\''+p.name+' 검색으로 이동합니다\')">'+
+      platLogo(p,48)+
+      '<div class="pass-meta"><div class="pass-name">'+p.name+'</div><div class="pass-price">'+p.price[LANG]+'</div></div>'+
+      '<span class="pass-go">검색 ↗</span>'+
+    '</a>';
+  }).join("");
+  html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 합법으로 보기</h2><p>아래 공식 플랫폼에서 바로 검색합니다. 원하는 곳을 눌러 이동하세요.</p></div>'+
+    '<div class="pass-list">'+cards+'</div>'+
+    '<div class="pass-note">ℹ️ 페어툰은 작품 카탈로그를 따로 두지 않고, 각 플랫폼의 <b>검색 결과</b>로 안내합니다. 그래서 어떤 신작이든 바로 찾을 수 있어요. (작품 페이지가 아니라 검색 결과로 이동하며, 표시 가격은 플랫폼 일반 안내입니다.)</div>'+
+    '<div class="pass-awareness">합법으로 보면, 당신이 낸 값이 그 작품을 만든 창작자에게 돌아갑니다. 왜 그게 중요한지 궁금하다면 → <a href="#" onclick="showArticle(4);return false;">「불법유통의 진짜 비용」</a> · <a href="#" onclick="showArticle(5);return false;">「넛지의 경제학」</a></div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+
+/* ---------------- RENDER: DISCOVER (명작 큐레이션) ---------------- */
+function renderDiscover(){
+  var sel=state.discoverGenre||"전체";
+  var allGenres=["전체"];CURATED.forEach(function(c){c.genres.forEach(function(g){if(allGenres.indexOf(g)===-1)allGenres.push(g);});});
+  var list=(sel==="전체")?CURATED:CURATED.filter(function(c){return c.genres.indexOf(sel)!==-1;});
+  var chips=allGenres.map(function(g){return '<button class="genre-pill'+(g===sel?" active":"")+'" style="'+(g===sel?"background:var(--blue);color:#fff;":"")+'" onclick="goGenre(\''+g+'\')">'+g+'</button>';}).join("");
+  var cards=list.length?'<div class="toon-grid">'+list.map(function(c){return curatedCardHTML(c,CURATED.indexOf(c));}).join("")+'</div>':'<div class="pass-empty">‘'+sel+'’ 장르의 완결 명작을 준비 중입니다.</div>';
+  var html='<div class="container">'+
+    '<div class="page-header"><h1>합법으로 보는 완결 명작</h1><p>손으로 고른 한국 웹툰 완결 명작. 새 화가 나오지 않는 완결작이라 언제 봐도 처음부터 끝까지, 마음 편히 정주행할 수 있어요. 각 작품의 합법 플랫폼으로 바로 연결됩니다.</p></div>'+
+    '<div class="genre-rail" style="margin-bottom:24px;">'+chips+'</div>'+
+    cards+
+    '<div class="pass-note" style="margin-top:28px;">이 큐레이션은 기획 확인용 샘플 목록입니다. 정식 오픈 시 30~50편으로 확대되며, 각 작품의 합법 플랫폼 링크를 검증해 반영합니다.</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+
+/* ---------------- RENDER: CREATOR VOICES ---------------- */
+function renderVoices(){
+  var shorts=[
+   {t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”",c:0},
+   {t:"“독자님의 결제 한 번이 다음 화를 만듭니다”",c:1},
+   {t:"“기다무로 봐주시는 것도 정말 큰 힘이에요”",c:4},
+   {t:"“불법 스캔은 그림까지 뭉개서 올라와요”",c:8}
+  ];
+  var html='<div class="container">'+
+    '<div class="page-header"><h1>작가의 목소리</h1><p>불법유통을 직접 겪은 창작자들의 이야기. 통계 뒤에 있는 ‘사람’을 만나는 코너입니다. 인터뷰 영상은 유튜브 공개 임베드로 제공됩니다.</p></div>'+
+    '<div class="voice-hero">'+
+      '<div class="voice-video"><div class="play"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div><span class="vlabel">인터뷰 영상 (준비 중 · 샘플)</span></div>'+
+      '<div class="voice-hero-text"><p class="vquote">“공짜로 본 한 화가, 다음 화를 못 그리게 만들 수도 있어요.”</p><p class="vby">— 인터뷰 시리즈, 2026년 하반기 공개 예정</p></div>'+
+    '</div>'+
+    '<div class="section-label-row"><span class="section-label">인터뷰 숏츠</span></div>'+
+    '<div class="shorts-grid">'+shorts.map(function(s){return '<div class="short-card" style="'+coverStyle(s.c)+'" onclick="showToast(\'숏츠는 정식 오픈 시 공개됩니다 (샘플)\')"><div class="sc-overlay"></div><div class="sc-play"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div><div class="sc-text">'+s.t+'</div></div>';}).join("")+'</div>'+
+    '<div class="pass-note" style="margin-top:28px;">현재는 레이아웃 확인용 플레이스홀더입니다. 실제 인터뷰(작가 5인)는 기획서 로드맵상 2026년 하반기에 촬영·게재됩니다.</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+
+/* ---------------- RENDER: ARTICLES ---------------- */
+function renderArticles(){
+  var html='<div class="container">'+
+    '<div class="page-header"><h1>경제학으로 읽는 웹툰</h1><p>불법유통을 훈계가 아니라 ‘경제학’으로 풉니다. 가격차별·공공재·외부효과·넛지 — 익숙한 웹툰 속에 숨은 경제 원리를 통해 ‘왜 합법이어야 하는가’를 스스로 납득하게 되는 6편의 시리즈.</p></div>'+
+    '<div class="article-list-lg">'+ARTICLES.map(articleCardHTML).join("")+'</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+function renderArticleReader(){
+  var a=ARTICLES.find(function(x){return x.id===state.articleId;});
+  if(!a){showView("articles");return;}
+  var color=ART_CAT_COLORS[a.cat]||"#2F5FEF";
+  var body;
+  if(a.full){body=a.body.map(function(p){return '<p>'+p+'</p>';});}
+  else{body=['<p>이 기사는 프리뷰용 자리표시자입니다. 「'+a.title+'」의 본문은 지호가 직접 집필하며, 정식 오픈 시 자료·데이터 시각화와 함께 공개됩니다.</p>','<p>경제학 개념: <b>'+a.concept+'</b>. 정식 버전에서는 이 개념을 실제 웹툰 사례와 공개 통계로 풀어냅니다.</p>'];}
+  var note=a.full?'':'<div class="sample-note">샘플 기사 — 본문은 프리뷰용 자리표시자입니다.</div>';
+  var counterBlock=a.counter?counterBandHTML():'';
+  var sourceBox=a.full?'<div class="source-box"><h4>데이터 출처</h4><ul><li>한국콘텐츠진흥원 『2024 웹툰산업 실태조사』 (불법복제 피해 4,465억 · 산업규모 2.19조 · 불법이용률 20.4%, 2023 기준)</li><li>문체부·KOCCA 웹툰 작가 실태조사 (작가 연소득 약 8,540만 원, 2023)</li></ul><p style="font-size:12px;color:#9AA0AC;margin:10px 0 0;">수치는 언론 인용 기반이며, 정식 게재 전 원문 보고서와 최종 대조합니다.</p></div>':'';
+  var html='<div class="container">'+
+    '<a href="#" class="nav-link" style="display:inline-block;padding:0;color:var(--gray);margin:32px 0 10px;font-size:14px;" onclick="showView(\'articles\');return false;">← 아티클로 돌아가기</a>'+
+    '<div class="article-reader">'+
+      '<div class="a-cat" style="color:'+color+';">경제학 · '+a.cat+'</div>'+
+      '<h1>'+a.title+'</h1>'+
+      '<div class="a-concept">핵심 개념: '+a.concept+'</div>'+
+      '<div class="a-meta">'+a.readTime+' 읽기 · 페어툰 편집부</div>'+
+      note+counterBlock+
+      '<div class="a-body">'+body.join("")+'</div>'+
+      sourceBox+
+    '</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+  if(a.counter) setTimeout(function(){startCounter("revCounter");},50);
+}
+
+/* ---------------- RENDER: STAY SAFE ---------------- */
+function setDevice(d){activeDevice=d;renderStaySafe();}
+function toggleCheck(i){checkedState[activeDevice+i]=!checkedState[activeDevice+i];renderStaySafe();}
+function renderStaySafe(){
+  var tabs=DEVICES.map(function(d){return '<button class="device-tab'+(activeDevice===d?" active":"")+'" onclick="setDevice(\''+d+'\')">'+d+'</button>';}).join("");
+  var threatCards=THREATS.map(function(th){return '<div class="threat-card"><div class="tc-icon">'+th.icon+'</div><h3>'+th.title+'</h3><p>'+th.desc+'</p></div>';}).join("");
+  var checks=CHECKLIST[activeDevice].map(function(c,i){var on=!!checkedState[activeDevice+i];return '<div class="check-item"><div class="check-box'+(on?" checked":"")+'" onclick="toggleCheck('+i+')">'+(on?'<svg width="12" height="12" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4 10-10" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>':'')+'</div><div class="check-text'+(on?" checked":"")+'">'+c+'</div></div>';}).join("");
+  var steps=REMEDIATION[activeDevice].map(function(s,i){return '<div class="step-row"><div class="step-num">'+(i+1)+'</div><div class="step-text">'+s+'</div></div>';}).join("");
+  var html='<div class="container">'+
+    '<div class="page-header"><h1>내 기기, 안전하게</h1><p>불법 사이트는 창작자의 수입만 위협하는 게 아닙니다. 대부분 팝업·가짜 다운로드·의도치 않은 권한으로 돈을 버는 광고 네트워크로 돌아갑니다. 기기별로 실제 주의할 점을 정리했습니다.</p></div>'+
+    '<div class="section-label-row"><span class="section-label">주요 위협</span></div>'+
+    '<div class="threat-grid">'+threatCards+'</div>'+
+    '<div class="device-tabs">'+tabs+'</div>'+
+    '<div class="section-label-row"><span class="section-label">기기 안전 체크리스트 — '+activeDevice+'</span></div>'+
+    '<div class="checklist">'+checks+'</div>'+
+    '<div class="section-label-row"><span class="section-label">이미 노출됐다면 — '+activeDevice+'</span></div>'+
+    '<div class="remediation-steps">'+steps+'</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+
+/* ---------------- RENDER: ABOUT ---------------- */
+function renderAbout(){
+  var html='<div class="container"><div class="about-wrap">'+
+    '<div class="about-hero">'+
+      '<h1>페어툰을 만든 이유</h1>'+
+      '<p>많은 사람이 창작자에게 값을 치르기 싫어서 불법을 보는 게 아닙니다. 합법으로 보는 길이 불법보다 더 느리고 복잡하기 때문에 불법을 봅니다. 어떤 작품은 이 플랫폼에서 무료, 저 플랫폼에서 유료, 또 어딘가에선 완결 무료 — 이 정보를 한곳에 모아 안내하는 곳이 없었습니다.</p>'+
+      '<p>페어툰은 바로 그 한곳입니다. 합법으로 보는 길을 불법만큼 쉽게 만드는 것, 그리고 ‘왜 합법이어야 하는가’를 경제학의 언어로 설득하는 것. 이 둘을 잇는 인식 개선 캠페인입니다.</p>'+
+      '<p>이 프로젝트는 한 고등학생(지호)이 시작한 독립 프로젝트입니다. 사회문제를 경제학적 사고로 진단하고, 행동경제학적 개입 도구(검색 패스스루)를 직접 설계·구현해보려는 시도이기도 합니다. 어떤 플랫폼과도 제휴·후원 관계가 없습니다.</p>'+
+    '</div>'+
+    '<div class="about-stats">'+
+      '<div class="about-stat"><div class="num">2.19조</div><div class="lbl">한국 웹툰 산업 규모 (2023)</div></div>'+
+      '<div class="about-stat"><div class="num">4,465억</div><div class="lbl">연간 불법복제 피해 (2023)</div></div>'+
+      '<div class="about-stat"><div class="num">20.4%</div><div class="lbl">웹툰 불법 이용률 (2023)</div></div>'+
+    '</div>'+
+    '<div class="section-label-row"><span class="section-label">자주 묻는 질문</span></div>'+
+    '<div class="faq-item"><h3>페어툰은 네이버·카카오 등과 제휴한 곳인가요?</h3><p>아니요. 페어툰은 어떤 플랫폼과도 제휴·후원 관계가 없는 독립 프로젝트입니다.</p></div>'+
+    '<div class="faq-item"><h3>왜 작품 전체 목록(카탈로그)이 없나요?</h3><p>전수 목록을 만들면 신작이 나올 때마다 사람이 갱신해야 하고, 곧 낡습니다. 대신 어떤 작품이든 각 플랫폼 검색으로 바로 보내는 ‘검색 패스스루’ 방식을 택했습니다. 유지보수 부담 없이 신작까지 커버하기 위해서입니다.</p></div>'+
+    '<div class="faq-item"><h3>표시되는 가격·정보는 실시간인가요?</h3><p>아니요. 이 프리뷰의 목록·수치는 기획 확인용 샘플이며, 플랫폼 가격은 실시간이 아닌 일반 안내입니다. 정확한 가격은 각 플랫폼에서 확인하세요.</p></div>'+
+    '<div class="faq-item"><h3>불법 사이트 링크도 제공하나요?</h3><p>절대 아닙니다. 페어툰은 오직 합법 플랫폼으로만 안내합니다.</p></div>'+
+  '</div></div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+
+/* ---------------- RENDER: QUIZ ---------------- */
+function quizAnswer(genre){
+  state.quizScores[genre]=(state.quizScores[genre]||0)+1;
+  state.quizStep++;
+  render();window.scrollTo({top:0,behavior:"instant"});
+}
+function quizTopGenre(){
+  var best=null,bestN=-1;
+  Object.keys(state.quizScores).forEach(function(g){if(state.quizScores[g]>bestN){bestN=state.quizScores[g];best=g;}});
+  return best||"드라마";
+}
+function renderQuiz(){
+  var html;
+  if(state.quizStep<QUIZ.length){
+    var qi=QUIZ[state.quizStep];
+    var pct=Math.round((state.quizStep/QUIZ.length)*100);
+    html='<div class="container"><div class="quiz-wrap">'+
+      '<div class="quiz-progress"><div class="bar" style="width:'+pct+'%;"></div></div>'+
+      '<div style="text-align:center;font-size:13px;color:var(--gray-light);margin-bottom:14px;">질문 '+(state.quizStep+1)+' / '+QUIZ.length+'</div>'+
+      '<h2 class="quiz-q">'+qi.q+'</h2>'+
+      '<div class="quiz-opts">'+qi.opts.map(function(o){return '<button class="quiz-opt" onclick="quizAnswer(\''+o.g+'\')">'+o.t+'</button>';}).join("")+'</div>'+
+    '</div></div>';
+  } else {
+    var g=quizTopGenre();var r=QUIZ_RESULTS[g]||QUIZ_RESULTS["드라마"];
+    html='<div class="container"><div class="quiz-result">'+
+      '<div class="qr-emoji">'+r.emoji+'</div>'+
+      '<h2>당신은 <span class="qr-type">'+r.type+'</span></h2>'+
+      '<p>'+r.desc+'</p>'+
+      '<div class="qr-genres">'+r.genres.map(function(x){return '<span class="tag" style="font-size:13px;padding:6px 14px;">#'+x+'</span>';}).join("")+'</div>'+
+      '<div class="qr-actions">'+
+        '<button class="btn btn-primary" onclick="showView(\'discover\')">추천 명작 보러가기</button>'+
+        '<button class="btn btn-ghost" onclick="startQuiz()">다시 테스트</button>'+
+      '</div>'+
+      '<p style="font-size:12.5px;color:var(--gray-light);margin-top:26px;">취향 테스트는 재미로 즐기는 정적 콘텐츠입니다. 결과는 선택하신 답변으로 즉석 계산됩니다.</p>'+
+    '</div></div>';
+  }
+  document.getElementById("mainContent").innerHTML=html;
+}
+
+/* ---------------- DISPATCH ---------------- */
+function render(){renderDispatch();var mc=document.getElementById("mainContent");if(mc){mc.classList.remove("view-anim");void mc.offsetWidth;mc.classList.add("view-anim");}}
+function renderDispatch(){
+  if(state.view==="home")renderHome();
+  else if(state.view==="search")renderSearch();
+  else if(state.view==="discover")renderDiscover();
+  else if(state.view==="voices")renderVoices();
+  else if(state.view==="articles")renderArticles();
+  else if(state.view==="article")renderArticleReader();
+  else if(state.view==="staysafe")renderStaySafe();
+  else if(state.view==="about")renderAbout();
+  else if(state.view==="quiz")renderQuiz();
+}
+
+render();
+updateLangSlider();
+</script>
+</body>
+</html>
