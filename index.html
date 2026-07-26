@@ -287,6 +287,7 @@ main{min-height:60vh;}
 }
 .pass-awareness a{font-weight:800;text-decoration:underline;}
 .pass-empty{padding:60px 0;text-align:center;color:var(--gray);}
+.search-subhead{font-family:var(--font-display);font-size:15px;letter-spacing:-.2px;color:var(--gray);margin:26px 0 2px;padding-top:20px;border-top:1px solid var(--line-soft);}
 
 /* ---- PAGE HEADER (generic) ---- */
 .page-header{padding:44px 0 26px;}
@@ -603,20 +604,30 @@ function platLogo(p,size){
 /* 프리뷰 시드. legal(플랫폼 key) = 대표 합법 플랫폼(딥링크 확인 전 검색 URL로 연결). */
 var COVERS=[["#FF7A59","#FF3D81"],["#2F5BFF","#7C3AED"],["#00C853","#00A0E3"],["#FFB020","#FF5630"],["#7C3AED","#2F5BFF"],["#0EA5A5","#2F5BFF"],["#E5484D","#FFB020"],["#202229","#2F5BFF"],["#FF3D81","#7C3AED"],["#00A0E3","#00C853"],["#FF5630","#E5484D"],["#2F5BFF","#0EA5A5"]];
 function coverStyle(i){var c=COVERS[i%COVERS.length];return "background:linear-gradient(145deg,"+c[0]+","+c[1]+");";}
+/* 각 항목: en(영문 제목)·aliases(별칭)는 선택 필드 — 검색 매칭용. 없으면 title로만 매칭. */
 var CURATED = [
- {title:"미생",       author:"윤태호", genres:["드라마","직장"],   blurb:"바둑밖에 모르던 청년의 회사 생존기. 웹툰의 격을 끌어올린 대표작.", legal:"naver"},
- {title:"신과함께",   author:"주호민", genres:["판타지","드라마"], blurb:"저승 재판으로 삶과 죽음, 제도와 인간을 다시 보게 하는 대서사.", legal:"naver"},
- {title:"이끼",       author:"윤태호", genres:["스릴러","미스터리"], blurb:"작은 마을에 스민 거대한 위선. 손에 땀을 쥐게 하는 완결 스릴러.", legal:"naver"},
- {title:"치즈인더트랩",author:"순끼",   genres:["로맨스","드라마"], blurb:"평범한 대학생과 완벽해 보이는 선배. 심리 묘사의 정석.", legal:"naver"},
- {title:"유미의 세포들",author:"이동건", genres:["로맨스","코미디"], blurb:"머릿속 세포들이 그리는 한 사람의 연애와 성장. 완결의 여운.", legal:"naver"},
- {title:"조명가게",   author:"강풀",   genres:["미스터리","드라마"], blurb:"골목 조명가게에 얽힌 사람들. 강풀 미스터리의 정점.", legal:"kakaowebtoon"},
- {title:"노블레스",   author:"손제호·이광수", genres:["액션","판타지"], blurb:"820년을 잠든 귀족의 현대 부활기. 초창기 액션 웹툰의 완결작.", legal:"naver"},
- {title:"목욕의 신",  author:"하일권", genres:["코미디","드라마"], blurb:"목욕탕을 무대로 한 뜨끈한 성장 코미디. 하일권 유머의 진수.", legal:"naver"},
- {title:"마음의 소리",author:"조석",   genres:["개그","일상"],     blurb:"천만 독자를 웃긴 국민 개그 웹툰. 완결까지 1000화가 넘는 여정.", legal:"naver"},
- {title:"데드데이즈", author:"DEY",    genres:["스릴러","좀비"],   blurb:"하루아침에 무너진 도시에서의 생존극. 몰입도 높은 완결 스릴러.", legal:"naver"},
- {title:"트레이스",   author:"고영훈", genres:["액션","SF"],       blurb:"초능력자들이 뒤섞인 세계의 히어로물. 스케일 큰 완결 액션.", legal:"kakaowebtoon"},
- {title:"여신강림",   author:"야옹이", genres:["로맨스","코미디"], blurb:"화장으로 감춘 얼굴과 진짜 나. 세대를 사로잡은 완결 로맨스.", legal:"naver"}
+ {title:"미생",       en:"Misaeng",              aliases:["미생 incomplete life"], author:"윤태호", genres:["드라마","직장"],   blurb:"바둑밖에 모르던 청년의 회사 생존기. 웹툰의 격을 끌어올린 대표작.", legal:"naver"},
+ {title:"신과함께",   en:"Along with the Gods",  aliases:["신과 함께"],            author:"주호민", genres:["판타지","드라마"], blurb:"저승 재판으로 삶과 죽음, 제도와 인간을 다시 보게 하는 대서사.", legal:"naver"},
+ {title:"이끼",       en:"Moss",                                                   author:"윤태호", genres:["스릴러","미스터리"], blurb:"작은 마을에 스민 거대한 위선. 손에 땀을 쥐게 하는 완결 스릴러.", legal:"naver"},
+ {title:"치즈인더트랩",en:"Cheese in the Trap",   aliases:["치인트","치즈 인 더 트랩"], author:"순끼",   genres:["로맨스","드라마"], blurb:"평범한 대학생과 완벽해 보이는 선배. 심리 묘사의 정석.", legal:"naver"},
+ {title:"유미의 세포들",en:"Yumi's Cells",         aliases:["유세포"],               author:"이동건", genres:["로맨스","코미디"], blurb:"머릿속 세포들이 그리는 한 사람의 연애와 성장. 완결의 여운.", legal:"naver"},
+ {title:"조명가게",   en:"The Light Shop",                                         author:"강풀",   genres:["미스터리","드라마"], blurb:"골목 조명가게에 얽힌 사람들. 강풀 미스터리의 정점.", legal:"kakaowebtoon"},
+ {title:"노블레스",   en:"Noblesse",                                               author:"손제호·이광수", genres:["액션","판타지"], blurb:"820년을 잠든 귀족의 현대 부활기. 초창기 액션 웹툰의 완결작.", legal:"naver"},
+ {title:"목욕의 신",  en:"God of Bath",                                            author:"하일권", genres:["코미디","드라마"], blurb:"목욕탕을 무대로 한 뜨끈한 성장 코미디. 하일권 유머의 진수.", legal:"naver"},
+ {title:"마음의 소리",en:"The Sound of Your Heart",aliases:["마소"],                author:"조석",   genres:["개그","일상"],     blurb:"천만 독자를 웃긴 국민 개그 웹툰. 완결까지 1000화가 넘는 여정.", legal:"naver"},
+ {title:"데드데이즈", en:"Dead Days",                                              author:"DEY",    genres:["스릴러","좀비"],   blurb:"하루아침에 무너진 도시에서의 생존극. 몰입도 높은 완결 스릴러.", legal:"naver"},
+ {title:"트레이스",   en:"Trace",                                                  author:"고영훈", genres:["액션","SF"],       blurb:"초능력자들이 뒤섞인 세계의 히어로물. 스케일 큰 완결 액션.", legal:"kakaowebtoon"},
+ {title:"여신강림",   en:"True Beauty",          aliases:["여강"],                 author:"야옹이", genres:["로맨스","코미디"], blurb:"화장으로 감춘 얼굴과 진짜 나. 세대를 사로잡은 완결 로맨스.", legal:"naver"}
 ];
+/* 하이브리드 검색: 큐레이션 DB 부분일치(제목/영문/별칭/작가). 공백·대소문자 무시. */
+function normKey(s){return (s||"").toString().toLowerCase().replace(/\s+/g,"");}
+function searchCurated(q){
+  var nq=normKey(q); if(!nq) return [];
+  return CURATED.filter(function(c){
+    var hay=normKey([c.title,c.en,(c.aliases||[]).join(" "),c.author].join(" "));
+    return hay.indexOf(nq)!==-1;
+  });
+}
 
 /* ---------------- 경제학 렌즈 아티클 (6편 시리즈) ---------------- */
 var ART_CAT_COLORS={"가격차별":"#2F5FEF","공공재":"#1CA66B","수익배분":"#0EA5A5","시장실패":"#E5484D","행동경제":"#7C5CFA","데이터":"#3A3E4A"};
@@ -920,6 +931,7 @@ function renderSearch(){
     setTimeout(function(){var el=document.getElementById("passInput");if(el)el.focus();},50);
     return;
   }
+  var matches=searchCurated(q);
   var cards=PLATFORMS.map(function(p){
     var url=p.search.replace("{q}",encodeURIComponent(q));
     return '<a class="pass-card" href="'+url+'" target="_blank" rel="noopener" onclick="showToast(\''+p.name+' 검색으로 이동합니다\')">'+
@@ -928,9 +940,16 @@ function renderSearch(){
       '<span class="pass-go">검색 ↗</span>'+
     '</a>';
   }).join("");
-  html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 합법으로 보기</h2><p>아래 공식 플랫폼에서 바로 검색합니다. 원하는 곳을 눌러 이동하세요.</p></div>'+
-    '<div class="pass-list">'+cards+'</div>'+
-    '<div class="pass-note">ℹ️ 페어툰은 작품 카탈로그를 따로 두지 않고, 각 플랫폼의 <b>검색 결과</b>로 안내합니다. 그래서 어떤 신작이든 바로 찾을 수 있어요. (작품 페이지가 아니라 검색 결과로 이동하며, 표시 가격은 플랫폼 일반 안내입니다.)</div>'+
+  /* 헤더: 큐레이션 매칭 여부에 따라 문구 변경 */
+  if(matches.length){
+    html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 검색 결과</h2><p>페어툰 큐레이션에서 '+matches.length+'편을 찾았습니다. 합법 플랫폼으로 바로 연결됩니다.</p></div>'+
+      '<div class="toon-grid" style="margin-bottom:12px;">'+matches.map(function(c){return curatedCardHTML(c,CURATED.indexOf(c));}).join("")+'</div>'+
+      '<h3 class="search-subhead">다른 플랫폼에서도 찾기</h3>';
+  } else {
+    html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 합법으로 보기</h2><p>큐레이션에는 아직 없는 작품입니다. 아래 공식 플랫폼에서 바로 검색해 보세요.</p></div>';
+  }
+  html+='<div class="pass-list">'+cards+'</div>'+
+    '<div class="pass-note">ℹ️ 페어툰 큐레이션에 없는 작품도, 각 플랫폼의 <b>검색 결과</b>로 안내해 어떤 신작이든 바로 찾을 수 있어요. (플랫폼 검색은 작품 페이지가 아니라 검색 결과로 이동하며, 표시 가격은 플랫폼 일반 안내입니다.) 링크가 깨졌다면 <a href="#" onclick="showView(\'about\');return false;">문의하기</a>로 알려주세요.</div>'+
     '<div class="pass-awareness">합법으로 보면, 당신이 낸 값이 그 작품을 만든 창작자에게 돌아갑니다. 왜 그게 중요한지 궁금하다면 → <a href="#" onclick="showArticle(4);return false;">「불법유통의 진짜 비용」</a> · <a href="#" onclick="showArticle(5);return false;">「넛지의 경제학」</a></div>'+
   '</div>';
   document.getElementById("mainContent").innerHTML=html;
