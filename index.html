@@ -701,6 +701,71 @@ var REMEDIATION={
 };
 var checkedState={};var activeDevice="아이폰";
 
+/* ---------------- SUPABASE 연동 (P2) ----------------
+   콘텐츠는 Supabase에서 읽어옵니다. 위에 정의된 상수들은
+   통신 실패 시 화면이 비지 않도록 남겨둔 내장 시드입니다. */
+var SUPABASE_URL="https://wrvllrxwgautewttvffe.supabase.co";
+var SUPABASE_ANON_KEY="sb_publishable_wuImInmyi0WtmCQKetBBhw_QJI-AZAY";
+var DEVICE_LABEL={iphone:"아이폰",android:"갤럭시",mac:"맥북",windows:"윈도우"};
+var COUNTER_SLUG="externality-real-cost-of-piracy";  /* 수익 유출 카운터를 붙이는 기사 */
+
+function sbFetch(path){
+  return fetch(SUPABASE_URL+"/rest/v1/"+path,{headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY}})
+    .then(function(r){if(!r.ok)throw new Error(path+" → HTTP "+r.status);return r.json();});
+}
+function adoptPlatforms(rows){
+  if(!rows||!rows.length) return;
+  var initialOf={}; PLATFORMS.forEach(function(p){initialOf[p.key]=p.initial;});
+  PLATFORMS=rows.map(function(r){
+    return {key:r.key,name:r.name,color:r.color||"#2F5FEF",
+      initial:initialOf[r.key]||(r.name||"?").charAt(0),
+      search:r.search_url_pattern,
+      price:{ko:r.price_note_ko||"",en:r.price_note_en||""}};
+  });
+}
+function adoptWorks(rows){
+  if(!rows||!rows.length) return;
+  CURATED=rows.map(function(r){
+    var links=r.work_legal_links||[];
+    return {title:r.title_ko,en:r.title_en||"",aliases:r.aliases||[],author:r.author||"",
+      genres:r.genres||[],blurb:r.blurb_ko||"",
+      legal:links.length?links[0].platform_key:(PLATFORMS[0]&&PLATFORMS[0].key)};
+  });
+}
+function adoptArticles(rows){
+  if(!rows||!rows.length) return;
+  ARTICLES=rows.map(function(r){
+    var has=!!(r.body_ko&&r.body_ko.trim());
+    return {id:r.id,slug:r.slug,cat:r.category||"",concept:r.concept||"",title:r.title_ko,
+      excerpt:r.excerpt_ko||"",readTime:r.read_time||"",full:has,
+      body:has?r.body_ko.split(/\n{2,}/):[],counter:r.slug===COUNTER_SLUG};
+  });
+}
+function adoptSafety(rows){
+  if(!rows||!rows.length) return;
+  var threats=[],check={},remedy={};
+  rows.forEach(function(r){
+    if(r.device==="공통"){threats.push({icon:r.icon||"⚠",title:r.title_ko,desc:r.body_ko||""});return;}
+    var label=DEVICE_LABEL[r.device]; if(!label) return;
+    var items=(r.body_ko||"").split("\n").map(function(s){return s.replace(/^-\s*/,"").trim();}).filter(Boolean);
+    if(r.title_ko.indexOf("조치")!==-1) remedy[label]=items; else check[label]=items;
+  });
+  if(threats.length) THREATS=threats;
+  DEVICES.forEach(function(d){if(check[d])CHECKLIST[d]=check[d];if(remedy[d])REMEDIATION[d]=remedy[d];});
+}
+function loadContent(){
+  return Promise.all([
+    sbFetch("platforms?select=*&order=sort"),
+    sbFetch("works?select=*,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
+    sbFetch("articles?select=*&is_published=eq.true&order=id"),
+    sbFetch("safety_cards?select=*&order=sort")
+  ]).then(function(res){
+    adoptPlatforms(res[0]);adoptWorks(res[1]);adoptArticles(res[2]);adoptSafety(res[3]);
+  }).catch(function(e){
+    console.warn("콘텐츠 로드 실패 — 내장 시드로 표시합니다.",e);
+  });
+}
+
 /* ---------------- 취향 테스트 (정적 퀴즈) ---------------- */
 var QUIZ = [
  {q:"주말에 웹툰 볼 때, 나는?",opts:[{t:"심장 쫄깃한 긴장감",g:"스릴러"},{t:"설레는 로맨스",g:"로맨스"},{t:"통쾌한 액션",g:"액션"},{t:"배꼽 빠지는 웃음",g:"코미디"}]},
@@ -773,22 +838,68 @@ function showToast(msg){var t=document.getElementById("toast");t.textContent=msg
 
 /* ---------------- ROUTER ---------------- */
 var state={view:"home",query:"",articleId:null,quizStep:0,quizScores:{},discoverGenre:"전체"};
+
+/* 주소(해시) 동기화 — 새로고침·뒤로가기·링크 공유 지원 */
+var expectedHash=null,bootRender=false;
+var HASH_VIEWS=["home","discover","voices","articles","staysafe","about","quiz"];
+function articleSlug(id){
+  var a=ARTICLES.find(function(x){return x.id===id;});
+  return a&&a.slug?a.slug:String(id);
+}
+function buildHash(){
+  if(state.view==="home") return "#/";
+  if(state.view==="search") return "#/search?q="+encodeURIComponent(state.query||"");
+  if(state.view==="article") return "#/articles/"+encodeURIComponent(articleSlug(state.articleId));
+  if(state.view==="discover") return "#/discover"+(state.discoverGenre&&state.discoverGenre!=="전체"?"/"+encodeURIComponent(state.discoverGenre):"");
+  return "#/"+state.view;
+}
+function syncHash(){
+  if(bootRender) return;   /* 첫 렌더에서는 주소를 덮어쓰지 않는다(DB 로드 후 원래 주소로 복원해야 함) */
+  var h=buildHash();
+  if(location.hash===h) return;
+  expectedHash=h;          /* 내가 바꾼 주소의 hashchange 는 무시(중복 렌더 방지) */
+  location.hash=h;
+}
+function applyHash(){
+  var raw=(location.hash||"").replace(/^#\/?/,"");
+  if(!raw){showView("home");return;}
+  var parts=raw.split("?"),seg=parts[0].split("/").filter(Boolean).map(decodeURIComponent);
+  var v=seg[0]||"home";
+  if(v==="search"){
+    var m=/q=([^&]*)/.exec(parts[1]||"");
+    runSearch(m?decodeURIComponent(m[1].replace(/\+/g," ")):"");
+    return;
+  }
+  if(v==="articles"&&seg[1]){
+    var a=ARTICLES.find(function(x){return x.slug===seg[1]||String(x.id)===seg[1];});
+    if(a){showArticle(a.id);return;}
+    showView("articles");return;
+  }
+  if(v==="discover"&&seg[1]){goGenre(seg[1]);return;}
+  showView(HASH_VIEWS.indexOf(v)!==-1?v:"home");
+}
+window.addEventListener("hashchange",function(){
+  if(expectedHash!==null&&location.hash===expectedHash){expectedHash=null;return;}
+  expectedHash=null;
+  applyHash();   /* 뒤로가기·앞으로가기·주소 직접 입력 */
+});
+
 function showView(name){
   stopCounter();
   if(name==="discover") state.discoverGenre="전체";
   state.view=name;
   document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")===name);});
   document.getElementById("mobileNav").classList.remove("open");
-  render();window.scrollTo({top:0,behavior:"instant"});
+  render();syncHash();window.scrollTo({top:0,behavior:"instant"});
 }
 function runSearch(q){
   stopCounter();
   state.query=q;state.view="search";
   document.querySelectorAll(".nav-link").forEach(function(el){el.classList.remove("active");});
-  render();window.scrollTo({top:0,behavior:"instant"});
+  render();syncHash();window.scrollTo({top:0,behavior:"instant"});
 }
-function showArticle(id){stopCounter();state.view="article";state.articleId=id;render();window.scrollTo({top:0,behavior:"instant"});}
-function startQuiz(){stopCounter();state.view="quiz";state.quizStep=0;state.quizScores={};render();window.scrollTo({top:0,behavior:"instant"});}
+function showArticle(id){stopCounter();state.view="article";state.articleId=id;render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
+function startQuiz(){stopCounter();state.view="quiz";state.quizStep=0;state.quizScores={};render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
 
 document.addEventListener("click",function(e){
   var navEl=e.target.closest("[data-view]");
@@ -848,7 +959,7 @@ function startHeroTyping(){
 }
 var HOME_GENRES=["로맨스","액션","스릴러","판타지","드라마","코미디","일상","미스터리"];
 function openLegal(url,name){showToast(name+" 검색으로 이동합니다 (합법 플랫폼)");window.open(url,"_blank","noopener");}
-function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="discover");});render();window.scrollTo({top:0,behavior:"instant"});}
+function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="discover");});render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
 function hcardHTML(c,i,badge){
   var p=platOf(c.legal);var url=p.search.replace("{q}",encodeURIComponent(c.title));
   return '<div class="hcard" onclick="openLegal(\''+url+'\',\''+p.name+'\')" tabindex="0" role="button" aria-label="'+c.title+'">'+
@@ -1123,7 +1234,8 @@ function renderDispatch(){
   else if(state.view==="quiz")renderQuiz();
 }
 
-render();
+bootRender=true;applyHash();bootRender=false;  /* 내장 시드로 즉시 렌더(주소는 그대로 유지) */
+loadContent().then(function(){applyHash();});  /* DB 로드 후 갱신 */
 updateLangSlider();
 </script>
 </body>
