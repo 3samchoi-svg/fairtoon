@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Fairtoon 관리자</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#2F5FEF; --blue-dark:#2246c4; --ink:#111214; --gray:#6B7280; --line:#E5E7EB;
+  --bg:#F7F8FA; --surface:#fff; --danger:#E5484D; --ok:#1CA66B;
+  --radius:12px; --shadow:0 1px 2px rgba(16,24,40,.06),0 4px 12px rgba(16,24,40,.05);
+}
+*{box-sizing:border-box;}
+body{margin:0;font-family:Inter,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;}
+button{font-family:inherit;cursor:pointer;}
+input,textarea,select{font-family:inherit;font-size:14px;width:100%;padding:9px 11px;border:1px solid var(--line);border-radius:9px;background:#fff;color:var(--ink);}
+input:focus,textarea:focus,select:focus{outline:2px solid rgba(47,95,239,.25);border-color:var(--blue);}
+textarea{min-height:120px;resize:vertical;line-height:1.6;}
+.btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 14px;border-radius:9px;font-weight:600;font-size:13px;}
+.btn:hover{background:#F3F4F6;}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff;}
+.btn-primary:hover{background:var(--blue-dark);}
+.btn-danger{color:var(--danger);border-color:#F3C6C7;}
+.btn-danger:hover{background:#FEF2F2;}
+.btn-sm{padding:6px 10px;font-size:12px;border-radius:8px;}
+.hide{display:none !important;}
+
+/* ---------- 로그인 ---------- */
+#loginView{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-card{width:100%;max-width:390px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:30px;box-shadow:var(--shadow);}
+.login-card h1{font-size:20px;margin:0 0 4px;letter-spacing:-.3px;}
+.login-card .sub{color:var(--gray);font-size:13px;margin:0 0 22px;}
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:12px;font-weight:600;color:var(--gray);margin-bottom:6px;}
+.field .hint{font-size:11px;color:var(--gray);margin-top:5px;line-height:1.5;}
+.msg{font-size:13px;padding:10px 12px;border-radius:9px;margin-bottom:14px;line-height:1.5;}
+.msg-err{background:#FEF2F2;color:#B42318;}
+.msg-ok{background:#ECFDF3;color:#0A7A47;}
+.linkbtn{background:none;border:none;color:var(--blue);font-size:12px;font-weight:600;padding:0;}
+
+/* ---------- 레이아웃 ---------- */
+#appView{display:flex;min-height:100vh;}
+.side{width:210px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--line);padding:18px 14px;display:flex;flex-direction:column;}
+.side .brand{font-weight:700;font-size:15px;letter-spacing:-.3px;padding:0 8px 16px;}
+.side .brand span{color:var(--blue);}
+.side nav{display:flex;flex-direction:column;gap:2px;}
+.side nav button{text-align:left;border:none;background:none;padding:9px 10px;border-radius:8px;font-size:13px;font-weight:500;color:var(--gray);}
+.side nav button:hover{background:#F3F4F6;color:var(--ink);}
+.side nav button.on{background:rgba(47,95,239,.09);color:var(--blue);font-weight:600;}
+.side .foot{margin-top:auto;padding-top:16px;border-top:1px solid var(--line);font-size:11px;color:var(--gray);line-height:1.6;}
+.side .foot b{display:block;color:var(--ink);font-size:12px;word-break:break-all;font-weight:600;}
+.side .foot button{margin-top:8px;}
+.main{flex:1;min-width:0;padding:24px 28px 60px;}
+.head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap;}
+.head h2{font-size:19px;margin:0;letter-spacing:-.3px;}
+.head .cnt{color:var(--gray);font-weight:500;font-size:13px;margin-left:7px;}
+
+/* ---------- 목록 ---------- */
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+table{width:100%;border-collapse:collapse;}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:middle;}
+th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--gray);background:#FAFBFC;font-weight:600;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:#FAFBFC;}
+td.t-title{font-weight:600;}
+td.t-sub{color:var(--gray);font-size:12px;}
+.pill{display:inline-block;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:600;}
+.pill-on{background:#ECFDF3;color:#0A7A47;}
+.pill-off{background:#F3F4F6;color:var(--gray);}
+.rowacts{display:flex;gap:6px;justify-content:flex-end;}
+.empty{padding:40px 16px;text-align:center;color:var(--gray);font-size:13px;}
+
+/* ---------- 폼(패널) ---------- */
+.overlay{position:fixed;inset:0;background:rgba(17,18,20,.4);display:flex;justify-content:flex-end;z-index:50;}
+.panel{width:min(640px,100%);background:var(--surface);height:100%;overflow-y:auto;padding:22px 26px 40px;}
+.panel h3{font-size:17px;margin:0 0 2px;letter-spacing:-.3px;}
+.panel .psub{color:var(--gray);font-size:12px;margin:0 0 18px;}
+.panel .actions{position:sticky;bottom:-40px;background:var(--surface);padding:14px 0;margin-top:22px;border-top:1px solid var(--line);display:flex;gap:8px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.chk{display:flex;align-items:center;gap:8px;padding:9px 0;}
+.chk input{width:16px;height:16px;}
+.chk label{font-size:13px;font-weight:500;margin:0;color:var(--ink);}
+.imgbox{display:flex;gap:12px;align-items:center;}
+.imgbox img{width:64px;height:64px;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:#F3F4F6;}
+.sub-list{border:1px solid var(--line);border-radius:9px;padding:10px;background:#FAFBFC;}
+.sub-row{display:grid;grid-template-columns:130px 1fr 110px 28px;gap:6px;align-items:center;margin-bottom:6px;}
+.sub-row:last-child{margin-bottom:0;}
+.sub-row .x{border:none;background:none;color:var(--danger);font-size:16px;padding:0;}
+.sub-empty{color:var(--gray);font-size:12px;padding:4px 2px 8px;}
+
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(14px);background:var(--ink);color:#fff;padding:11px 18px;border-radius:99px;font-size:13px;font-weight:500;opacity:0;pointer-events:none;transition:.22s;z-index:99;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:760px){
+  #appView{flex-direction:column;}
+  .side{width:100%;border-right:none;border-bottom:1px solid var(--line);}
+  .side nav{flex-direction:row;flex-wrap:wrap;}
+  .side .foot{margin-top:14px;}
+  .main{padding:18px 14px 50px;}
+  .grid2{grid-template-columns:1fr;}
+  .sub-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ============ 로그인 ============ -->
+<div id="loginView">
+  <div class="login-card">
+    <h1>Fairtoon 관리자</h1>
+    <p class="sub" id="loginSub">등록된 관리자만 로그인할 수 있습니다.</p>
+    <div id="loginMsg"></div>
+
+    <!-- 로그인 폼 -->
+    <div id="formLogin">
+      <div class="field">
+        <label>이메일</label>
+        <input type="email" id="inEmail" autocomplete="username" placeholder="name@example.com">
+      </div>
+      <div class="field">
+        <label>비밀번호</label>
+        <input type="password" id="inPw" autocomplete="current-password" placeholder="••••••••">
+      </div>
+      <button class="btn btn-primary" style="width:100%" id="btnLogin">로그인</button>
+      <div style="margin-top:12px;text-align:center;">
+        <button class="linkbtn" id="btnForgot">비밀번호를 잊으셨나요?</button>
+      </div>
+    </div>
+
+    <!-- 비밀번호 재설정 메일 요청 -->
+    <div id="formForgot" class="hide">
+      <div class="field">
+        <label>가입한 이메일</label>
+        <input type="email" id="inResetEmail" placeholder="name@example.com">
+        <div class="hint">비밀번호를 새로 정할 수 있는 링크를 메일로 보내드립니다.</div>
+      </div>
+      <button class="btn btn-primary" style="width:100%" id="btnSendReset">재설정 메일 보내기</button>
+      <div style="margin-top:12px;text-align:center;">
+        <button class="linkbtn" id="btnBackLogin">← 로그인으로 돌아가기</button>
+      </div>
+    </div>
+
+    <!-- 비밀번호 설정(초대·재설정 링크로 진입) -->
+    <div id="formSetPw" class="hide">
+      <div class="field">
+        <label>새 비밀번호</label>
+        <input type="password" id="inNewPw" autocomplete="new-password" placeholder="8자 이상">
+      </div>
+      <div class="field">
+        <label>새 비밀번호 확인</label>
+        <input type="password" id="inNewPw2" autocomplete="new-password" placeholder="다시 한 번">
+      </div>
+      <button class="btn btn-primary" style="width:100%" id="btnSetPw">비밀번호 저장</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 관리 화면 ============ -->
+<div id="appView" class="hide">
+  <aside class="side">
+    <div class="brand">FAIR<span>TOON</span> 관리자</div>
+    <nav id="navTabs"></nav>
+    <div class="foot">
+      로그인 계정
+      <b id="whoami"></b>
+      <button class="btn btn-sm" id="btnChangePw">비밀번호 변경</button>
+      <button class="btn btn-sm" id="btnLogout">로그아웃</button>
+      <div style="margin-top:10px;"><a href="../" target="_blank" style="color:var(--blue);text-decoration:none;font-weight:600;">사이트 보기 ↗</a></div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="head">
+      <h2 id="listTitle">—<span class="cnt" id="listCount"></span></h2>
+      <button class="btn btn-primary" id="btnNew">+ 새로 추가</button>
+    </div>
+    <div class="card"><div id="listBody"><div class="empty">불러오는 중…</div></div></div>
+  </main>
+</div>
+
+<div id="panelHost"></div>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* ============================================================
+   Fairtoon 관리자 CMS (P3)
+   기획서 docs/plan.md v3 §6 · 스키마 §7 / supabase/01_schema.sql
+   ============================================================ */
+var SUPABASE_URL="https://wrvllrxwgautewttvffe.supabase.co";
+var SUPABASE_ANON_KEY="sb_publishable_wuImInmyi0WtmCQKetBBhw_QJI-AZAY";
+var BUCKET="media";
+var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+/* ---------------- 콘텐츠 정의 (필드 정의 → 목록·폼 자동 생성) ----------------
+   t: text | textarea | tags | bool | int | select | image | url | datetime | shorts | links */
+var SCHEMAS={
+  works:{
+    label:"작품", table:"works", order:"sort", label_field:"title_ko",
+    cols:[{k:"title_ko",h:"제목"},{k:"author",h:"작가"},{k:"genres",h:"장르"},{k:"is_curated",h:"큐레이션"},{k:"sort",h:"순서"}],
+    fields:[
+      {k:"title_ko",t:"text",label:"제목 (한글)",req:true},
+      {k:"title_en",t:"text",label:"제목 (영문)",hint:"검색 매칭에 쓰입니다."},
+      {k:"aliases",t:"tags",label:"별칭",hint:"쉼표로 구분. 예: 치인트, 치즈 인 더 트랩"},
+      {k:"author",t:"text",label:"글 작가"},
+      {k:"art_author",t:"text",label:"그림 작가"},
+      {k:"genres",t:"tags",label:"장르",hint:"쉼표로 구분. 예: 로맨스, 코미디"},
+      {k:"status",t:"select",label:"연재 상태",opts:["완결","연재"]},
+      {k:"blurb_ko",t:"textarea",label:"한 줄 소개 (한글)"},
+      {k:"blurb_en",t:"textarea",label:"한 줄 소개 (영문)"},
+      {k:"cover_url",t:"image",label:"표지 이미지"},
+      {k:"is_curated",t:"bool",label:"명작 큐레이션에 노출"},
+      {k:"curated_note",t:"text",label:"큐레이션 메모"},
+      {k:"sort",t:"int",label:"정렬 순서",hint:"작을수록 앞에 나옵니다."},
+      {k:"__links",t:"links",label:"합법 플랫폼 링크"}
+    ]
+  },
+  articles:{
+    label:"아티클", table:"articles", order:"id", label_field:"title_ko",
+    cols:[{k:"title_ko",h:"제목"},{k:"category",h:"분류"},{k:"read_time",h:"분량"},{k:"is_published",h:"발행"}],
+    fields:[
+      {k:"title_ko",t:"text",label:"제목 (한글)",req:true},
+      {k:"title_en",t:"text",label:"제목 (영문)"},
+      {k:"slug",t:"text",label:"주소 슬러그",req:true,hint:"영문·하이픈. 기사 주소가 됩니다. 예: public-goods-free-rider"},
+      {k:"category",t:"text",label:"분류",hint:"예: 가격차별, 공공재, 시장실패"},
+      {k:"concept",t:"text",label:"핵심 개념",hint:"예: 외부효과 · 시장실패 · 과소공급"},
+      {k:"read_time",t:"text",label:"읽는 시간",hint:"예: 7분"},
+      {k:"excerpt_ko",t:"textarea",label:"요약 (한글)"},
+      {k:"excerpt_en",t:"textarea",label:"요약 (영문)"},
+      {k:"body_ko",t:"textarea",label:"본문 (한글)",big:true,hint:"문단 사이는 빈 줄로 구분합니다."},
+      {k:"body_en",t:"textarea",label:"본문 (영문)",big:true},
+      {k:"cover_url",t:"image",label:"대표 이미지"},
+      {k:"is_published",t:"bool",label:"발행 (체크 해제 시 초안 — 사이트에 안 보입니다)"},
+      {k:"published_at",t:"datetime",label:"발행일시"}
+    ]
+  },
+  creator_voices:{
+    label:"작가의 목소리", table:"creator_voices", order:"sort", label_field:"creator_name",
+    cols:[{k:"creator_name",h:"작가"},{k:"work",h:"작품"},{k:"is_published",h:"발행"},{k:"sort",h:"순서"}],
+    fields:[
+      {k:"creator_name",t:"text",label:"작가명",req:true},
+      {k:"work",t:"text",label:"대표 작품"},
+      {k:"quote_ko",t:"textarea",label:"핵심 인용구 (한글)"},
+      {k:"quote_en",t:"textarea",label:"핵심 인용구 (영문)"},
+      {k:"interview_youtube_url",t:"url",label:"인터뷰 유튜브 주소",hint:"영상 파일이 아니라 유튜브 링크를 넣습니다."},
+      {k:"__shorts",t:"shorts",label:"숏츠 목록"},
+      {k:"summary_ko",t:"textarea",label:"요약 (한글)"},
+      {k:"summary_en",t:"textarea",label:"요약 (영문)"},
+      {k:"thumb_url",t:"image",label:"썸네일"},
+      {k:"is_published",t:"bool",label:"발행"},
+      {k:"sort",t:"int",label:"정렬 순서"}
+    ]
+  },
+  safety_cards:{
+    label:"안전 카드", table:"safety_cards", order:"sort", label_field:"title_ko",
+    cols:[{k:"title_ko",h:"제목"},{k:"device",h:"기기"},{k:"sort",h:"순서"}],
+    fields:[
+      {k:"device",t:"select",label:"기기 분류",opts:["공통","iphone","android","mac","windows"],hint:"'공통'은 상단 위협 카드로 표시됩니다."},
+      {k:"icon",t:"text",label:"아이콘",hint:"이모지 1자. 예: ⚠ ✅ 🛟"},
+      {k:"title_ko",t:"text",label:"제목 (한글)",req:true},
+      {k:"title_en",t:"text",label:"제목 (영문)"},
+      {k:"body_ko",t:"textarea",label:"본문 (한글)",hint:"기기별 카드는 한 줄에 항목 하나씩, 앞에 '- '를 붙입니다."},
+      {k:"body_en",t:"textarea",label:"본문 (영문)"},
+      {k:"sort",t:"int",label:"정렬 순서"}
+    ]
+  },
+  home_banners:{
+    label:"홈 배너", table:"home_banners", order:"sort", label_field:"title",
+    cols:[{k:"title",h:"제목"},{k:"type",h:"종류"},{k:"is_active",h:"노출"},{k:"sort",h:"순서"}],
+    fields:[
+      {k:"type",t:"select",label:"종류",opts:["featured","hook"]},
+      {k:"title",t:"text",label:"제목",req:true},
+      {k:"subtitle",t:"text",label:"부제"},
+      {k:"image_url",t:"image",label:"배너 이미지"},
+      {k:"link",t:"url",label:"클릭 시 이동할 주소"},
+      {k:"starts_at",t:"datetime",label:"노출 시작"},
+      {k:"ends_at",t:"datetime",label:"노출 종료"},
+      {k:"is_active",t:"bool",label:"노출"},
+      {k:"sort",t:"int",label:"정렬 순서"}
+    ]
+  }
+};
+var TAB_ORDER=["works","articles","creator_voices","safety_cards","home_banners"];
+
+/* ---------------- 유틸 ---------------- */
+function $(id){return document.getElementById(id);}
+function esc(s){return String(s===null||s===undefined?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+var toastTimer;
+function toast(msg){var t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},2400);}
+function showMsg(html,type){$("loginMsg").innerHTML=html?'<div class="msg msg-'+(type||"err")+'">'+html+'</div>':"";}
+
+/* ---------------- 인증 ---------------- */
+var session=null,platformsCache=[];
+
+function showLogin(which){
+  $("appView").classList.add("hide");
+  $("loginView").classList.remove("hide");
+  ["formLogin","formForgot","formSetPw"].forEach(function(f){$(f).classList.add("hide");});
+  $(which||"formLogin").classList.remove("hide");
+  $("loginSub").textContent = which==="formSetPw" ? "새로 사용할 비밀번호를 정해주세요." : "등록된 관리자만 로그인할 수 있습니다.";
+}
+
+async function isAdmin(){
+  var r=await sb.from("admins").select("user_id,role").limit(1);
+  return !r.error && r.data && r.data.length>0;
+}
+
+async function afterLogin(){
+  var ok=await isAdmin();
+  if(!ok){
+    await sb.auth.signOut();
+    showLogin("formLogin");
+    showMsg("이 계정은 아직 관리자로 등록되지 않았습니다. 담당자에게 admins 등록을 요청해 주세요.");
+    return;
+  }
+  showMsg("");
+  $("loginView").classList.add("hide");
+  $("appView").classList.remove("hide");
+  $("whoami").textContent=(session&&session.user&&session.user.email)||"";
+  var p=await sb.from("platforms").select("key,name").order("sort");
+  platformsCache=p.data||[];
+  buildTabs();
+  openTab(TAB_ORDER[0]);
+}
+
+$("btnLogin").onclick=async function(){
+  var email=$("inEmail").value.trim(),pw=$("inPw").value;
+  if(!email||!pw){showMsg("이메일과 비밀번호를 모두 입력해 주세요.");return;}
+  this.disabled=true;this.textContent="로그인 중…";
+  var r=await sb.auth.signInWithPassword({email:email,password:pw});
+  this.disabled=false;this.textContent="로그인";
+  if(r.error){showMsg("로그인하지 못했습니다. 이메일과 비밀번호를 확인해 주세요.<br><span style='opacity:.7;font-size:12px'>"+esc(r.error.message)+"</span>");return;}
+  session=r.data.session;
+  afterLogin();
+};
+$("inPw").onkeydown=function(e){if(e.key==="Enter")$("btnLogin").click();};
+$("btnForgot").onclick=function(){showMsg("");$("inResetEmail").value=$("inEmail").value;showLogin("formForgot");};
+$("btnBackLogin").onclick=function(){showMsg("");showLogin("formLogin");};
+$("btnSendReset").onclick=async function(){
+  var email=$("inResetEmail").value.trim();
+  if(!email){showMsg("이메일을 입력해 주세요.");return;}
+  this.disabled=true;
+  var r=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+location.pathname});
+  this.disabled=false;
+  if(r.error){showMsg(esc(r.error.message));return;}
+  showMsg("재설정 메일을 보냈습니다. 메일의 링크로 들어와 새 비밀번호를 정해주세요.","ok");
+};
+$("btnSetPw").onclick=async function(){
+  var a=$("inNewPw").value,b=$("inNewPw2").value;
+  if(a.length<8){showMsg("비밀번호는 8자 이상으로 정해주세요.");return;}
+  if(a!==b){showMsg("두 비밀번호가 서로 다릅니다.");return;}
+  this.disabled=true;
+  var r=await sb.auth.updateUser({password:a});
+  this.disabled=false;
+  if(r.error){showMsg(esc(r.error.message));return;}
+  showMsg("비밀번호를 저장했습니다.","ok");
+  var s=await sb.auth.getSession();
+  session=s.data.session;
+  if(session) afterLogin(); else showLogin("formLogin");
+};
+$("btnLogout").onclick=async function(){await sb.auth.signOut();session=null;location.reload();};
+$("btnChangePw").onclick=function(){
+  $("appView").classList.add("hide");
+  showMsg("");
+  showLogin("formSetPw");
+};
+
+/* 초대·재설정 링크로 들어온 경우 처리 */
+sb.auth.onAuthStateChange(function(event,s){
+  session=s;
+  if(event==="PASSWORD_RECOVERY"){showLogin("formSetPw");return;}
+});
+
+(async function boot(){
+  var s=await sb.auth.getSession();
+  session=s.data.session;
+  if(/type=recovery|type=invite/.test(location.hash)){showLogin("formSetPw");return;}
+  if(session) afterLogin(); else showLogin("formLogin");
+})();
+
+/* ---------------- 탭 · 목록 ---------------- */
+var curKey=null,curRows=[];
+
+function buildTabs(){
+  $("navTabs").innerHTML=TAB_ORDER.map(function(k){
+    return '<button data-k="'+k+'">'+esc(SCHEMAS[k].label)+'</button>';
+  }).join("");
+  Array.prototype.forEach.call($("navTabs").children,function(b){
+    b.onclick=function(){openTab(b.getAttribute("data-k"));};
+  });
+}
+
+async function openTab(key){
+  curKey=key;
+  var S=SCHEMAS[key];
+  Array.prototype.forEach.call($("navTabs").children,function(b){b.classList.toggle("on",b.getAttribute("data-k")===key);});
+  $("listTitle").innerHTML=esc(S.label)+'<span class="cnt" id="listCount"></span>';
+  $("listBody").innerHTML='<div class="empty">불러오는 중…</div>';
+  var r=await sb.from(S.table).select("*").order(S.order,{ascending:true});
+  if(r.error){$("listBody").innerHTML='<div class="empty">불러오지 못했습니다: '+esc(r.error.message)+'</div>';return;}
+  curRows=r.data||[];
+  $("listCount").textContent=" "+curRows.length+"건";
+  renderList();
+}
+
+function cellValue(row,k){
+  var v=row[k];
+  if(k==="is_published"||k==="is_curated"||k==="is_active")
+    return '<span class="pill '+(v?"pill-on":"pill-off")+'">'+(v?(k==="is_active"?"노출":"발행"):"초안")+'</span>';
+  if(Array.isArray(v)) return esc(v.join(", "));
+  return esc(v===null||v===undefined?"—":v);
+}
+
+function renderList(){
+  var S=SCHEMAS[curKey];
+  if(!curRows.length){$("listBody").innerHTML='<div class="empty">아직 등록된 항목이 없습니다. 오른쪽 위 “+ 새로 추가”로 시작하세요.</div>';return;}
+  var html='<table><thead><tr>'+
+    S.cols.map(function(c){return '<th>'+esc(c.h)+'</th>';}).join("")+
+    '<th style="text-align:right">관리</th></tr></thead><tbody>'+
+    curRows.map(function(row,i){
+      return '<tr>'+S.cols.map(function(c,ci){
+        return '<td class="'+(ci===0?"t-title":"t-sub")+'">'+cellValue(row,c.k)+'</td>';
+      }).join("")+
+      '<td><div class="rowacts">'+
+        '<button class="btn btn-sm" data-edit="'+i+'">수정</button>'+
+        '<button class="btn btn-sm btn-danger" data-del="'+i+'">삭제</button>'+
+      '</div></td></tr>';
+    }).join("")+'</tbody></table>';
+  $("listBody").innerHTML=html;
+  $("listBody").querySelectorAll("[data-edit]").forEach(function(b){
+    b.onclick=function(){openForm(curRows[+b.getAttribute("data-edit")]);};
+  });
+  $("listBody").querySelectorAll("[data-del]").forEach(function(b){
+    b.onclick=function(){removeRow(curRows[+b.getAttribute("data-del")]);};
+  });
+}
+
+$("btnNew").onclick=function(){openForm(null);};
+
+async function removeRow(row){
+  var S=SCHEMAS[curKey];
+  var name=row[S.label_field]||"이 항목";
+  if(!confirm('“'+name+'” 을(를) 삭제합니다. 되돌릴 수 없습니다. 계속할까요?')) return;
+  var r=await sb.from(S.table).delete().eq("id",row.id);
+  if(r.error){toast("삭제하지 못했습니다: "+r.error.message);return;}
+  toast("삭제했습니다.");
+  openTab(curKey);
+}
+
+/* ---------------- 폼 ---------------- */
+function fieldHTML(f,row){
+  var v=row?row[f.k]:null;
+  var hint=f.hint?'<div class="hint">'+esc(f.hint)+'</div>':"";
+  var head='<label>'+esc(f.label)+(f.req?' <span style="color:var(--danger)">*</span>':"")+'</label>';
+  if(f.t==="bool")
+    return '<div class="chk"><input type="checkbox" id="f_'+f.k+'"'+(v?" checked":"")+'><label for="f_'+f.k+'">'+esc(f.label)+'</label></div>'+hint;
+  if(f.t==="textarea")
+    return '<div class="field">'+head+'<textarea id="f_'+f.k+'"'+(f.big?' style="min-height:240px"':"")+'>'+esc(v)+'</textarea>'+hint+'</div>';
+  if(f.t==="select")
+    return '<div class="field">'+head+'<select id="f_'+f.k+'">'+f.opts.map(function(o){
+      return '<option value="'+esc(o)+'"'+(v===o?" selected":"")+'>'+esc(o)+'</option>';}).join("")+'</select>'+hint+'</div>';
+  if(f.t==="tags")
+    return '<div class="field">'+head+'<input type="text" id="f_'+f.k+'" value="'+esc(Array.isArray(v)?v.join(", "):"")+'">'+hint+'</div>';
+  if(f.t==="int")
+    return '<div class="field">'+head+'<input type="number" id="f_'+f.k+'" value="'+esc(v===null||v===undefined?0:v)+'">'+hint+'</div>';
+  if(f.t==="datetime"){
+    var dv=v?new Date(v).toISOString().slice(0,16):"";
+    return '<div class="field">'+head+'<input type="datetime-local" id="f_'+f.k+'" value="'+esc(dv)+'">'+hint+'</div>';
+  }
+  if(f.t==="image")
+    return '<div class="field">'+head+
+      '<div class="imgbox"><img id="p_'+f.k+'" src="'+esc(v||"")+'" alt=""><div style="flex:1">'+
+      '<input type="file" accept="image/*" id="u_'+f.k+'" style="padding:6px;font-size:12px">'+
+      '<input type="text" id="f_'+f.k+'" value="'+esc(v)+'" placeholder="이미지 주소" style="margin-top:6px">'+
+      '</div></div>'+hint+'</div>';
+  if(f.t==="links") return '<div class="field">'+head+'<div class="sub-list" id="linksBox"></div>'+
+      '<button type="button" class="btn btn-sm" style="margin-top:8px" id="addLink">+ 링크 추가</button>'+
+      '<div class="hint">플랫폼별 작품 페이지 주소를 넣습니다. 비워두면 검색 주소가 쓰입니다.</div></div>';
+  if(f.t==="shorts") return '<div class="field">'+head+'<div class="sub-list" id="shortsBox"></div>'+
+      '<button type="button" class="btn btn-sm" style="margin-top:8px" id="addShort">+ 숏츠 추가</button></div>';
+  return '<div class="field">'+head+'<input type="'+(f.t==="url"?"url":"text")+'" id="f_'+f.k+'" value="'+esc(v)+'">'+hint+'</div>';
+}
+
+var linkRows=[],shortRows=[];
+
+function drawLinks(){
+  var box=$("linksBox"); if(!box) return;
+  if(!linkRows.length){box.innerHTML='<div class="sub-empty">등록된 링크가 없습니다.</div>';return;}
+  box.innerHTML=linkRows.map(function(l,i){
+    return '<div class="sub-row">'+
+      '<select data-l="'+i+'" data-f="platform_key">'+platformsCache.map(function(p){
+        return '<option value="'+esc(p.key)+'"'+(l.platform_key===p.key?" selected":"")+'>'+esc(p.name)+'</option>';}).join("")+'</select>'+
+      '<input type="url" data-l="'+i+'" data-f="url" value="'+esc(l.url)+'" placeholder="https://...">'+
+      '<input type="text" data-l="'+i+'" data-f="price_tag" value="'+esc(l.price_tag)+'" placeholder="가격 태그">'+
+      '<button type="button" class="x" data-rm="'+i+'">×</button></div>';
+  }).join("");
+  box.querySelectorAll("[data-l]").forEach(function(el){
+    el.onchange=function(){linkRows[+el.getAttribute("data-l")][el.getAttribute("data-f")]=el.value;};
+  });
+  box.querySelectorAll("[data-rm]").forEach(function(b){
+    b.onclick=function(){linkRows.splice(+b.getAttribute("data-rm"),1);drawLinks();};
+  });
+}
+function drawShorts(){
+  var box=$("shortsBox"); if(!box) return;
+  if(!shortRows.length){box.innerHTML='<div class="sub-empty">등록된 숏츠가 없습니다.</div>';return;}
+  box.innerHTML=shortRows.map(function(s,i){
+    return '<div class="sub-row" style="grid-template-columns:1fr 1fr 28px">'+
+      '<input type="url" data-s="'+i+'" data-f="youtube_url" value="'+esc(s.youtube_url)+'" placeholder="유튜브 주소">'+
+      '<input type="text" data-s="'+i+'" data-f="caption" value="'+esc(s.caption)+'" placeholder="설명">'+
+      '<button type="button" class="x" data-rms="'+i+'">×</button></div>';
+  }).join("");
+  box.querySelectorAll("[data-s]").forEach(function(el){
+    el.onchange=function(){shortRows[+el.getAttribute("data-s")][el.getAttribute("data-f")]=el.value;};
+  });
+  box.querySelectorAll("[data-rms]").forEach(function(b){
+    b.onclick=function(){shortRows.splice(+b.getAttribute("data-rms"),1);drawShorts();};
+  });
+}
+
+async function openForm(row){
+  var S=SCHEMAS[curKey];
+  linkRows=[];shortRows=[];
+  if(row&&curKey==="works"){
+    var lr=await sb.from("work_legal_links").select("*").eq("work_id",row.id).order("sort");
+    linkRows=(lr.data||[]).map(function(l){return {platform_key:l.platform_key,url:l.url,price_tag:l.price_tag||""};});
+  }
+  if(row&&curKey==="creator_voices") shortRows=Array.isArray(row.shorts)?row.shorts.slice():[];
+
+  $("panelHost").innerHTML='<div class="overlay" id="ov"><div class="panel">'+
+    '<h3>'+esc(S.label)+(row?" 수정":" 추가")+'</h3>'+
+    '<p class="psub">'+(row?esc(row[S.label_field]||""):"새 항목을 등록합니다.")+'</p>'+
+    S.fields.map(function(f){return fieldHTML(f,row);}).join("")+
+    '<div class="actions"><button class="btn btn-primary" id="btnSave">저장</button>'+
+    '<button class="btn" id="btnCancel">취소</button></div>'+
+    '</div></div>';
+  drawLinks();drawShorts();
+
+  var add=$("addLink"); if(add) add.onclick=function(){linkRows.push({platform_key:(platformsCache[0]||{}).key||"",url:"",price_tag:""});drawLinks();};
+  var adds=$("addShort"); if(adds) adds.onclick=function(){shortRows.push({youtube_url:"",caption:""});drawShorts();};
+
+  S.fields.forEach(function(f){
+    if(f.t!=="image") return;
+    var u=$("u_"+f.k); if(!u) return;
+    u.onchange=async function(){
+      var file=u.files[0]; if(!file) return;
+      toast("이미지 올리는 중…");
+      var ext=(file.name.split(".").pop()||"jpg").toLowerCase();
+      var path=curKey+"/"+Date.now()+"_"+Math.random().toString(36).slice(2,8)+"."+ext;
+      var up=await sb.storage.from(BUCKET).upload(path,file,{upsert:false});
+      if(up.error){toast("업로드 실패: "+up.error.message);return;}
+      var pub=sb.storage.from(BUCKET).getPublicUrl(path);
+      $("f_"+f.k).value=pub.data.publicUrl;
+      $("p_"+f.k).src=pub.data.publicUrl;
+      toast("이미지를 올렸습니다.");
+    };
+  });
+
+  $("btnCancel").onclick=closeForm;
+  $("ov").onclick=function(e){if(e.target.id==="ov")closeForm();};
+  $("btnSave").onclick=function(){saveForm(row);};
+}
+function closeForm(){$("panelHost").innerHTML="";}
+
+async function saveForm(row){
+  var S=SCHEMAS[curKey],payload={},bad=null;
+  S.fields.forEach(function(f){
+    if(f.t==="links"||f.t==="shorts") return;
+    var el=$("f_"+f.k); if(!el) return;
+    var v;
+    if(f.t==="bool") v=el.checked;
+    else if(f.t==="tags") v=el.value.split(",").map(function(s){return s.trim();}).filter(Boolean);
+    else if(f.t==="int") v=parseInt(el.value,10)||0;
+    else if(f.t==="datetime") v=el.value?new Date(el.value).toISOString():null;
+    else{v=el.value.trim(); if(v==="") v=null;}
+    if(f.req&&(v===null||v==="")) bad=bad||f.label;
+    payload[f.k]=v;
+  });
+  if(bad){toast("“"+bad+"” 은(는) 반드시 입력해야 합니다.");return;}
+  if(curKey==="creator_voices") payload.shorts=shortRows.filter(function(s){return s.youtube_url;});
+
+  var btn=$("btnSave"); btn.disabled=true; btn.textContent="저장 중…";
+  var res = row ? await sb.from(S.table).update(payload).eq("id",row.id).select()
+                : await sb.from(S.table).insert(payload).select();
+  if(res.error){
+    btn.disabled=false; btn.textContent="저장";
+    toast("저장하지 못했습니다: "+res.error.message);
+    return;
+  }
+  var saved=(res.data&&res.data[0])||row;
+
+  if(curKey==="works"&&saved){
+    await sb.from("work_legal_links").delete().eq("work_id",saved.id);
+    var rows=linkRows.filter(function(l){return l.platform_key&&l.url;})
+      .map(function(l,i){return {work_id:saved.id,platform_key:l.platform_key,url:l.url,price_tag:l.price_tag||null,sort:i};});
+    if(rows.length){
+      var lr=await sb.from("work_legal_links").insert(rows);
+      if(lr.error) toast("링크 저장 중 문제가 있었습니다: "+lr.error.message);
+    }
+  }
+  closeForm();
+  toast(row?"수정했습니다.":"추가했습니다.");
+  openTab(curKey);
+}
+</script>
+</body>
+</html>

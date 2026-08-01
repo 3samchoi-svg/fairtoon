@@ -474,6 +474,14 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 .acard .ac-h{font-family:var(--font-display);font-size:15.5px;letter-spacing:-.2px;line-height:1.35;margin:0 0 8px;color:#fff;}
 .acard .ac-x{font-size:12.5px;color:var(--gray);line-height:1.55;margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
 /* voice short in shelf */
+/* ---- 홈 추천 배너 (관리자 등록분) ---- */
+.banner-strip{display:flex;gap:14px;flex-wrap:wrap;margin-top:24px;}
+.hbanner{flex:1 1 300px;min-height:118px;border-radius:var(--radius-m);background:var(--surface);border:1px solid var(--line);display:flex;align-items:flex-end;padding:16px;transition:transform .18s;}
+.hbanner.clickable{cursor:pointer;}
+.hbanner.clickable:hover{transform:translateY(-3px);}
+.hb-title{font-size:16px;font-weight:800;letter-spacing:-.2px;}
+.hb-sub{font-size:13px;opacity:.82;margin-top:5px;line-height:1.5;}
+
 .vshort{flex:0 0 150px;width:150px;aspect-ratio:9/16;border-radius:var(--radius-m);overflow:hidden;position:relative;display:flex;align-items:flex-end;cursor:pointer;scroll-snap-align:start;transition:transform .15s;box-shadow:var(--shadow-md);}
 .vshort:hover{transform:translateY(-4px);}
 .vshort .vs-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.8),transparent 60%);}
@@ -707,6 +715,8 @@ var checkedState={};var activeDevice="아이폰";
 var SUPABASE_URL="https://wrvllrxwgautewttvffe.supabase.co";
 var SUPABASE_ANON_KEY="sb_publishable_wuImInmyi0WtmCQKetBBhw_QJI-AZAY";
 var DEVICE_LABEL={iphone:"아이폰",android:"갤럭시",mac:"맥북",windows:"윈도우"};
+var VOICES=[];     /* 작가의 목소리 — 비어 있으면 아래 플레이스홀더가 표시됩니다 */
+var BANNERS=[];    /* 홈 추천 배너 — 비어 있으면 표시하지 않습니다 */
 var COUNTER_SLUG="externality-real-cost-of-piracy";  /* 수익 유출 카운터를 붙이는 기사 */
 
 function sbFetch(path){
@@ -758,9 +768,12 @@ function loadContent(){
     sbFetch("platforms?select=*&order=sort"),
     sbFetch("works?select=*,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
     sbFetch("articles?select=*&is_published=eq.true&order=id"),
-    sbFetch("safety_cards?select=*&order=sort")
+    sbFetch("safety_cards?select=*&order=sort"),
+    sbFetch("creator_voices?select=*&is_published=eq.true&order=sort"),
+    sbFetch("home_banners?select=*&is_active=eq.true&order=sort")
   ]).then(function(res){
     adoptPlatforms(res[0]);adoptWorks(res[1]);adoptArticles(res[2]);adoptSafety(res[3]);
+    VOICES=res[4]||[];BANNERS=res[5]||[];
   }).catch(function(e){
     console.warn("콘텐츠 로드 실패 — 내장 시드로 표시합니다.",e);
   });
@@ -837,7 +850,7 @@ var toastTimer;
 function showToast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},3000);}
 
 /* ---------------- ROUTER ---------------- */
-var state={view:"home",query:"",articleId:null,quizStep:0,quizScores:{},discoverGenre:"전체"};
+var state={view:"home",query:"",articleId:null,voiceId:null,quizStep:0,quizScores:{},discoverGenre:"전체"};
 
 /* 주소(해시) 동기화 — 새로고침·뒤로가기·링크 공유 지원 */
 var expectedHash=null,bootRender=false;
@@ -850,6 +863,7 @@ function buildHash(){
   if(state.view==="home") return "#/";
   if(state.view==="search") return "#/search?q="+encodeURIComponent(state.query||"");
   if(state.view==="article") return "#/articles/"+encodeURIComponent(articleSlug(state.articleId));
+  if(state.view==="voice") return "#/voices/"+state.voiceId;
   if(state.view==="discover") return "#/discover"+(state.discoverGenre&&state.discoverGenre!=="전체"?"/"+encodeURIComponent(state.discoverGenre):"");
   return "#/"+state.view;
 }
@@ -874,6 +888,11 @@ function applyHash(){
     var a=ARTICLES.find(function(x){return x.slug===seg[1]||String(x.id)===seg[1];});
     if(a){showArticle(a.id);return;}
     showView("articles");return;
+  }
+  if(v==="voices"&&seg[1]){
+    var vo=VOICES.find(function(x){return String(x.id)===seg[1];});
+    if(vo){showVoice(vo.id);return;}
+    showView("voices");return;
   }
   if(v==="discover"&&seg[1]){goGenre(seg[1]);return;}
   showView(HASH_VIEWS.indexOf(v)!==-1?v:"home");
@@ -959,6 +978,23 @@ function startHeroTyping(){
 }
 var HOME_GENRES=["로맨스","액션","스릴러","판타지","드라마","코미디","일상","미스터리"];
 function openLegal(url,name){showToast(name+" 검색으로 이동합니다 (합법 플랫폼)");window.open(url,"_blank","noopener");}
+/* 홈 추천 배너 — 관리자에 등록된 것이 없으면 아무것도 그리지 않는다 */
+function goBanner(url){
+  if(!url) return;
+  if(url.charAt(0)==="#") location.hash=url.replace(/^#/,"");
+  else window.open(url,"_blank","noopener");
+}
+function bannerStripHTML(){
+  if(!BANNERS.length) return "";
+  return '<div class="container"><div class="banner-strip">'+BANNERS.map(function(b){
+    var st="";
+    if(b.image_url) st="background-image:linear-gradient(90deg,rgba(0,0,0,.62),rgba(0,0,0,.18)),url("+b.image_url+");background-size:cover;background-position:center;color:#fff;";
+    var click=b.link?' onclick="goBanner(\''+b.link+'\')" role="button" tabindex="0"':'';
+    return '<div class="hbanner'+(b.link?" clickable":"")+'" style="'+st+'"'+click+'>'+
+      '<div><div class="hb-title">'+(b.title||"")+'</div>'+
+      (b.subtitle?'<div class="hb-sub">'+b.subtitle+'</div>':'')+'</div></div>';
+  }).join("")+'</div></div>';
+}
 function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="discover");});render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
 function hcardHTML(c,i,badge){
   var p=platOf(c.legal);var url=p.search.replace("{q}",encodeURIComponent(c.title));
@@ -983,7 +1019,10 @@ function renderHome(){
    {t:"합법으로 바로 간다",d:"네이버웹툰·카카오페이지·리디 등 공식 플랫폼 검색으로 마찰 없이 이동."},
    {t:"왜 합법인지 안다",d:"경제학 렌즈 아티클과 작가의 목소리로 ‘왜 합법이어야 하는가’를 스스로 납득."}
   ];
-  var voices=[{t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”",c:0},{t:"“결제 한 번이 다음 화를 만듭니다”",c:1},{t:"“기다무로 봐주시는 것도 큰 힘이에요”",c:4},{t:"“불법 스캔은 그림까지 뭉개져요”",c:8},{t:"“합법이 이렇게 쉬운 줄 몰랐어요”",c:5}];
+  /* 등록된 인터뷰가 있으면 그 인용구로, 없으면 플레이스홀더 문구로 */
+  var voices=VOICES.length
+    ? VOICES.slice(0,6).map(function(v,i){return {t:v.quote_ko||v.creator_name||"",c:i,go:"showVoice("+v.id+")",bg:voiceThumb(v,i)};})
+    : [{t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”",c:0},{t:"“결제 한 번이 다음 화를 만듭니다”",c:1},{t:"“기다무로 봐주시는 것도 큰 힘이에요”",c:4},{t:"“불법 스캔은 그림까지 뭉개져요”",c:8},{t:"“합법이 이렇게 쉬운 줄 몰랐어요”",c:5}];
   var html=''+
   '<section class="spotlight"><div class="spotlight-inner">'+
     '<div class="eyebrow">🇰🇷 한국 웹툰 · 합법으로 보는 가장 쉬운 길</div>'+
@@ -998,6 +1037,7 @@ function renderHome(){
       '<div class="trending"><span class="label">인기 검색:</span>'+trending.map(function(q){return '<button class="chip" onclick="runSearch(\''+q+'\')">'+q+'</button>';}).join("")+'</div>'+
     '</div>'+
   '</div></section>'+
+  bannerStripHTML()+
   '<div class="container">'+
     '<div class="shelf" style="margin-top:28px;"><div class="genre-rail">'+
       HOME_GENRES.map(function(g){return '<button class="genre-pill" onclick="goGenre(\''+g+'\')">'+g+'</button>';}).join("")+
@@ -1017,7 +1057,7 @@ function renderHome(){
       '<button class="btn btn-primary" onclick="startQuiz()">테스트 시작하기</button>'+
     '</div></div>'+
     '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
-      '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort" style="'+coverStyle(v.c)+'" onclick="showView(\'voices\')"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
+      '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort" style="'+(v.bg||coverStyle(v.c))+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
     '</div>'+
     '<div class="shelf" style="margin-top:56px;"><div class="shelf-head"><h2>페어툰은 이렇게 작동합니다</h2></div>'+
       '<div class="how-strip">'+how.map(function(s,i){return '<div class="how-card"><div class="how-num">'+(i+1)+'</div><h3>'+s.t+'</h3><p>'+s.d+'</p></div>';}).join("")+'</div>'+
@@ -1083,7 +1123,66 @@ function renderDiscover(){
 }
 
 /* ---------------- RENDER: CREATOR VOICES ---------------- */
+/* 유튜브 주소에서 영상 id 추출 (watch·youtu.be·embed·shorts 지원) */
+function ytId(u){var m=/(?:v=|youtu\.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{6,})/.exec(u||"");return m?m[1]:"";}
+function voiceThumb(v,i){
+  if(v.thumb_url) return "background-image:url("+v.thumb_url+");background-size:cover;background-position:center;";
+  var vid=ytId(v.interview_youtube_url);
+  if(vid) return "background-image:url(https://i.ytimg.com/vi/"+vid+"/hqdefault.jpg);background-size:cover;background-position:center;";
+  return coverStyle(i);
+}
+function voiceCardHTML(v,i){
+  return '<div class="hcard" onclick="showVoice('+v.id+')" tabindex="0" role="button" aria-label="'+(v.creator_name||"")+' 인터뷰">'+
+    '<div class="hc-cover" style="'+voiceThumb(v,i)+'"><span class="hc-badge">인터뷰</span>'+
+      '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M8 5v14l11-7z"/></svg></span>'+
+    '</div>'+
+    '<div class="hc-title">'+(v.creator_name||"")+'</div>'+
+    '<div class="hc-sub">'+(v.work||"인터뷰")+'</div>'+
+  '</div>';
+}
+/* DB에 등록된 인터뷰가 있으면 목록으로, 없으면 아래 플레이스홀더로 표시 */
+function renderVoicesFromDB(){
+  var html='<div class="container">'+
+    '<div class="page-header"><h1>작가의 목소리</h1><p>불법유통을 직접 겪은 창작자들의 이야기. 통계 뒤에 있는 ‘사람’을 만나는 코너입니다.</p></div>'+
+    '<div class="toon-grid">'+VOICES.map(voiceCardHTML).join("")+'</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+function renderVoiceDetail(){
+  var v=VOICES.find(function(x){return x.id===state.voiceId;});
+  if(!v){showView("voices");return;}
+  var vid=ytId(v.interview_youtube_url);
+  var video=vid
+    ? '<div class="voice-video" style="padding:0;overflow:hidden;"><iframe width="100%" height="100%" style="border:0;position:absolute;inset:0;" src="https://www.youtube.com/embed/'+vid+'" title="'+(v.creator_name||"")+' 인터뷰" allowfullscreen loading="lazy"></iframe></div>'
+    : '<div class="voice-video"><div class="play"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div><span class="vlabel">인터뷰 영상 준비 중</span></div>';
+  var shorts=(Array.isArray(v.shorts)?v.shorts:[]).filter(function(s){return s&&s.youtube_url;});
+  var shortsHTML=shorts.length
+    ? '<div class="section-label-row"><span class="section-label">인터뷰 숏츠</span></div>'+
+      '<div class="shorts-grid">'+shorts.map(function(s,i){
+        var sid=ytId(s.youtube_url);
+        var st=sid?"background-image:url(https://i.ytimg.com/vi/"+sid+"/hqdefault.jpg);background-size:cover;background-position:center;":coverStyle(i);
+        return '<div class="short-card" style="'+st+'" onclick="openLegal(\''+s.youtube_url+'\',\'유튜브\')"><div class="sc-overlay"></div>'+
+          '<div class="sc-play"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>'+
+          '<div class="sc-text">'+(s.caption||"")+'</div></div>';
+      }).join("")+'</div>'
+    : '';
+  var summary=v.summary_ko?'<div class="a-body" style="margin-top:26px;">'+v.summary_ko.split(/\n{2,}/).map(function(p){return '<p>'+p+'</p>';}).join("")+'</div>':'';
+  var html='<div class="container">'+
+    '<a href="#" class="nav-link" style="display:inline-block;padding:0;color:var(--gray);margin:32px 0 10px;font-size:14px;" onclick="showView(\'voices\');return false;">← 작가의 목소리로 돌아가기</a>'+
+    '<div class="voice-hero">'+video+
+      '<div class="voice-hero-text">'+
+        (v.quote_ko?'<p class="vquote">'+v.quote_ko+'</p>':'')+
+        '<p class="vby">— '+(v.creator_name||"")+(v.work?' · 『'+v.work+'』':'')+'</p>'+
+      '</div>'+
+    '</div>'+
+    shortsHTML+summary+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+function showVoice(id){stopCounter();state.view="voice";state.voiceId=id;render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
+
 function renderVoices(){
+  if(VOICES.length){renderVoicesFromDB();return;}
   var shorts=[
    {t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”",c:0},
    {t:"“독자님의 결제 한 번이 다음 화를 만듭니다”",c:1},
@@ -1227,6 +1326,7 @@ function renderDispatch(){
   else if(state.view==="search")renderSearch();
   else if(state.view==="discover")renderDiscover();
   else if(state.view==="voices")renderVoices();
+  else if(state.view==="voice")renderVoiceDetail();
   else if(state.view==="articles")renderArticles();
   else if(state.view==="article")renderArticleReader();
   else if(state.view==="staysafe")renderStaySafe();
