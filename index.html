@@ -646,6 +646,8 @@ var CURATED = [
  {title:"여신강림",   en:"True Beauty",          aliases:["여강"],                 author:"야옹이", genres:["로맨스","코미디"], blurb:"화장으로 감춘 얼굴과 진짜 나. 세대를 사로잡은 완결 로맨스.", legal:"naver"}
 ];
 /* 하이브리드 검색: 큐레이션 DB 부분일치(제목/영문/별칭/작가). 공백·대소문자 무시. */
+/* 명작 큐레이션에 노출할 작품만 (연재작 등 is_curated=false 는 검색에만 잡힌다) */
+function curatedOnly(){return CURATED.filter(function(c){return c.curated!==false;});}
 function normKey(s){return (s||"").toString().toLowerCase().replace(/\s+/g,"");}
 function searchCurated(q){
   var nq=normKey(q); if(!nq) return [];
@@ -757,6 +759,7 @@ function adoptWorks(rows){
     var links=r.work_legal_links||[];
     return {title:r.title_ko,en:r.title_en||"",aliases:r.aliases||[],author:r.author||"",
       genres:r.genres||[],blurb:r.blurb_ko||"",
+      status:r.status||"완결",curated:r.is_curated!==false,
       legal:links.length?links[0].platform_key:(PLATFORMS[0]&&PLATFORMS[0].key)};
   });
 }
@@ -948,7 +951,7 @@ function curatedCardHTML(c,i){
   var p=platOf(c.legal);
   var url=p.search.replace("{q}",encodeURIComponent(c.title));
   return '<div class="toon-card">'+
-    '<div class="toon-cover" style="'+coverStyle(i)+'"><span class="status-badge">완결</span><span class="ti">'+c.title+'</span></div>'+
+    '<div class="toon-cover" style="'+coverStyle(i)+'"><span class="status-badge">'+(c.status||"완결")+'</span><span class="ti">'+c.title+'</span></div>'+
     '<div class="toon-body">'+
       '<div class="toon-title">'+c.title+'</div>'+
       '<div class="toon-author">'+c.author+'</div>'+
@@ -1017,7 +1020,7 @@ function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;do
 function hcardHTML(c,i,badge){
   var p=platOf(c.legal);var url=p.search.replace("{q}",encodeURIComponent(c.title));
   return '<div class="hcard" onclick="openLegal(\''+url+'\',\''+p.name+'\')" tabindex="0" role="button" aria-label="'+c.title+'">'+
-    '<div class="hc-cover" style="'+coverStyle(i)+'"><span class="hc-badge">'+(badge||"완결")+'</span><span class="ti">'+c.title+'</span>'+
+    '<div class="hc-cover" style="'+coverStyle(i)+'"><span class="hc-badge">'+(badge||c.status||"완결")+'</span><span class="ti">'+c.title+'</span>'+
       '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#0a0a0a"><path d="M8 5v14l11-7z"/></svg></span>'+
     '</div>'+
     '<div class="hc-title">'+c.title+'</div><div class="hc-sub">'+c.author+' · '+c.genres[0]+'</div>'+
@@ -1064,7 +1067,7 @@ function renderHome(){
       '<div class="shelf-track">'+CURATED.slice(0,5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,i,"인기")+'</div>';}).join("")+'</div>'+
     '</div>'+
     '<div class="shelf"><div class="shelf-head"><h2>합법으로 보는 완결 명작</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">전체 보기</a></div>'+
-      '<div class="shelf-track">'+CURATED.map(function(c,i){return hcardHTML(c,i);}).join("")+'</div>'+
+      '<div class="shelf-track">'+curatedOnly().map(function(c,i){return hcardHTML(c,i);}).join("")+'</div>'+
     '</div>'+
     counterBandHTML()+
     '<div class="shelf"><div class="shelf-head"><h2>📈 경제학으로 읽는 웹툰</h2><a href="#" class="more" onclick="showView(\'articles\');return false;">시리즈 전체</a></div>'+
@@ -1127,8 +1130,9 @@ function renderSearch(){
 /* ---------------- RENDER: DISCOVER (명작 큐레이션) ---------------- */
 function renderDiscover(){
   var sel=state.discoverGenre||"전체";
-  var allGenres=["전체"];CURATED.forEach(function(c){c.genres.forEach(function(g){if(allGenres.indexOf(g)===-1)allGenres.push(g);});});
-  var list=(sel==="전체")?CURATED:CURATED.filter(function(c){return c.genres.indexOf(sel)!==-1;});
+  var pool=curatedOnly();
+  var allGenres=["전체"];pool.forEach(function(c){c.genres.forEach(function(g){if(allGenres.indexOf(g)===-1)allGenres.push(g);});});
+  var list=(sel==="전체")?pool:pool.filter(function(c){return c.genres.indexOf(sel)!==-1;});
   var chips=allGenres.map(function(g){return '<button class="genre-pill'+(g===sel?" active":"")+'" style="'+(g===sel?"background:var(--blue);color:#0a0a0a;":"")+'" onclick="goGenre(\''+g+'\')">'+g+'</button>';}).join("");
   var cards=list.length?'<div class="toon-grid">'+list.map(function(c){return curatedCardHTML(c,CURATED.indexOf(c));}).join("")+'</div>':'<div class="pass-empty">‘'+sel+'’ 장르의 완결 명작을 준비 중입니다.</div>';
   var html='<div class="container">'+
