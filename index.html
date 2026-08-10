@@ -32,16 +32,18 @@
   --bg:#FFFFFF;
   --surface:#FFFFFF;
   --surface-2:#F4F6FB;
-  --ink:#0F1729;
-  --ink-soft:#39435C;
-  --gray:#5C6780;
-  --gray-light:#8C97AD;
-  --line:#E3E8F2;
-  --line-soft:#EDF1F8;
-  --blue:#2F5FEF;         /* main accent */
-  --blue-dark:#1E48CC;    /* accent hover */
-  --blue-soft:rgba(47,95,239,.10);
-  --blue-softer:#EEF2FE;  /* subtle blue tint surface */
+  --navy:#001A4C;         /* 로고 아웃라인 색 — 잉크·테두리 */
+  --navy-2:#0B2C6B;
+  --ink:#001A4C;
+  --ink-soft:#22396B;
+  --gray:#4C5E85;
+  --gray-light:#8695B6;
+  --line:#D7E1F3;
+  --line-soft:#E9EFFA;
+  --blue:#0062FD;         /* main accent — 로고 블루 */
+  --blue-dark:#0047C2;    /* accent hover */
+  --blue-soft:rgba(0,98,253,.10);
+  --blue-softer:#EAF1FF;  /* subtle blue tint surface */
   --amber:#E08700;
   --amber-soft:#FFF6E5;
   --red:#E5484D;
@@ -87,11 +89,7 @@ header.site-header{
   display:flex;align-items:center;gap:16px;
 }
 .brand{display:flex;align-items:center;gap:10px;flex-shrink:0;}
-.brand-mark{
-  width:38px;height:38px;border-radius:11px;background:var(--blue-soft);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-}
-.brand-name{font-family:var(--font-display);font-size:19px;letter-spacing:-.3px;color:var(--ink);white-space:nowrap;}
+.brand-name{font-family:var(--font-display);font-size:20.5px;letter-spacing:-.4px;color:var(--ink);white-space:nowrap;}
 nav.main-nav{display:flex;align-items:center;gap:1px;flex-shrink:0;}
 .nav-link{
   font-family:var(--font-body);font-size:13.5px;font-weight:700;letter-spacing:-.1px;
@@ -540,6 +538,78 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
   .quiz-banner{padding:26px 24px;}
   .about-stats{grid-template-columns:1fr;}
 }
+/* ============ 로고 컨셉 적용 ============ */
+/* 히어로 — 로고 네이비 배경 + 집중선. 로고와 헤드라인을 한 줄로 */
+.spotlight{background:var(--navy);border-bottom:0;}
+.spotlight::before{
+  background:repeating-conic-gradient(from 0deg at 50% 34%,
+    rgba(255,255,255,.085) 0deg 2.4deg, transparent 2.4deg 7.5deg);
+  -webkit-mask-image:radial-gradient(60% 66% at 50% 34%, transparent 26%, #000 80%);
+          mask-image:radial-gradient(60% 66% at 50% 34%, transparent 26%, #000 80%);
+}
+.spotlight-inner{padding:52px 28px 58px;}
+.spotlight h1{
+  display:flex;align-items:center;justify-content:center;gap:30px;flex-wrap:wrap;
+  color:#fff;letter-spacing:-1.8px;font-size:clamp(28px,4.4vw,50px);
+}
+.spotlight h1 .accent{color:#6FA8FF;}
+.hero-logo{
+  flex:0 0 auto;width:170px;height:165px;
+  background:url('imgs/logo-full.png') center/contain no-repeat;
+  filter:drop-shadow(0 10px 26px rgba(0,0,0,.35));
+}
+/* 헤드라인 ↔ 검색창 실측 50px. 로고가 글자보다 커서 h1 아래에 56px이 이미 깔리므로 음수가 된다.
+   부모와 자식의 위 여백은 서로 상쇄되므로 둘 다 지정한다. */
+.spotlight-search{margin-top:-6px;}
+.spotlight-search .hero-search-wrap{margin-top:-6px;}
+.spotlight-search .hero-search{border:0;background:#fff;box-shadow:0 16px 40px rgba(0,0,0,.34);}
+.spotlight .trending .label{color:#93A9D0;}
+.spotlight .chip{background:rgba(255,255,255,.11);border:1.5px solid rgba(255,255,255,.26);color:#DDE7FA;}
+.spotlight .chip:hover{background:#fff;color:var(--navy);border-color:#fff;}
+@media (max-width:760px){
+  .spotlight h1{gap:16px;}
+  .hero-logo{width:124px;height:120px;}
+  /* 로고가 위로 접히면 헤드라인이 h1 맨 아래에 오므로 음수 여백을 되돌린다 */
+  .spotlight-search{margin-top:26px;}
+  .spotlight-search .hero-search-wrap{margin-top:26px;}
+}
+
+/* 셸프 제목 — 왼쪽 블루 바 */
+.shelf-head h2{color:var(--navy);font-size:19.5px;padding-left:14px;position:relative;}
+.shelf-head h2::before{content:"";position:absolute;left:0;top:9%;height:82%;width:5px;background:var(--blue);border-radius:3px;}
+
+/* 카드·버튼 — 로고의 아웃라인 감각을 절제해서 */
+.btn-primary{border:2px solid var(--navy);box-shadow:3px 3px 0 var(--navy);font-weight:800;}
+.btn-primary:hover{background:var(--blue);transform:translate(2px,2px);box-shadow:1px 1px 0 var(--navy);}
+.btn-ghost{border:2px solid var(--navy);color:var(--navy);font-weight:800;}
+.btn-ghost:hover{color:var(--navy);border-color:var(--navy);background:var(--blue-softer);}
+.genre-pill{border:1.5px solid var(--line);color:var(--navy);font-weight:700;}
+.genre-pill:hover{background:var(--navy);color:#fff;border-color:var(--navy);}
+.hcard .hc-cover{border:1.5px solid rgba(0,26,76,.16);box-shadow:0 8px 20px rgba(0,26,76,.13);}
+.hcard .hc-title{color:var(--navy);font-weight:800;}
+.rank-card .rk-num{color:#C2D3F2;margin-bottom:38px;}
+.acard .ac-h{color:var(--navy);}
+.how-card h3{color:var(--navy);}
+.counter-band{background:var(--navy);border:1px solid var(--navy-2);}
+.quiz-banner{border:2px solid var(--navy);box-shadow:4px 4px 0 var(--navy);}
+.quiz-banner .btn-primary{background:#fff;color:var(--navy);border-color:var(--navy);}
+
+/* 인터뷰 숏츠 — 영상임이 드러나도록. -empty는 등록 영상이 없을 때만 */
+.short-card-empty{background:linear-gradient(158deg,#123A82,#001A4C);}
+.vshort{flex-basis:172px;width:172px;border-radius:14px;box-shadow:0 10px 24px rgba(0,26,76,.18);}
+.vshort-empty{background:linear-gradient(158deg,#123A82,#001A4C);}
+.vshort .vs-ov{background:linear-gradient(to top,rgba(0,9,30,.92),rgba(0,9,30,.10) 64%);}
+.vshort .vs-t{font-size:12.5px;padding:14px;}
+.vshort::after{
+  content:"";position:absolute;left:50%;top:42%;transform:translate(-50%,-50%);
+  width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.94);
+  box-shadow:0 6px 18px rgba(0,0,0,.32);
+}
+.vshort::before{
+  content:"";position:absolute;left:50%;top:42%;transform:translate(-32%,-50%);z-index:2;
+  border-left:16px solid var(--navy);border-top:10px solid transparent;border-bottom:10px solid transparent;
+}
+
 .mobile-nav{display:none;flex-direction:column;gap:4px;padding:12px 28px 18px;border-bottom:1px solid var(--line);}
 .mobile-nav.open{display:flex;}
 .mobile-nav .nav-link{width:100%;text-align:left;}
@@ -551,9 +621,6 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 <header class="site-header">
   <div class="header-inner">
     <a href="#" class="brand" onclick="showView('home');return false;">
-      <span class="brand-mark">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/></svg>
-      </span>
       <span class="brand-name">FAIRTOON</span>
     </a>
     <nav class="main-nav" id="mainNav">
@@ -594,7 +661,6 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
     <div class="footer-top">
       <div class="footer-brand">
         <div class="brand">
-          <span class="brand-mark"><svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 5.5C4 4.67 4.67 4 5.5 4H11V19H5.5C4.67 19 4 18.33 4 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/><path d="M20 5.5C20 4.67 19.33 4 18.5 4H13V19H18.5C19.33 19 20 18.33 20 17.5V5.5Z" stroke="#2F5FEF" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
           <span class="brand-name">FAIRTOON</span>
         </div>
         <p id="footerTagline">한국 웹툰을 합법으로 보는 가장 쉬운 길. 왜 합법이어야 하는지부터, 지금 어디서 볼 수 있는지까지.</p>
@@ -1087,11 +1153,11 @@ function renderHome(){
   ];
   /* 등록된 인터뷰가 있으면 그 인용구로, 없으면 플레이스홀더 문구로 */
   var voices=VOICES.length
-    ? VOICES.slice(0,6).map(function(v,i){return {t:v.quote_ko||v.creator_name||"",c:i,go:"showVoice("+v.id+")",bg:voiceThumb(v,i)};})
-    : [{t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”",c:0},{t:"“결제 한 번이 다음 화를 만듭니다”",c:1},{t:"“기다무로 봐주시는 것도 큰 힘이에요”",c:4},{t:"“불법 스캔은 그림까지 뭉개져요”",c:8},{t:"“합법이 이렇게 쉬운 줄 몰랐어요”",c:5}];
+    ? VOICES.slice(0,6).map(function(v,i){return {t:v.quote_ko||v.creator_name||"",go:"showVoice("+v.id+")",bg:voiceThumb(v,i)};})
+    : [{t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”"},{t:"“결제 한 번이 다음 화를 만듭니다”"},{t:"“기다무로 봐주시는 것도 큰 힘이에요”"},{t:"“불법 스캔은 그림까지 뭉개져요”"},{t:"“합법이 이렇게 쉬운 줄 몰랐어요”"}];
   var html=''+
   '<section class="spotlight"><div class="spotlight-inner">'+
-    '<h1>보고 싶은 웹툰, <span class="accent">합법으로</span> 찾기</h1>'+
+    '<h1><span class="hero-logo"></span><span class="hero-text">보고 싶은 웹툰, <span class="accent">합법으로</span> 찾기</span></h1>'+
     '<div class="spotlight-search"><div class="hero-search-wrap">'+
       '<form class="hero-search" onsubmit="runSearch(document.getElementById(\'heroSearchInput\').value);return false;">'+
         '<svg width="18" height="18" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2"/><path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'+
@@ -1109,10 +1175,13 @@ function renderHome(){
     '<div class="shelf"><div class="shelf-head"><h2>🔥 지금 인기</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">더보기</a></div>'+
       '<div class="shelf-track">'+CURATED.slice(0,5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("")+'</div>'+
     '</div>'+
+    '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
+      '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort'+(v.bg?"":" vshort-empty")+'" style="'+(v.bg||"")+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
+    '</div>'+
+    counterBandHTML()+
     '<div class="shelf"><div class="shelf-head"><h2>합법으로 보는 완결 명작</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">전체 보기</a></div>'+
       '<div class="shelf-track">'+curatedOnly().map(function(c){return hcardHTML(c);}).join("")+'</div>'+
     '</div>'+
-    counterBandHTML()+
     '<div class="shelf"><div class="shelf-head"><h2>📈 경제학으로 읽는 웹툰</h2><a href="#" class="more" onclick="showView(\'articles\');return false;">시리즈 전체</a></div>'+
       '<div class="shelf-track">'+ARTICLES.map(acardHTML).join("")+'</div>'+
     '</div>'+
@@ -1120,9 +1189,6 @@ function renderHome(){
       '<div class="qb-text"><h3>🎯 나의 웹툰 취향 테스트</h3><p>5개 질문이면 끝. 내 취향 유형과 딱 맞는 완결 명작을 합법 플랫폼과 함께 추천해드려요.</p></div>'+
       '<button class="btn btn-primary" onclick="startQuiz()">테스트 시작하기</button>'+
     '</div></div>'+
-    '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
-      '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort" style="'+(v.bg||coverStyle(v.c))+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
-    '</div>'+
     '<div class="shelf" style="margin-top:56px;"><div class="shelf-head"><h2>페어툰은 이렇게 작동합니다</h2></div>'+
       '<div class="how-strip">'+how.map(function(s,i){return '<div class="how-card"><div class="how-num">'+(i+1)+'</div><h3>'+s.t+'</h3><p>'+s.d+'</p></div>';}).join("")+'</div>'+
     '</div>'+
@@ -1225,8 +1291,8 @@ function renderVoiceDetail(){
     ? '<div class="section-label-row"><span class="section-label">인터뷰 숏츠</span></div>'+
       '<div class="shorts-grid">'+shorts.map(function(s,i){
         var sid=ytId(s.youtube_url);
-        var st=sid?"background-image:url(https://i.ytimg.com/vi/"+sid+"/hqdefault.jpg);background-size:cover;background-position:center;":coverStyle(i);
-        return '<div class="short-card" style="'+st+'" onclick="openLegal(\''+s.youtube_url+'\',\'유튜브\')"><div class="sc-overlay"></div>'+
+        var st=sid?"background-image:url(https://i.ytimg.com/vi/"+sid+"/hqdefault.jpg);background-size:cover;background-position:center;":"";
+        return '<div class="short-card'+(sid?"":" short-card-empty")+'" style="'+st+'" onclick="openLegal(\''+s.youtube_url+'\',\'유튜브\')"><div class="sc-overlay"></div>'+
           '<div class="sc-play"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>'+
           '<div class="sc-text">'+(s.caption||"")+'</div></div>';
       }).join("")+'</div>'
@@ -1249,10 +1315,10 @@ function showVoice(id){stopCounter();state.view="voice";state.voiceId=id;render(
 function renderVoices(){
   if(VOICES.length){renderVoicesFromDB();return;}
   var shorts=[
-   {t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”",c:0},
-   {t:"“독자님의 결제 한 번이 다음 화를 만듭니다”",c:1},
-   {t:"“기다무로 봐주시는 것도 정말 큰 힘이에요”",c:4},
-   {t:"“불법 스캔은 그림까지 뭉개서 올라와요”",c:8}
+   {t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”"},
+   {t:"“독자님의 결제 한 번이 다음 화를 만듭니다”"},
+   {t:"“기다무로 봐주시는 것도 정말 큰 힘이에요”"},
+   {t:"“불법 스캔은 그림까지 뭉개서 올라와요”"}
   ];
   var html='<div class="container">'+
     '<div class="page-header"><h1>작가의 목소리</h1><p>불법유통을 직접 겪은 창작자들의 이야기. 통계 뒤에 있는 ‘사람’을 만나는 코너입니다. 인터뷰 영상은 유튜브 공개 임베드로 제공됩니다.</p></div>'+
@@ -1261,7 +1327,7 @@ function renderVoices(){
       '<div class="voice-hero-text"><p class="vquote">“공짜로 본 한 화가, 다음 화를 못 그리게 만들 수도 있어요.”</p><p class="vby">— 인터뷰 시리즈, 2026년 하반기 공개 예정</p></div>'+
     '</div>'+
     '<div class="section-label-row"><span class="section-label">인터뷰 숏츠</span></div>'+
-    '<div class="shorts-grid">'+shorts.map(function(s){return '<div class="short-card" style="'+coverStyle(s.c)+'" onclick="showToast(\'숏츠는 정식 오픈 시 공개됩니다 (샘플)\')"><div class="sc-overlay"></div><div class="sc-play"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div><div class="sc-text">'+s.t+'</div></div>';}).join("")+'</div>'+
+    '<div class="shorts-grid">'+shorts.map(function(s){return '<div class="short-card short-card-empty" onclick="showToast(\'숏츠는 정식 오픈 시 공개됩니다 (샘플)\')"><div class="sc-overlay"></div><div class="sc-play"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div><div class="sc-text">'+s.t+'</div></div>';}).join("")+'</div>'+
     '<div class="pass-note" style="margin-top:28px;">현재는 레이아웃 확인용 플레이스홀더입니다. 실제 인터뷰(작가 5인)는 기획서 로드맵상 2026년 하반기에 촬영·게재됩니다.</div>'+
   '</div>';
   document.getElementById("mainContent").innerHTML=html;
