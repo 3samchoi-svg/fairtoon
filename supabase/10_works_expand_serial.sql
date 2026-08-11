@@ -1,22 +1,22 @@
 -- ------------------------------------------------------------
 -- 10) 연재작 카탈로그 확대 — 880편 (표지 제외)
 --     작성 2026-08-11 · 근거: docs/작품확대_계획.md
+--     ★ 2026-08-11 적용 완료. 다시 실행해도 아무 일도 일어나지 않는다(중복 방지 조건 내장).
 --
 --     네이버웹툰 703 · 카카오웹툰 159 · 카카오페이지 18
---     성인물은 3사 등급·플래그로 전량 제외. 기존 50편과의 중복도 제외.
---     is_curated = false — 명작 큐레이션 50편 화면은 그대로다. 이 880편은 검색에서 닿는다.
+--     성인물은 3사 등급·플래그로 전량 제외. 기존 50편/플랫폼 간 중복도 제외.
+--     is_curated = false — 명작 큐레이션 화면은 그대로다. 이 880편은 검색으로만 닿는다.
 --
 --     카카오웹툰 59편은 작품 페이지가 외부 요청에 403을 돌려주어(웹 미공개로 추정)
 --     딥링크 대신 카카오웹툰 검색 URL을 넣었다. 표지도 넣지 않는다.
 --
 --     표지는 이 파일에 없다. 제휴 회신 후 11_covers_expanded.sql을 실행한다.
+--
+--     ※ 임시테이블(create temp table) 방식은 Supabase SQL Editor에서
+--       "relation _imp does not exist" 오류가 나므로 단일 문장 CTE로 작성했다.
 -- ------------------------------------------------------------
 
-begin;
-
-create temp table _imp(title text, author text, genres text[], blurb text, pk text, url text) on commit drop;
-
-insert into _imp (title, author, genres, blurb, pk, url) values
+with imp(title, author, genres, blurb, pk, url) as (values
 ('참교육','채용택·한가람',array['액션']::text[],'무너진 교권을 지키기 위해 교권보호국 소속 나화진의 참교육이 시작된다!','naver','https://comic.naver.com/webtoon/list?titleId=758037'),
 ('환생천마','JP·부겸',array['드라마']::text[],'철혈의 맹주, 강호의 절대자 ''천하진''. 가문의 수치라 불리는 망나니 ''벽리단''의 몸으로 깨어나다! 취미는 사기도박, 검은 창고에 박아둔지 오래. 하루아침에 천하제일인에서 천하의 쓰레기가 된 그는 ','naver','https://comic.naver.com/webtoon/list?titleId=822657'),
 ('샤MONEY즘','나락·영기',array['판타지']::text[],'“진짜 일류 무당은 여의도에서 논다.”','naver','https://comic.naver.com/webtoon/list?titleId=840014'),
@@ -896,21 +896,19 @@ insert into _imp (title, author, genres, blurb, pk, url) values
 ('나 홀로 버그로 꿀빠는 플레이어','청초·재한',array['판타지']::text[],'','kakaopage','https://page.kakao.com/content/54748024'),
 ('서른하나 고.독.사 그녀들','빵시헌',array['로맨스']::text[],'','kakaopage','https://page.kakao.com/content/62862661'),
 ('김상사 죽이기','이용우',array['액션']::text[],'','kakaopage','https://page.kakao.com/content/67191063'),
-('고기자의 힘드러운 기자생활','고기자',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/61877700');
-
-insert into public.works (title_ko, author, genres, blurb_ko, status, is_curated, sort)
-select i.title, i.author, i.genres, i.blurb, '연재', false,
-       1000 + row_number() over (order by i.title)
-  from _imp i
- where not exists (select 1 from public.works w where w.title_ko = i.title);
-
+('고기자의 힘드러운 기자생활','고기자',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/61877700')
+),
+ins as (
+  insert into public.works (title_ko, author, genres, blurb_ko, status, is_curated, sort)
+  select i.title, i.author, i.genres, i.blurb, '연재', false,
+         1000 + row_number() over (order by i.title)
+    from imp i
+   where not exists (select 1 from public.works w where w.title_ko = i.title)
+  returning id, title_ko
+)
 insert into public.work_legal_links (work_id, platform_key, url, sort)
-select w.id, i.pk, i.url, 0
-  from _imp i
-  join public.works w on w.title_ko = i.title
- where not exists (select 1 from public.work_legal_links l where l.work_id = w.id);
-
-commit;
+select ins.id, imp.pk, imp.url, 0
+  from imp join ins on ins.title_ko = imp.title;
 
 
 -- 확인용
