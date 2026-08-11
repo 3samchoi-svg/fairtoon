@@ -256,6 +256,13 @@ main{min-height:60vh;}
 
 /* ---- 장르 커버 (표지 미확보 시 기본 커버 · cover_url 있으면 이미지로 대체) ---- */
 .cv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+/* 표지 출처 표기 — 그림을 가리지 않도록 하단 모서리에 최소 크기로만 얹는다. */
+.cv-src{
+  position:absolute;left:0;right:0;bottom:0;z-index:4;padding:14px 8px 5px;
+  font-size:9.5px;font-weight:700;letter-spacing:-.1px;color:rgba(255,255,255,.88);
+  text-align:right;background:linear-gradient(transparent,rgba(0,0,0,.55));
+  pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
 .cv-bg{position:absolute;inset:0;}
 .cv-pt{position:absolute;inset:0;}
 .cv-vig{position:absolute;inset:0;background:radial-gradient(115% 85% at 50% 44%,transparent 36%,rgba(0,0,0,.58));}
@@ -729,9 +736,11 @@ var GENRE_COVER={
  "SF":      ["#0D1526","#2D6FA8","#84BDEA","pt-grid"],
  "호러":    ["#1A0E12","#4A1E2B","#D98BA0","pt-scan"]
 };
-/* 커버 내부 마크업. cover_url이 있으면 이미지만(표지 그림을 가리지 않도록), 없으면 장르 커버. */
+/* 커버 내부 마크업. cover_url이 있으면 이미지 + 출처 표기(표지 그림을 가리지 않도록 최소한으로), 없으면 장르 커버.
+   cover_url을 비우면 장르 커버로 자동 폴백된다 — 권리자 이의제기 시 즉시 철회하는 스위치다. */
 function coverInner(c){
-  if(c.cover) return '<img class="cv-img" src="'+c.cover+'" alt="'+c.title+' 표지" loading="lazy">';
+  if(c.cover) return '<img class="cv-img" src="'+c.cover+'" alt="'+c.title+' 표지" loading="lazy">'+
+    '<span class="cv-src">ⓒ '+platOf(c.legal).name+'</span>';
   var g=GENRE_COVER[(c.genres&&c.genres[0])||""]||GENRE_COVER["드라마"];
   return '<div class="cv-bg" style="background:linear-gradient(150deg,'+g[1]+','+g[0]+');">'+
       '<div class="cv-pt '+g[3]+'"></div><div class="cv-vig"></div>'+
@@ -871,7 +880,8 @@ function adoptWorks(rows){
     return {title:r.title_ko,en:r.title_en||"",aliases:r.aliases||[],author:r.author||"",
       genres:r.genres||[],blurb:r.blurb_ko||"",cover:r.cover_url||"",
       status:r.status||"완결",curated:r.is_curated!==false,
-      legal:links.length?links[0].platform_key:(PLATFORMS[0]&&PLATFORMS[0].key)};
+      legal:links.length?links[0].platform_key:(PLATFORMS[0]&&PLATFORMS[0].key),
+      legalUrl:links.length?(links[0].url||""):""};
   });
 }
 function adoptArticles(rows){
@@ -1129,7 +1139,8 @@ function bannerStripHTML(){
 }
 function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="discover");});render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
 function hcardHTML(c,badge){
-  var p=platOf(c.legal);var url=p.search.replace("{q}",encodeURIComponent(c.title));
+  /* 딥링크가 있으면 작품 페이지로 직접 보낸다. 표지 이미지를 쓰는 작품은 딥링크가 반드시 있어야 한다. */
+  var p=platOf(c.legal);var url=c.legalUrl||p.search.replace("{q}",encodeURIComponent(c.title));
   return '<div class="hcard" onclick="openLegal(\''+url+'\',\''+p.name+'\')" tabindex="0" role="button" aria-label="'+c.title+'">'+
     '<div class="hc-cover"><span class="hc-badge">'+(badge||c.status||"완결")+'</span>'+coverInner(c)+
       '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>'+
