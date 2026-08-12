@@ -497,7 +497,10 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 /* 칸 수만큼 나눠 선반 너비를 채운다. 다섯 칸이면 꽉 차고, 그보다 적으면 224px에서 멈춘다.
    그리드라 잘릴 일이 없어 그림자도 온전히 나온다. */
 .shelf-track.fill5{display:grid;grid-auto-columns:minmax(0,224px);overflow:visible;padding-bottom:20px;margin-bottom:0;}
-.shelf-track.fill5>*{flex:none;width:auto;grid-row:1;}
+.shelf-track.fill5>*{flex:none;width:auto;grid-row:1;min-width:0;}
+/* 순위 카드는 큰 숫자 + 카드 한 쌍이다. 숫자는 그대로 두고 카드만 칸을 채운다. */
+.shelf-track.fill5 .rank-card .rk-num{flex:0 0 auto;}
+.shelf-track.fill5 .rank-card .hcard{flex:1 1 auto;width:auto;min-width:0;}
 .shelf-track::-webkit-scrollbar{display:none;}
 .hcard{flex:0 0 176px;width:176px;scroll-snap-align:start;cursor:pointer;transition:transform .15s;}
 .hcard:hover{transform:translateY(-4px);}
@@ -550,8 +553,10 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
   nav.main-nav{display:none;}
   .nav-burger{display:flex;}
   /* 좁은 화면에서 5칸을 나눠 담으면 카드가 너무 작아진다. 다시 가로 스크롤로 */
-  .shelf-track.fill5{display:flex;overflow-x:auto;padding-bottom:38px;margin-bottom:-18px;}
-  .shelf-track.fill5>*{flex:0 0 172px;width:172px;}
+  .shelf-track.fill5{display:flex;overflow-x:auto;padding-bottom:38px;margin-bottom:-18px;grid-template-columns:none !important;}
+  .shelf-track.fill5>.vshort{flex:0 0 172px;width:172px;}
+  .shelf-track.fill5>.rank-card{flex:0 0 auto;}
+  .shelf-track.fill5 .rank-card .hcard{flex:0 0 148px;width:148px;}
 }
 @media (max-width:600px){
   .hero{padding:64px 20px 16px;}
@@ -1262,7 +1267,7 @@ function renderHome(){
       (rankedAt()?'<p class="shelf-basis">네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 반영한 페어툰 순위 · '+rankedAt()+' 기준</p>':'')+
       /* 순위는 DB·랭킹 파일이 와야 정해진다. 오기 전에 내장 시드로 그리면
          엉뚱한 순위가 잠깐 보였다가 바뀌므로, 첫 렌더에서는 빈 자리만 잡아둔다. */
-      '<div class="shelf-track">'+(RANKING_READY
+      '<div class="shelf-track fill5" style="grid-template-columns:repeat(5,minmax(0,1fr));">'+(RANKING_READY
         ? popularList(5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("")
         : [1,2,3,4,5].map(function(i){return '<div class="rank-card"><span class="rk-num">'+i+'</span><div class="hcard rank-skel"><div class="hc-cover"></div><div class="hc-title">&nbsp;</div><div class="hc-sub">&nbsp;</div></div></div>';}).join("")
       )+'</div>'+
