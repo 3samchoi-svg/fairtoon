@@ -1,5 +1,5 @@
 -- ------------------------------------------------------------
--- 14) 페어툰 인기 순위 — 테이블 신설 + 랭킹작 53편 편입 + 오늘자 랭킹 90건
+-- 14) 페어툰 인기 순위 — 테이블 신설 + 랭킹작 43편 편입 + 오늘자 랭킹 90건
 --     작성 2026-08-12 · 근거: docs/인기순위_기획.md
 --
 --     홈 "지금 인기"는 페어툰이 정한 순위다. 산정 규칙은 5칸 주기 정원 배분:
@@ -7,6 +7,9 @@
 --     각 플랫폼 안에서의 순서는 그 플랫폼 공식 랭킹을 그대로 따른다.
 --     성인물은 3사 등급·플래그로 전량 제외했다.
 --
+--     ※ 카카오웹툰과 카카오페이지는 같은 작품을 함께 서비스하는 경우가 있다(오늘 12편).
+--       작품 행은 하나만 만들고, 랭킹 행은 두 플랫폼 각각 만들어 같은 작품을 가리킨다.
+--       화면에서는 중복 노출을 프론트가 걸러낸다(popularList의 used 검사).
 --     ※ 단일 문장 CTE. Supabase SQL Editor에서 임시테이블은 쓰지 않는다.
 -- ------------------------------------------------------------
 
@@ -20,6 +23,7 @@ create table if not exists public.work_rankings (
   primary key (platform_key, rank)
 );
 alter table public.work_rankings enable row level security;
+grant select on public.work_rankings to anon, authenticated;
 do $$ begin
   create policy rankings_read on public.work_rankings for select using (true);
 exception when duplicate_object then null; end $$;
@@ -56,25 +60,15 @@ with imp(title, author, genres, blurb, pk, url, cover) as (values
 ('리셋팅 레이디','백우·태공',array['드라마']::text[],'어느 날 갑자기 책 속으로 들어왔다.  진정한 사랑에 빠지면 현실로 돌아올 수 있을 줄 알았지만, 그 끝은 죽음이었다.   추락사, 교살, 독살, 익사, 화마…  100번을 죽고 회귀해도 소설은 끝','kakaowebtoon','https://webtoon.kakao.com/content/%EB%A6%AC%EC%85%8B%ED%8C%85-%EB%A0%88%EC%9D%B4%EB%94%94/3447','https://kr-a.kakaopagecdn.com/P/C/3447/sharing/2x/347df8f6-c6be-4190-8b43-7d07f26ccd7b.jpg'),
 ('타람 타람 타람','비송·반디',array['드라마']::text[],'나긋나긋한 움직임으로 들어온 다온이 연회장 중앙에서 멈춰 섰다.  인형만큼이나 무미하고 감정 없는 얼굴이었다.  그럼에도 도도하고 우아해서 얼음 여왕처럼 강렬한 인상을 주었다.  엑서는 다리를 꼬며','kakaowebtoon','https://webtoon.kakao.com/content/%ED%83%80%EB%9E%8C-%ED%83%80%EB%9E%8C-%ED%83%80%EB%9E%8C/4074','https://kr-a.kakaopagecdn.com/P/C/4074/sharing/2x/2f74a0a1-0f7d-4096-86f1-3223a9b3fd40.jpg'),
 ('무당기협','화람',array['드라마']::text[],'무림 사파의 수장인 혁련무강은 죽기 직전 불로초를 삼킨 후 눈을 떠보니 무당파 도동의 몸에 빙의되었다. 예전에 본인이 붕괴 직전까지 몰고 갔던 무당파에서 ''진무''라는 이름의 도사로 다시 살게 된 그','kakaowebtoon','https://webtoon.kakao.com/content/%EB%AC%B4%EB%8B%B9%EA%B8%B0%ED%98%91/2499','https://kr-a.kakaopagecdn.com/P/C/2499/sharing/2x/733e0166-0264-4583-8ea8-bed1c39ddadf.jpg'),
-('타람 타람 타람','비송·반디·탐하다',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/64041447','https://dn-img-page.kakao.com/download/resource?kid=cNZ4qI/dJMcaf8CmGT/YEvxQyKFl27u1h4IFhOrxK&filename=th3'),
-('나는 한 편의 극을 보았다','탄지·송이·unias',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/66378516','https://dn-img-page.kakao.com/download/resource?kid=inYO4/dJMcafgy4Ge/bUHnR82TwDlkcmwwGwYYvK&filename=th3'),
-('무한의 마법사','kiraz(REDICE STUDIO)·아디티·김치우',array['판타지']::text[],'','kakaopage','https://page.kakao.com/content/60910969','https://dn-img-page.kakao.com/download/resource?kid=cNhKYM/dJMcahYguRL/Xy09IDArkxRt3TFyVefvGK&filename=th3'),
 ('힘을 숨기고 즐기는 평화로운 하녀 생활','초바·마떼·박귀리',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/68910610','https://dn-img-page.kakao.com/download/resource?kid=BqzEk/dJMcac5biaH/Wb8U5TOZgSnpBrlx38aOQk&filename=th3'),
 ('이번 생은 가주가 되겠습니다','앤트스튜디오·몬·김로아',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/56566288','https://dn-img-page.kakao.com/download/resource?kid=bUpyjK/dJMcagYIkvS/2JkDCGHTnspcqHCRMWFGR1&filename=th3'),
-('도굴왕','윤쓰(REDICE STUDIO)·쓰리비투에스·산지직송',array['판타지']::text[],'','kakaopage','https://page.kakao.com/content/53190884','https://dn-img-page.kakao.com/download/resource?kid=s7mSk/hzwBkFrqoQ/vUSNxWqp98tQGq44as2D2k&filename=th3'),
 ('백작가의 망나니가 되었다','별나래·PAN4·유려한',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/55553244','https://dn-img-page.kakao.com/download/resource?kid=ooxqn/dJMcag6ypQJ/ZtCKlS9BZj4eGpr43OwXJ1&filename=th3'),
 ('악녀라서 편하고 좋은데요?','수달·요테·망고킴',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/60728286','https://dn-img-page.kakao.com/download/resource?kid=l0XA3/dJMcafGm4Gv/bTK9hRj7Wf6VYZWBqL7df0&filename=th3'),
 ('시카리오','승민·서현진',array['액션']::text[],'','kakaopage','https://page.kakao.com/content/69969236','https://dn-img-page.kakao.com/download/resource?kid=bC4QKf/dJMcacRo6E8/fsnUFMFGXqUyH8YQ2JNCdK&filename=th3'),
-('철혈검가 사냥개의 회귀','모피 프로그(REDICE STUDIO)·설아랑·레고밟았어',array['판타지']::text[],'','kakaopage','https://page.kakao.com/content/61614855','https://dn-img-page.kakao.com/download/resource?kid=bA6oBe/dJMcabwX2Iy/wEdVzdqoIIGoXk1aNd6R31&filename=th3'),
 ('괴담에 떨어져도 출근을 해야 하는구나','캐롯스튜디오·쓩늉·백덕수',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/69229506','https://dn-img-page.kakao.com/download/resource?kid=d9GNt/dJMcabcZZYp/Swh2KQrzqu4PMbBTbDHL41&filename=th3'),
-('픽 미 업!','조우네(REDICE STUDIO)·와삭바삭(3B2S)·헤르모드',array['판타지']::text[],'','kakaopage','https://page.kakao.com/content/60914825','https://dn-img-page.kakao.com/download/resource?kid=yk7fM/dJMcabylQTY/5U5J4oLkHTzceagcUKsHH0&filename=th3'),
 ('회귀검가의 서자가 사는 법','넥스트레벨스튜디오·빵먹는다람쥐·사도연',array['판타지']::text[],'','kakaopage','https://page.kakao.com/content/65125886','https://dn-img-page.kakao.com/download/resource?kid=bsKFNR/dJMcafsCwpw/1WGV7jgN5cllOEfaf2lYwK&filename=th3'),
-('잊혀진 들판','스푼·김수지',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/69141031','https://dn-img-page.kakao.com/download/resource?kid=o8o96/dJMcagea3Xu/Xtnu2mYEZc3YCh0Y71JLyk&filename=th3'),
-('인소의 법칙','아현·유한려',array['로맨스']::text[],'','kakaopage','https://page.kakao.com/content/52610652','https://dn-img-page.kakao.com/download/resource?kid=b4dWR3/dJMcaiox3ay/C6VzeAll8cK9XnxWK9KyJk&filename=th3'),
 ('2레벨로 회귀한 무신','디앤씨웹툰·이윤구·염비',array['판타지']::text[],'','kakaopage','https://page.kakao.com/content/62302584','https://dn-img-page.kakao.com/download/resource?kid=bRjDru/dJMcagDUr3u/ZfvPqR9jQXQddBdEqxptKK&filename=th3'),
 ('힘숨찐 어린이가 아빠를 찾습니다','글리·김구슬',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/68288343','https://dn-img-page.kakao.com/download/resource?kid=5fkHU/dJMcadBuIWi/g0D5FDb9KKlKAXhC8YJ9S0&filename=th3'),
-('악마의 주인님이 되어버렸다','에리카·초뽀·나라·꾸꾸즈',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/62649267','https://dn-img-page.kakao.com/download/resource?kid=c9VNmO/dJMcaa0y25q/Oj2kwwdBzUwUIIhQlkPJ81&filename=th3'),
-('점괘보는 공녀님','슈퍼코믹스스튜디오·사이딘',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/62596697','https://dn-img-page.kakao.com/download/resource?kid=bKwnNn/dJMcaci53hX/PkEEn8Djdyk48d0Ql2JBp0&filename=th3'),
 ('삼류무가 천하제일인','기성욱·남사랑·규현·유리손',array['액션']::text[],'','kakaopage','https://page.kakao.com/content/69800992','https://dn-img-page.kakao.com/download/resource?kid=r79xA/dJMcacKDX1g/A5KXOlwQ0KHHp1eyL06JZK&filename=th3'),
 ('남주가 제 건강에 집착합니다','슈퍼코믹스스튜디오·윤슬',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/66974798','https://dn-img-page.kakao.com/download/resource?kid=MyHT4/dJMcadJgrlm/hQxejKxkQxO1xZMYmkcTg0&filename=th3'),
 ('전 그냥 내 집 마련이 꿈인데요?','HNM·오로라 스튜디오·여로은',array['드라마']::text[],'','kakaopage','https://page.kakao.com/content/66539896','https://dn-img-page.kakao.com/download/resource?kid=boK4St/dJMcagYCtil/5EGEug376eH1l4WITEGkm1&filename=th3'),
@@ -194,8 +188,9 @@ with rk(pk, rnk, title) as (values
 ('kakaopage',30,'이상한데 효과적인 악녀 생활')
 )
 insert into public.work_rankings (platform_key, rank, work_id, fetched_on)
-select rk.pk, rk.rnk, w.id, date '2026-08-12'
-  from rk join public.works w on w.title_ko = rk.title;
+select distinct on (rk.pk, rk.rnk) rk.pk, rk.rnk, w.id, date '2026-08-12'
+  from rk join public.works w on w.title_ko = rk.title
+ order by rk.pk, rk.rnk, w.id;   -- 제목이 여러 행에 걸려도 한 건만 넣는다
 
 
 -- 확인용
@@ -204,6 +199,6 @@ select rk.pk, rk.rnk, w.id, date '2026-08-12'
 
 -- ------------------------------------------------------------
 -- 【철회】
--- delete from public.work_rankings;                                  -- 랭킹만 비움(홈은 기존 방식으로 폴백)
--- delete from public.works where is_curated = false and sort >= 3000; -- 이번 편입분 제거
+-- delete from public.work_rankings;
+-- delete from public.works where is_curated = false and sort >= 3000;
 -- ------------------------------------------------------------
