@@ -1244,7 +1244,7 @@ function renderHome(){
   ];
   /* 등록된 인터뷰가 있으면 그 인용구로, 없으면 플레이스홀더 문구로 */
   var voices=VOICES.length
-    ? VOICES.slice(0,6).map(function(v,i){return {t:v.quote_ko||v.creator_name||"",go:"showVoice("+v.id+")",bg:voiceThumb(v,i)};})
+    ? VOICES.slice(0,5).map(function(v,i){return {t:v.quote_ko||v.creator_name||"",go:"showVoice("+v.id+")",bg:voiceThumb(v,i)};})
     : [{t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”"},{t:"“결제 한 번이 다음 화를 만듭니다”"},{t:"“기다무로 봐주시는 것도 큰 힘이에요”"},{t:"“불법 스캔은 그림까지 뭉개져요”"},{t:"“합법이 이렇게 쉬운 줄 몰랐어요”"}];
   var html=''+
   '<section class="spotlight"><div class="spotlight-inner">'+
