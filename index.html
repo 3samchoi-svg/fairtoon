@@ -863,6 +863,18 @@ function sbFetch(path){
   return fetch(SUPABASE_URL+"/rest/v1/"+path,{headers:{apikey:SUPABASE_ANON_KEY,Authorization:"Bearer "+SUPABASE_ANON_KEY}})
     .then(function(r){if(!r.ok)throw new Error(path+" → HTTP "+r.status);return r.json();});
 }
+/* Supabase(PostgREST)는 한 번에 1000행까지만 준다. 작품처럼 1000행을 넘는 표는
+   끝까지 나눠 받아야 한다. 이걸 안 하면 초과분이 조용히 사라진다. */
+function sbFetchAll(path){
+  var PAGE=1000, all=[];
+  function next(off){
+    return sbFetch(path+"&limit="+PAGE+"&offset="+off).then(function(rows){
+      rows=rows||[]; all=all.concat(rows);
+      return rows.length<PAGE ? all : next(off+PAGE);
+    });
+  }
+  return next(0);
+}
 function adoptPlatforms(rows){
   if(!rows||!rows.length) return;
   var initialOf={}; PLATFORMS.forEach(function(p){initialOf[p.key]=p.initial;});
@@ -908,7 +920,7 @@ function adoptSafety(rows){
 function loadContent(){
   return Promise.all([
     sbFetch("platforms?select=*&order=sort"),
-    sbFetch("works?select=*,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
+    sbFetchAll("works?select=*,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
     sbFetch("articles?select=*&is_published=eq.true&order=id"),
     sbFetch("safety_cards?select=*&order=sort"),
     sbFetch("creator_voices?select=*&is_published=eq.true&order=sort"),
