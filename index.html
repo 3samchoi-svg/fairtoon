@@ -488,6 +488,8 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 .shelf-head{display:flex;align-items:baseline;justify-content:space-between;margin:0 0 16px;gap:14px;}
 .shelf-head h2{font-family:var(--font-display);font-size:20px;letter-spacing:-.4px;margin:0;color:var(--ink);display:flex;align-items:center;gap:9px;}
 .shelf-head .more{font-size:12.5px;font-weight:700;color:var(--gray);white-space:nowrap;letter-spacing:.2px;}
+/* 순위 산정 근거 — 화면에 드러내 둔다 */
+.shelf-basis{font-size:12px;color:var(--gray-light);margin:-8px 0 14px;letter-spacing:-.1px;}
 .shelf-head .more:hover{color:var(--blue);}
 .shelf-track{display:flex;gap:16px;overflow-x:auto;padding:2px 0 14px;scroll-snap-type:x proximity;-ms-overflow-style:none;scrollbar-width:none;}
 .shelf-track::-webkit-scrollbar{display:none;}
@@ -768,6 +770,42 @@ var CURATED = [
 /* 하이브리드 검색: 큐레이션 DB 부분일치(제목/영문/별칭/작가). 공백·대소문자 무시. */
 /* 명작 큐레이션에 노출할 작품만 (연재작 등 is_curated=false 는 검색에만 잡힌다) */
 function curatedOnly(){return CURATED.filter(function(c){return c.curated!==false;});}
+
+/* ---------------- 페어툰 인기 순위 ----------------
+   순위는 페어툰이 정한다. 규칙은 5칸 주기 정원 배분이다.
+     1~3위 네이버웹툰 · 4위 카카오웹툰 · 5위 카카오페이지 (다음 주기도 동일)
+   각 플랫폼 안에서의 차례는 그 플랫폼 공식 랭킹을 그대로 따른다. 우리가 점수를 매기지 않는다.
+   랭킹 데이터가 없으면 기존처럼 sort 순으로 폴백한다. */
+var RANKINGS=[];
+var RANK_QUOTA=[["naver",3],["kakaowebtoon",1],["kakaopage",1]];
+function rankedAt(){return (RANKINGS[0]&&RANKINGS[0].fetched_on)||"";}
+function popularList(n){
+  if(!RANKINGS.length) return CURATED.slice(0,n);
+  var byId={};CURATED.forEach(function(c){if(c.id)byId[c.id]=c;});
+  var pool={},cur={};
+  RANK_QUOTA.forEach(function(x){
+    pool[x[0]]=RANKINGS.filter(function(r){return r.platform_key===x[0]&&byId[r.work_id];})
+                       .sort(function(a,b){return a.rank-b.rank;});
+    cur[x[0]]=0;
+  });
+  var out=[],used={};
+  while(out.length<n){
+    var before=out.length;
+    for(var i=0;i<RANK_QUOTA.length;i++){
+      var pk=RANK_QUOTA[i][0],quota=RANK_QUOTA[i][1],lst=pool[pk];
+      for(var k=0;k<quota&&out.length<n;k++){
+        while(cur[pk]<lst.length&&used[lst[cur[pk]].work_id]) cur[pk]++;
+        if(cur[pk]>=lst.length) break;
+        var r=lst[cur[pk]++];used[r.work_id]=1;
+        var src=byId[r.work_id],copy={};
+        for(var key in src) copy[key]=src[key];
+        out.push(copy);
+      }
+    }
+    if(out.length===before) break;   /* 더 채울 것이 없다 */
+  }
+  return out.length?out:CURATED.slice(0,n);
+}
 function normKey(s){return (s||"").toString().toLowerCase().replace(/\s+/g,"");}
 function searchCurated(q){
   var nq=normKey(q); if(!nq) return [];
@@ -890,6 +928,7 @@ function adoptWorks(rows){
   CURATED=rows.map(function(r){
     var links=r.work_legal_links||[];
     return {title:r.title_ko,en:r.title_en||"",aliases:r.aliases||[],author:r.author||"",
+      id:r.id,
       genres:r.genres||[],blurb:r.blurb_ko||"",cover:r.cover_url||"",
       status:r.status||"완결",curated:r.is_curated!==false,
       legal:links.length?links[0].platform_key:(PLATFORMS[0]&&PLATFORMS[0].key),
@@ -924,10 +963,12 @@ function loadContent(){
     sbFetch("articles?select=*&is_published=eq.true&order=id"),
     sbFetch("safety_cards?select=*&order=sort"),
     sbFetch("creator_voices?select=*&is_published=eq.true&order=sort"),
-    sbFetch("home_banners?select=*&is_active=eq.true&order=sort")
+    sbFetch("home_banners?select=*&is_active=eq.true&order=sort"),
+    /* 랭킹 표가 아직 없는 환경에서도 사이트가 죽지 않게 실패를 삼킨다 */
+    sbFetch("work_rankings?select=platform_key,rank,work_id,fetched_on&order=rank").catch(function(){return [];})
   ]).then(function(res){
     adoptPlatforms(res[0]);adoptWorks(res[1]);adoptArticles(res[2]);adoptSafety(res[3]);
-    VOICES=res[4]||[];BANNERS=res[5]||[];
+    VOICES=res[4]||[];BANNERS=res[5]||[];RANKINGS=res[6]||[];
   }).catch(function(e){
     console.warn("콘텐츠 로드 실패 — 내장 시드로 표시합니다.",e);
   });
@@ -1196,7 +1237,8 @@ function renderHome(){
       HOME_GENRES.map(function(g){return '<button class="genre-pill" onclick="goGenre(\''+g+'\')">'+g+'</button>';}).join("")+
     '</div></div>'+
     '<div class="shelf"><div class="shelf-head"><h2>🔥 지금 인기</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">더보기</a></div>'+
-      '<div class="shelf-track">'+CURATED.slice(0,5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("")+'</div>'+
+      (rankedAt()?'<p class="shelf-basis">네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 반영한 페어툰 순위 · '+rankedAt()+' 기준</p>':'')+
+      '<div class="shelf-track">'+popularList(5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("")+'</div>'+
     '</div>'+
     '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
       '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort'+(v.bg?"":" vshort-empty")+'" style="'+(v.bg||"")+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
