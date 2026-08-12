@@ -508,6 +508,10 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 .rank-card .rk-num{font-family:var(--font-display);font-size:74px;line-height:.8;color:#C8D4EE;letter-spacing:-4px;transition:color .15s;}
 .rank-card:hover .rk-num{color:var(--blue);}
 .rank-card .hcard{flex:0 0 148px;width:148px;}
+/* 순위 데이터를 기다리는 동안의 빈 자리 — 자리 크기를 미리 잡아 화면이 튀지 않게 한다 */
+.rank-skel{cursor:default;pointer-events:none;}
+.rank-skel .hc-cover{aspect-ratio:3/4;border-radius:var(--radius-m);background:var(--surface-2);border:1.5px solid var(--line-soft);box-shadow:none;}
+.rank-skel .hc-title,.rank-skel .hc-sub{background:var(--surface-2);border-radius:5px;margin-top:8px;}
 /* article card (horizontal) */
 .acard{flex:0 0 300px;width:300px;scroll-snap-align:start;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius-l);overflow:hidden;cursor:pointer;transition:background .15s,transform .15s;}
 .acard:hover{background:var(--surface-2);transform:translateY(-3px);}
@@ -777,6 +781,7 @@ function curatedOnly(){return CURATED.filter(function(c){return c.curated!==fals
    각 플랫폼 안에서의 차례는 그 플랫폼 공식 랭킹을 그대로 따른다. 우리가 점수를 매기지 않는다.
    랭킹 데이터가 없으면 기존처럼 sort 순으로 폴백한다. */
 var RANKINGS={rank:[],fetched_on:""};
+var RANKING_READY=false;   /* 콘텐츠 로드가 끝나야 순위를 그린다 */
 var RANK_QUOTA=[["naver",3],["kakaowebtoon",1],["kakaopage",1]];
 function rankedAt(){return RANKINGS.fetched_on||"";}
 function popularList(n){
@@ -974,8 +979,10 @@ function loadContent(){
     adoptPlatforms(res[0]);adoptWorks(res[1]);adoptArticles(res[2]);adoptSafety(res[3]);
     VOICES=res[4]||[];BANNERS=res[5]||[];
     if(res[6]&&res[6].rank) RANKINGS=res[6];
+    RANKING_READY=true;
   }).catch(function(e){
     console.warn("콘텐츠 로드 실패 — 내장 시드로 표시합니다.",e);
+    RANKING_READY=true;   /* 실패해도 빈 자리로 남겨두지 않는다 */
   });
 }
 
@@ -1243,7 +1250,12 @@ function renderHome(){
     '</div></div>'+
     '<div class="shelf"><div class="shelf-head"><h2>🔥 지금 인기</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">더보기</a></div>'+
       (rankedAt()?'<p class="shelf-basis">네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 반영한 페어툰 순위 · '+rankedAt()+' 기준</p>':'')+
-      '<div class="shelf-track">'+popularList(5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("")+'</div>'+
+      /* 순위는 DB·랭킹 파일이 와야 정해진다. 오기 전에 내장 시드로 그리면
+         엉뚱한 순위가 잠깐 보였다가 바뀌므로, 첫 렌더에서는 빈 자리만 잡아둔다. */
+      '<div class="shelf-track">'+(RANKING_READY
+        ? popularList(5).map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("")
+        : [1,2,3,4,5].map(function(i){return '<div class="rank-card"><span class="rk-num">'+i+'</span><div class="hcard rank-skel"><div class="hc-cover"></div><div class="hc-title">&nbsp;</div><div class="hc-sub">&nbsp;</div></div></div>';}).join("")
+      )+'</div>'+
     '</div>'+
     '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
       '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort'+(v.bg?"":" vshort-empty")+'" style="'+(v.bg||"")+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
