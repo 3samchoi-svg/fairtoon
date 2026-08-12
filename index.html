@@ -776,16 +776,17 @@ function curatedOnly(){return CURATED.filter(function(c){return c.curated!==fals
      1~3위 네이버웹툰 · 4위 카카오웹툰 · 5위 카카오페이지 (다음 주기도 동일)
    각 플랫폼 안에서의 차례는 그 플랫폼 공식 랭킹을 그대로 따른다. 우리가 점수를 매기지 않는다.
    랭킹 데이터가 없으면 기존처럼 sort 순으로 폴백한다. */
-var RANKINGS=[];
+var RANKINGS={rank:[],fetched_on:""};
 var RANK_QUOTA=[["naver",3],["kakaowebtoon",1],["kakaopage",1]];
-function rankedAt(){return (RANKINGS[0]&&RANKINGS[0].fetched_on)||"";}
+function rankedAt(){return RANKINGS.fetched_on||"";}
 function popularList(n){
-  if(!RANKINGS.length) return CURATED.slice(0,n);
-  var byId={};CURATED.forEach(function(c){if(c.id)byId[c.id]=c;});
+  var rows=RANKINGS.rank||[];
+  if(!rows.length) return CURATED.slice(0,n);
+  var byTitle={};CURATED.forEach(function(c){var k=normKey(c.title);if(!byTitle[k])byTitle[k]=c;});
   var pool={},cur={};
   RANK_QUOTA.forEach(function(x){
-    pool[x[0]]=RANKINGS.filter(function(r){return r.platform_key===x[0]&&byId[r.work_id];})
-                       .sort(function(a,b){return a.rank-b.rank;});
+    pool[x[0]]=rows.filter(function(r){return r.pk===x[0]&&byTitle[normKey(r.title)];})
+                   .sort(function(a,b){return a.rank-b.rank;});
     cur[x[0]]=0;
   });
   var out=[],used={};
@@ -794,11 +795,11 @@ function popularList(n){
     for(var i=0;i<RANK_QUOTA.length;i++){
       var pk=RANK_QUOTA[i][0],quota=RANK_QUOTA[i][1],lst=pool[pk];
       for(var k=0;k<quota&&out.length<n;k++){
-        while(cur[pk]<lst.length&&used[lst[cur[pk]].work_id]) cur[pk]++;
+        while(cur[pk]<lst.length&&used[normKey(lst[cur[pk]].title)]) cur[pk]++;
         if(cur[pk]>=lst.length) break;
-        var r=lst[cur[pk]++];used[r.work_id]=1;
-        var src=byId[r.work_id],copy={};
-        for(var key in src) copy[key]=src[key];
+        var key=normKey(lst[cur[pk]++].title);used[key]=1;
+        var src=byTitle[key],copy={};
+        for(var f in src) copy[f]=src[f];
         out.push(copy);
       }
     }
@@ -964,11 +965,15 @@ function loadContent(){
     sbFetch("safety_cards?select=*&order=sort"),
     sbFetch("creator_voices?select=*&is_published=eq.true&order=sort"),
     sbFetch("home_banners?select=*&is_active=eq.true&order=sort"),
-    /* 랭킹 표가 아직 없는 환경에서도 사이트가 죽지 않게 실패를 삼킨다 */
-    sbFetch("work_rankings?select=platform_key,rank,work_id,fetched_on&order=rank").catch(function(){return [];})
+    /* 인기 순위는 DB가 아니라 리포의 파일에서 읽는다. GitHub Actions가 매일 갱신해 커밋한다.
+       DB 쓰기 권한이 필요 없고, 날짜별 커밋이 그대로 근거 기록이 된다.
+       파일이 없거나 깨져도 사이트는 기존 방식으로 계속 뜬다. */
+    fetch("data/rankings.json?d="+new Date().toISOString().slice(0,10))
+      .then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
   ]).then(function(res){
     adoptPlatforms(res[0]);adoptWorks(res[1]);adoptArticles(res[2]);adoptSafety(res[3]);
-    VOICES=res[4]||[];BANNERS=res[5]||[];RANKINGS=res[6]||[];
+    VOICES=res[4]||[];BANNERS=res[5]||[];
+    if(res[6]&&res[6].rank) RANKINGS=res[6];
   }).catch(function(e){
     console.warn("콘텐츠 로드 실패 — 내장 시드로 표시합니다.",e);
   });

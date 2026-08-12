@@ -1,0 +1,461 @@
+{
+ "fetched_on": "2026-08-12",
+ "naver_weekday": "wed",
+ "counts": {
+  "naver": 30,
+  "kakaowebtoon": 30,
+  "kakaopage": 30
+ },
+ "rank": [
+  {
+   "pk": "naver",
+   "rank": 1,
+   "title": "화산귀환"
+  },
+  {
+   "pk": "naver",
+   "rank": 2,
+   "title": "별을 품은 소드마스터"
+  },
+  {
+   "pk": "naver",
+   "rank": 3,
+   "title": "종말이 찾아왔다"
+  },
+  {
+   "pk": "naver",
+   "rank": 4,
+   "title": "쪽팔려게임"
+  },
+  {
+   "pk": "naver",
+   "rank": 5,
+   "title": "운명을 보는 회사원"
+  },
+  {
+   "pk": "naver",
+   "rank": 6,
+   "title": "천마는 조용히 살고싶다"
+  },
+  {
+   "pk": "naver",
+   "rank": 7,
+   "title": "일렉시드"
+  },
+  {
+   "pk": "naver",
+   "rank": 8,
+   "title": "백XX"
+  },
+  {
+   "pk": "naver",
+   "rank": 9,
+   "title": "66666년 만에 환생한 흑마법사"
+  },
+  {
+   "pk": "naver",
+   "rank": 10,
+   "title": "1등급 싸움과외"
+  },
+  {
+   "pk": "naver",
+   "rank": 11,
+   "title": "미래의 골동품 가게"
+  },
+  {
+   "pk": "naver",
+   "rank": 12,
+   "title": "중간에서 만나"
+  },
+  {
+   "pk": "naver",
+   "rank": 13,
+   "title": "어느 마법사의 식당"
+  },
+  {
+   "pk": "naver",
+   "rank": 14,
+   "title": "방구석 재민이"
+  },
+  {
+   "pk": "naver",
+   "rank": 15,
+   "title": "왕따가 격투기를 너무 잘함"
+  },
+  {
+   "pk": "naver",
+   "rank": 16,
+   "title": "나쁜사람"
+  },
+  {
+   "pk": "naver",
+   "rank": 17,
+   "title": "건곤불이기"
+  },
+  {
+   "pk": "naver",
+   "rank": 18,
+   "title": "천재는 평범하게 살기로 했더"
+  },
+  {
+   "pk": "naver",
+   "rank": 19,
+   "title": "공작님의 아이만 필요합니다"
+  },
+  {
+   "pk": "naver",
+   "rank": 20,
+   "title": "마교전선 비룡십삼대"
+  },
+  {
+   "pk": "naver",
+   "rank": 21,
+   "title": "첩자의 마교생활"
+  },
+  {
+   "pk": "naver",
+   "rank": 22,
+   "title": "좋아하면 멍청해진다"
+  },
+  {
+   "pk": "naver",
+   "rank": 23,
+   "title": "밥먹고가라"
+  },
+  {
+   "pk": "naver",
+   "rank": 24,
+   "title": "중대장은 실망했다"
+  },
+  {
+   "pk": "naver",
+   "rank": 25,
+   "title": "멸귀수도전"
+  },
+  {
+   "pk": "naver",
+   "rank": 26,
+   "title": "내 분신이 거물이 되어간다"
+  },
+  {
+   "pk": "naver",
+   "rank": 27,
+   "title": "어린이집 다니는 구나"
+  },
+  {
+   "pk": "naver",
+   "rank": 28,
+   "title": "강철을 먹는 플레이어"
+  },
+  {
+   "pk": "naver",
+   "rank": 29,
+   "title": "싸움배달"
+  },
+  {
+   "pk": "naver",
+   "rank": 30,
+   "title": "다 때려치고 콜라 팝니다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 1,
+   "title": "유부녀 킬러"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 2,
+   "title": "해골병사는 던전을 지키지 못했다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 3,
+   "title": "나는 한 편의 극을 보았다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 4,
+   "title": "재앙급 영웅님이 귀환하셨다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 5,
+   "title": "악마의 주인님이 되어버렸다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 6,
+   "title": "수린당 성군전"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 7,
+   "title": "무한의 마법사"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 8,
+   "title": "무신귀환록"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 9,
+   "title": "쌍갑포차"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 10,
+   "title": "천광명월"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 11,
+   "title": "픽 미 업!"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 12,
+   "title": "흑막 범고래 아기님"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 13,
+   "title": "로그인 무림"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 14,
+   "title": "로드 오브 머니"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 15,
+   "title": "이번 생은 가주가 되겠습니다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 16,
+   "title": "잊혀진 들판"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 17,
+   "title": "나를 죽인 황제의 딸로 살아남는 방법"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 18,
+   "title": "악녀의 맞선남이 너무 완벽하다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 19,
+   "title": "나 혼자만 레벨업"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 20,
+   "title": "무당기협"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 21,
+   "title": "검술명가 막내아들"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 22,
+   "title": "쉬고 싶은 레이디"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 23,
+   "title": "철혈검가 사냥개의 회귀"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 24,
+   "title": "권왕전생"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 25,
+   "title": "타람 타람 타람"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 26,
+   "title": "관존 이강진"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 27,
+   "title": "국혼"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 28,
+   "title": "마교일진"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 29,
+   "title": "회귀검가의 서자가 사는 법"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 30,
+   "title": "북검전기"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 1,
+   "title": "타람 타람 타람"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 2,
+   "title": "나는 한 편의 극을 보았다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 3,
+   "title": "이번 생은 가주가 되겠습니다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 4,
+   "title": "무한의 마법사"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 5,
+   "title": "힘을 숨기고 즐기는 평화로운 하녀 생활"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 6,
+   "title": "유부녀 킬러"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 7,
+   "title": "악녀라서 편하고 좋은데요?"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 8,
+   "title": "픽 미 업!"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 9,
+   "title": "도굴왕"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 10,
+   "title": "악마의 주인님이 되어버렸다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 11,
+   "title": "나 혼자만 레벨업"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 12,
+   "title": "힘숨찐 어린이가 아빠를 찾습니다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 13,
+   "title": "회귀검가의 서자가 사는 법"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 14,
+   "title": "잊혀진 들판"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 15,
+   "title": "인소의 법칙"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 16,
+   "title": "괴담에 떨어져도 출근을 해야 하는구나"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 17,
+   "title": "백작가의 망나니가 되었다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 18,
+   "title": "2레벨로 회귀한 무신"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 19,
+   "title": "시카리오"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 20,
+   "title": "점괘보는 공녀님"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 21,
+   "title": "남주가 제 건강에 집착합니다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 22,
+   "title": "철혈검가 사냥개의 회귀"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 23,
+   "title": "삼류무가 천하제일인"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 24,
+   "title": "악녀의 맞선남이 너무 완벽하다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 25,
+   "title": "귀족 유치원의 교사는 오늘도 고달프다"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 26,
+   "title": "은해상단 막내아들"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 27,
+   "title": "전 그냥 내 집 마련이 꿈인데요?"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 28,
+   "title": "악역에 빙의했지만, 고양이나 키울래요"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 29,
+   "title": "흑표 가문의 설표 아기님"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 30,
+   "title": "그 아빠에 그 딸"
+  }
+ ]
+}
