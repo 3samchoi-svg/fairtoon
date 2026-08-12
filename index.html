@@ -494,9 +494,10 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 /* 아래 여백은 카드 그림자가 들어갈 자리다. overflow-x:auto는 세로도 함께 잘라내므로,
    여백이 그림자보다 얕으면 그림자 끝이 직선으로 잘려 경계선처럼 보인다. */
 .shelf-track{display:flex;gap:16px;overflow-x:auto;padding:2px 0 38px;margin-bottom:-18px;scroll-snap-type:x proximity;-ms-overflow-style:none;scrollbar-width:none;}
-/* 5칸을 선반 너비에 꽉 채운다. 그리드라 잘릴 일이 없어 그림자도 온전히 나온다. */
-.shelf-track.fill5{display:grid;grid-template-columns:repeat(5,1fr);overflow:visible;padding-bottom:20px;margin-bottom:0;}
-.shelf-track.fill5>*{flex:none;width:auto;}
+/* 칸 수만큼 나눠 선반 너비를 채운다. 다섯 칸이면 꽉 차고, 그보다 적으면 224px에서 멈춘다.
+   그리드라 잘릴 일이 없어 그림자도 온전히 나온다. */
+.shelf-track.fill5{display:grid;grid-auto-columns:minmax(0,224px);overflow:visible;padding-bottom:20px;margin-bottom:0;}
+.shelf-track.fill5>*{flex:none;width:auto;grid-row:1;}
 .shelf-track::-webkit-scrollbar{display:none;}
 .hcard{flex:0 0 176px;width:176px;scroll-snap-align:start;cursor:pointer;transition:transform .15s;}
 .hcard:hover{transform:translateY(-4px);}
@@ -1267,7 +1268,7 @@ function renderHome(){
       )+'</div>'+
     '</div>'+
     '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
-      '<div class="shelf-track'+(voices.length===5?" fill5":"")+'">'+voices.map(function(v){return '<div class="vshort'+(v.bg?"":" vshort-empty")+'" style="'+(v.bg||"")+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
+      '<div class="shelf-track'+(voices.length<=5?" fill5":"")+'" style="'+(voices.length<=5?"grid-template-columns:repeat("+voices.length+",minmax(0,224px));":"")+'">'+voices.map(function(v){return '<div class="vshort'+(v.bg?"":" vshort-empty")+'" style="'+(v.bg||"")+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
     '</div>'+
     counterBandHTML()+
     '<div class="shelf"><div class="shelf-head"><h2>합법으로 보는 완결 명작</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">전체 보기</a></div>'+
