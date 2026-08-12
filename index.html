@@ -491,7 +491,12 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 /* 순위 산정 근거 — 화면에 드러내 둔다 */
 .shelf-basis{font-size:12px;color:var(--gray-light);margin:-8px 0 14px;letter-spacing:-.1px;}
 .shelf-head .more:hover{color:var(--blue);}
-.shelf-track{display:flex;gap:16px;overflow-x:auto;padding:2px 0 14px;scroll-snap-type:x proximity;-ms-overflow-style:none;scrollbar-width:none;}
+/* 아래 여백은 카드 그림자가 들어갈 자리다. overflow-x:auto는 세로도 함께 잘라내므로,
+   여백이 그림자보다 얕으면 그림자 끝이 직선으로 잘려 경계선처럼 보인다. */
+.shelf-track{display:flex;gap:16px;overflow-x:auto;padding:2px 0 38px;margin-bottom:-18px;scroll-snap-type:x proximity;-ms-overflow-style:none;scrollbar-width:none;}
+/* 5칸을 선반 너비에 꽉 채운다. 그리드라 잘릴 일이 없어 그림자도 온전히 나온다. */
+.shelf-track.fill5{display:grid;grid-template-columns:repeat(5,1fr);overflow:visible;padding-bottom:20px;margin-bottom:0;}
+.shelf-track.fill5>*{flex:none;width:auto;}
 .shelf-track::-webkit-scrollbar{display:none;}
 .hcard{flex:0 0 176px;width:176px;scroll-snap-align:start;cursor:pointer;transition:transform .15s;}
 .hcard:hover{transform:translateY(-4px);}
@@ -543,6 +548,9 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
   .how-strip,.hub-grid,.threat-grid{grid-template-columns:1fr;}
   nav.main-nav{display:none;}
   .nav-burger{display:flex;}
+  /* 좁은 화면에서 5칸을 나눠 담으면 카드가 너무 작아진다. 다시 가로 스크롤로 */
+  .shelf-track.fill5{display:flex;overflow-x:auto;padding-bottom:38px;margin-bottom:-18px;}
+  .shelf-track.fill5>*{flex:0 0 172px;width:172px;}
 }
 @media (max-width:600px){
   .hero{padding:64px 20px 16px;}
@@ -1163,7 +1171,8 @@ function articleCardHTML(a){
 /* ---------------- COUNTER BAND ---------------- */
 function counterBandHTML(){
   return '<div class="counter-band">'+
-    '<div class="cb-eyebrow">당신이 이 페이지를 보는 동안, 창작자에게 가지 못하고 새어나간 돈 (추정)</div>'+
+    /* 이 페이지에 머문 시간은 '재는 자'일 뿐이다. 손실의 원인은 불법 유통이라는 점을 문장에서 분명히 한다. */
+    '<div class="cb-eyebrow">불법 유통으로 창작자에게 가지 못하는 돈 — 당신이 이 페이지에 머문 동안 (추정)</div>'+
     '<div class="counter-value" id="revCounter">0<span class="won">원</span></div>'+
     '<div class="cb-note">2023년 웹툰 불법복제 피해 <b>연 4,465억 원</b>(한국콘텐츠진흥원)을 초 단위로 환산 · 약 14,159원/초</div>'+
     '<div class="cb-actions">'+
@@ -1258,7 +1267,7 @@ function renderHome(){
       )+'</div>'+
     '</div>'+
     '<div class="shelf"><div class="shelf-head"><h2>🎙 작가의 목소리</h2><a href="#" class="more" onclick="showView(\'voices\');return false;">전체 보기</a></div>'+
-      '<div class="shelf-track">'+voices.map(function(v){return '<div class="vshort'+(v.bg?"":" vshort-empty")+'" style="'+(v.bg||"")+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
+      '<div class="shelf-track'+(voices.length===5?" fill5":"")+'">'+voices.map(function(v){return '<div class="vshort'+(v.bg?"":" vshort-empty")+'" style="'+(v.bg||"")+'" onclick="'+(v.go||"showView('voices')")+'"><div class="vs-ov"></div><div class="vs-t">'+v.t+'</div></div>';}).join("")+'</div>'+
     '</div>'+
     counterBandHTML()+
     '<div class="shelf"><div class="shelf-head"><h2>합법으로 보는 완결 명작</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">전체 보기</a></div>'+
