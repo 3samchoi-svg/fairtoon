@@ -709,7 +709,7 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
     </div>
     <div class="footer-bottom">
       <span>© 2026 Fairtoon. 비영리 독립 프로젝트.</span>
-      <span id="footerNote">프리뷰 빌드 — 표시된 수치·목록은 기획 확인용 샘플이며 실시간 데이터가 아닙니다.</span>
+      <span id="footerNote">작품 정보·표지는 각 플랫폼 공개 페이지 출처 · 인기 순위는 3사 공식 랭킹을 매일 갱신</span>
     </div>
   </div>
 </footer>
@@ -798,6 +798,11 @@ var RANKINGS={rank:[],fetched_on:""};
 var RANKING_READY=false;   /* 콘텐츠 로드가 끝나야 순위를 그린다 */
 var RANK_QUOTA=[["naver",3],["kakaowebtoon",1],["kakaopage",1]];
 function rankedAt(){return RANKINGS.fetched_on||"";}
+/* 푸터 출처 표기에 실제 랭킹 갱신 날짜를 붙인다. 날짜가 없으면 문구만 남는다. */
+function stampFooterNote(){
+  var el=document.getElementById("footerNote");
+  if(el&&rankedAt()) el.textContent="작품 정보·표지는 각 플랫폼 공개 페이지 출처 · 인기 순위는 3사 공식 랭킹 기준, "+rankedAt()+" 갱신";
+}
 function popularList(n){
   var rows=RANKINGS.rank||[];
   if(!rows.length) return CURATED.slice(0,n);
@@ -994,6 +999,7 @@ function loadContent(){
     VOICES=res[4]||[];BANNERS=res[5]||[];
     if(res[6]&&res[6].rank) RANKINGS=res[6];
     RANKING_READY=true;
+    stampFooterNote();
   }).catch(function(e){
     console.warn("콘텐츠 로드 실패 — 내장 시드로 표시합니다.",e);
     RANKING_READY=true;   /* 실패해도 빈 자리로 남겨두지 않는다 */
@@ -1360,12 +1366,12 @@ function voiceThumb(v,i){
   return coverStyle(i);
 }
 function voiceCardHTML(v,i){
-  return '<div class="hcard" onclick="showVoice('+v.id+')" tabindex="0" role="button" aria-label="'+(v.creator_name||"")+' 인터뷰">'+
-    '<div class="hc-cover" style="'+voiceThumb(v,i)+'"><span class="hc-badge">인터뷰</span>'+
+  return '<div class="hcard" onclick="showVoice('+v.id+')" tabindex="0" role="button" aria-label="'+(v.creator_name||"")+' 영상">'+
+    '<div class="hc-cover" style="'+voiceThumb(v,i)+'"><span class="hc-badge">영상</span>'+
       '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>'+
     '</div>'+
     '<div class="hc-title">'+(v.creator_name||"")+'</div>'+
-    '<div class="hc-sub">'+(v.work||"인터뷰")+'</div>'+
+    '<div class="hc-sub">'+(v.work||"영상")+'</div>'+
   '</div>';
 }
 /* DB에 등록된 인터뷰가 있으면 목록으로, 없으면 아래 플레이스홀더로 표시 */
@@ -1381,11 +1387,11 @@ function renderVoiceDetail(){
   if(!v){showView("voices");return;}
   var vid=ytId(v.interview_youtube_url);
   var video=vid
-    ? '<div class="voice-video" style="padding:0;overflow:hidden;"><iframe width="100%" height="100%" style="border:0;position:absolute;inset:0;" src="https://www.youtube.com/embed/'+vid+'" title="'+(v.creator_name||"")+' 인터뷰" allowfullscreen loading="lazy"></iframe></div>'
-    : '<div class="voice-video"><div class="play"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div><span class="vlabel">인터뷰 영상 준비 중</span></div>';
+    ? '<div class="voice-video" style="padding:0;overflow:hidden;"><iframe width="100%" height="100%" style="border:0;position:absolute;inset:0;" src="https://www.youtube.com/embed/'+vid+'" title="'+(v.creator_name||"")+' 영상" allowfullscreen loading="lazy"></iframe></div>'
+    : '<div class="voice-video"><div class="play"><svg width="24" height="24" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div><span class="vlabel">영상 준비 중</span></div>';
   var shorts=(Array.isArray(v.shorts)?v.shorts:[]).filter(function(s){return s&&s.youtube_url;});
   var shortsHTML=shorts.length
-    ? '<div class="section-label-row"><span class="section-label">인터뷰 숏츠</span></div>'+
+    ? '<div class="section-label-row"><span class="section-label">작가 영상</span></div>'+
       '<div class="shorts-grid">'+shorts.map(function(s,i){
         var sid=ytId(s.youtube_url);
         var st=sid?"background-image:url(https://i.ytimg.com/vi/"+sid+"/hqdefault.jpg);background-size:cover;background-position:center;":"";
@@ -1563,7 +1569,7 @@ function updateMeta(){
     if(a){t=a.title+" — Fairtoon 경제학으로 읽는 웹툰";d=a.excerpt||d;}
   }else if(state.view==="voice"){
     var v=VOICES.find(function(x){return x.id===state.voiceId;});
-    if(v){t=(v.creator_name||"")+" 인터뷰 — Fairtoon 작가의 목소리";d=v.quote_ko||v.summary_ko||d;}
+    if(v){t=(v.creator_name||"")+" 영상 — Fairtoon 작가의 목소리";d=v.quote_ko||v.summary_ko||d;}
   }else if(state.view==="articles"){
     t="경제학으로 읽는 웹툰 — Fairtoon";d="가격차별·공공재·외부효과·넛지. 익숙한 웹툰 속에 숨은 경제 원리로 ‘왜 합법이어야 하는가’를 풀어내는 아티클 시리즈.";
   }else if(state.view==="discover"){
