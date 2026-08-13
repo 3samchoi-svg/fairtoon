@@ -1388,7 +1388,7 @@ function renderPopular(){
   if(tab==="fairtoon"){
     var list=popularList(POPULAR_N);
     cards=list.map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("");
-    note='순위는 3사 공식 랭킹을 5칸 주기로 나눠 배분한 페어툰 순위입니다(1~3위 네이버웹툰 · 4위 카카오웹툰 · 5위 카카오페이지, 이후 반복). 플랫폼끼리 인기를 견주지 않기 위한 방식입니다.';
+    note='';   /* 배분 규칙은 이용자에게 설명할 일이 아니다(2026-08-13 대표님 지시) */
   }else{
     var rows=platformRankList(tab,POPULAR_N);
     cards=rows.map(function(r){
@@ -1402,7 +1402,7 @@ function renderPopular(){
     '<div class="page-header"><h1>🔥 지금 인기</h1><p>네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 매일 한 번 받아 옵니다. 카드를 누르면 그 작품을 정식으로 볼 수 있는 곳으로 바로 갑니다.'+(rankedAt()?' 현재 '+rankedAt()+' 기준입니다.':'')+'</p></div>'+
     '<div class="genre-rail" style="margin-bottom:24px;">'+chips+'</div>'+
     (cards?'<div class="rank-grid">'+cards+'</div>':'<div class="pass-empty">순위를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.</div>')+
-    '<div class="pass-note" style="margin-top:28px;">'+note+'</div>'+
+    (note?'<div class="pass-note" style="margin-top:28px;">'+note+'</div>':'')+
   '</div>';
   document.getElementById("mainContent").innerHTML=html;
 }
