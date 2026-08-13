@@ -517,6 +517,12 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 .rank-card .rk-num{font-family:var(--font-display);font-size:74px;line-height:.8;color:#C8D4EE;letter-spacing:-4px;transition:color .15s;}
 .rank-card:hover .rk-num{color:var(--blue);}
 .rank-card .hcard{flex:0 0 148px;width:148px;}
+/* 인기 순위 전체 화면 — 홈 선반과 달리 격자로 깐다. 두 자리 순위도 표지를 덮지 않도록
+   숫자 자리를 먼저 잡고 카드가 남은 폭을 쓴다. */
+.rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:22px 14px;}
+.rank-grid .rank-card{width:100%;gap:6px;}
+.rank-grid .rk-num{flex:0 0 auto;font-size:46px;letter-spacing:-2px;min-width:1.2em;text-align:right;}
+.rank-grid .hcard{flex:1 1 auto;width:auto;min-width:0;}
 /* 순위 데이터를 기다리는 동안의 빈 자리 — 자리 크기를 미리 잡아 화면이 튀지 않게 한다 */
 .rank-skel{cursor:default;pointer-events:none;}
 .rank-skel .hc-cover{aspect-ratio:3/4;border-radius:var(--radius-m);background:var(--surface-2);border:1.5px solid var(--line-soft);box-shadow:none;}
@@ -564,6 +570,9 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
   .ac-visual{width:100%;height:90px;}
   .quiz-banner{padding:26px 24px;}
   .about-stats{grid-template-columns:1fr;}
+  /* 순위 격자 — 한 줄에 하나면 30위까지 너무 길다. 두 칸으로 좁힌다 */
+  .rank-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 10px;}
+  .rank-grid .rk-num{font-size:34px;letter-spacing:-1px;}
 }
 /* ============ 로고 컨셉 적용 ============ */
 /* 히어로 — 로고 네이비 배경 + 집중선. 로고와 헤드라인을 한 줄로 */
@@ -1077,11 +1086,11 @@ var toastTimer;
 function showToast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},3000);}
 
 /* ---------------- ROUTER ---------------- */
-var state={view:"home",query:"",articleId:null,voiceId:null,quizStep:0,quizScores:{},discoverGenre:"전체"};
+var state={view:"home",query:"",articleId:null,voiceId:null,quizStep:0,quizScores:{},discoverGenre:"전체",popularTab:"fairtoon"};
 
 /* 주소(해시) 동기화 — 새로고침·뒤로가기·링크 공유 지원 */
 var expectedHash=null,bootRender=false;
-var HASH_VIEWS=["home","discover","voices","articles","staysafe","about","quiz"];
+var HASH_VIEWS=["home","discover","popular","voices","articles","staysafe","about","quiz"];
 function articleSlug(id){
   var a=ARTICLES.find(function(x){return x.id===id;});
   return a&&a.slug?a.slug:String(id);
@@ -1092,6 +1101,7 @@ function buildHash(){
   if(state.view==="article") return "#/articles/"+encodeURIComponent(articleSlug(state.articleId));
   if(state.view==="voice") return "#/voices/"+state.voiceId;
   if(state.view==="discover") return "#/discover"+(state.discoverGenre&&state.discoverGenre!=="전체"?"/"+encodeURIComponent(state.discoverGenre):"");
+  if(state.view==="popular") return "#/popular"+(state.popularTab&&state.popularTab!=="fairtoon"?"/"+state.popularTab:"");
   return "#/"+state.view;
 }
 function syncHash(){
@@ -1122,6 +1132,7 @@ function applyHash(){
     showView("voices");return;
   }
   if(v==="discover"&&seg[1]){goGenre(seg[1]);return;}
+  if(v==="popular"&&seg[1]){goPopular(seg[1]);return;}
   showView(HASH_VIEWS.indexOf(v)!==-1?v:"home");
 }
 window.addEventListener("hashchange",function(){
@@ -1133,6 +1144,7 @@ window.addEventListener("hashchange",function(){
 function showView(name){
   stopCounter();
   if(name==="discover") state.discoverGenre="전체";
+  if(name==="popular") state.popularTab="fairtoon";
   state.view=name;
   document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")===name);});
   document.getElementById("mobileNav").classList.remove("open");
@@ -1224,6 +1236,8 @@ function bannerStripHTML(){
   }).join("")+'</div></div>';
 }
 function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="discover");});render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
+/* 인기 순위 화면 탭 이동. 탭은 주소에 남으므로 링크로 공유된다. */
+function goPopular(tab){stopCounter();state.view="popular";state.popularTab=POPULAR_TABS.some(function(t){return t[0]===tab;})?tab:"fairtoon";document.querySelectorAll(".nav-link").forEach(function(el){el.classList.remove("active");});render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
 function hcardHTML(c,badge){
   /* 딥링크가 있으면 작품 페이지로 직접 보낸다. 표지 이미지를 쓰는 작품은 딥링크가 반드시 있어야 한다. */
   var p=platOf(c.legal);var url=c.legalUrl||p.search.replace("{q}",encodeURIComponent(c.title));
@@ -1269,7 +1283,7 @@ function renderHome(){
     '<div class="shelf" style="margin-top:28px;"><div class="genre-rail">'+
       HOME_GENRES.map(function(g){return '<button class="genre-pill" onclick="goGenre(\''+g+'\')">'+g+'</button>';}).join("")+
     '</div></div>'+
-    '<div class="shelf"><div class="shelf-head"><h2>🔥 지금 인기</h2><a href="#" class="more" onclick="showView(\'discover\');return false;">더보기</a></div>'+
+    '<div class="shelf"><div class="shelf-head"><h2>🔥 지금 인기</h2><a href="#" class="more" onclick="goPopular(\'fairtoon\');return false;">더보기</a></div>'+
       (rankedAt()?'<p class="shelf-basis">네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 반영한 페어툰 순위 · '+rankedAt()+' 기준</p>':'')+
       /* 순위는 DB·랭킹 파일이 와야 정해진다. 오기 전에 내장 시드로 그리면
          엉뚱한 순위가 잠깐 보였다가 바뀌므로, 첫 렌더에서는 빈 자리만 잡아둔다. */
@@ -1340,6 +1354,58 @@ function renderSearch(){
 }
 
 /* ---------------- RENDER: DISCOVER (명작 큐레이션) ---------------- */
+/* ---------------- RENDER: 인기 순위 전체 화면 ----------------
+   홈 선반의 5편을 30위까지 늘린 화면이다. 탭은 두 종류다.
+     · 페어툰 순위 — 홈과 같은 5칸 주기 정원 배분
+     · 플랫폼별   — 그 플랫폼 공식 순위를 번호까지 그대로
+   플랫폼 탭에서 아직 DB에 없는 작품은 번호를 비우지 않고 제목만 담은 카드로
+   두고 그 플랫폼 검색으로 보낸다. 순위가 중간에 끊기면 공식 순위가 아니게 된다. */
+var POPULAR_TABS=[["fairtoon","페어툰 순위"],["naver","네이버웹툰"],["kakaowebtoon","카카오웹툰"],["kakaopage","카카오페이지"]];
+var POPULAR_N=30;
+function platformRankList(pk,n){
+  var byTitle={};CURATED.forEach(function(c){var k=normKey(c.title);if(!byTitle[k])byTitle[k]=c;});
+  return (RANKINGS.rank||[]).filter(function(r){return r.pk===pk;})
+    .sort(function(a,b){return a.rank-b.rank;}).slice(0,n)
+    .map(function(r){return {rank:r.rank,title:r.title,work:byTitle[normKey(r.title)]||null,pk:pk};});
+}
+/* DB에 없는 순위 작품 — 표지·장르가 없으니 제목만 세우고 검색으로 보낸다 */
+function unknownRankCardHTML(title,pk){
+  var p=platOf(pk),url=p.search.replace("{q}",encodeURIComponent(title));
+  return '<div class="hcard" onclick="openLegal(\''+url+'\',\''+p.name+'\')" tabindex="0" role="button" aria-label="'+title+'">'+
+    '<div class="hc-cover"><span class="hc-badge">'+p.name+'</span>'+
+      coverInner({title:title,author:"",genres:[],cover:""})+
+      '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>'+
+    '</div>'+
+    '<div class="hc-title">'+title+'</div><div class="hc-sub">'+p.name+' 검색으로 이동</div>'+
+  '</div>';
+}
+function renderPopular(){
+  var tab=state.popularTab||"fairtoon";
+  var chips=POPULAR_TABS.map(function(t){
+    return '<button class="genre-pill'+(t[0]===tab?" active":"")+'" style="'+(t[0]===tab?"background:var(--blue);color:#0a0a0a;":"")+'" onclick="goPopular(\''+t[0]+'\')">'+t[1]+'</button>';
+  }).join("");
+  var cards,note;
+  if(tab==="fairtoon"){
+    var list=popularList(POPULAR_N);
+    cards=list.map(function(c,i){return '<div class="rank-card"><span class="rk-num">'+(i+1)+'</span>'+hcardHTML(c,"인기")+'</div>';}).join("");
+    note='순위는 3사 공식 랭킹을 5칸 주기로 나눠 배분한 페어툰 순위입니다(1~3위 네이버웹툰 · 4위 카카오웹툰 · 5위 카카오페이지, 이후 반복). 플랫폼끼리 인기를 견주지 않기 위한 방식입니다.';
+  }else{
+    var rows=platformRankList(tab,POPULAR_N);
+    cards=rows.map(function(r){
+      return '<div class="rank-card"><span class="rk-num">'+r.rank+'</span>'+
+        (r.work?hcardHTML(r.work,"인기"):unknownRankCardHTML(r.title,r.pk))+'</div>';
+    }).join("");
+    var miss=rows.filter(function(r){return !r.work;}).length;
+    note=platOf(tab).name+' 공식 순위를 그대로 옮겼습니다.'+(miss?' 이 가운데 '+miss+'편은 아직 페어툰 작품 정보에 없어 제목만 표시하고 플랫폼 검색으로 연결합니다.':'');
+  }
+  var html='<div class="container">'+
+    '<div class="page-header"><h1>🔥 지금 인기</h1><p>네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 매일 한 번 받아 옵니다. 카드를 누르면 그 작품을 정식으로 볼 수 있는 곳으로 바로 갑니다.'+(rankedAt()?' 현재 '+rankedAt()+' 기준입니다.':'')+'</p></div>'+
+    '<div class="genre-rail" style="margin-bottom:24px;">'+chips+'</div>'+
+    (cards?'<div class="rank-grid">'+cards+'</div>':'<div class="pass-empty">순위를 불러오는 중입니다. 잠시 후 다시 시도해 주세요.</div>')+
+    '<div class="pass-note" style="margin-top:28px;">'+note+'</div>'+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
 function renderDiscover(){
   var sel=state.discoverGenre||"전체";
   var pool=curatedOnly();
@@ -1572,6 +1638,9 @@ function updateMeta(){
     if(v){t=(v.creator_name||"")+" 영상 — Fairtoon 작가의 목소리";d=v.quote_ko||v.summary_ko||d;}
   }else if(state.view==="articles"){
     t="경제학으로 읽는 웹툰 — Fairtoon";d="가격차별·공공재·외부효과·넛지. 익숙한 웹툰 속에 숨은 경제 원리로 ‘왜 합법이어야 하는가’를 풀어내는 아티클 시리즈.";
+  }else if(state.view==="popular"){
+    t="지금 인기 웹툰 순위 — Fairtoon";
+    d="네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 매일 받아 정리한 인기 순위. 각 작품을 정식으로 볼 수 있는 곳으로 바로 연결합니다.";
   }else if(state.view==="discover"){
     t=(state.discoverGenre&&state.discoverGenre!=="전체"?state.discoverGenre+" ":"")+"합법으로 보는 완결 명작 — Fairtoon";
     d="손으로 고른 한국 웹툰 완결 명작. 각 작품을 합법으로 볼 수 있는 플랫폼으로 바로 연결합니다.";
@@ -1603,6 +1672,7 @@ function renderDispatch(){
   if(state.view==="home")renderHome();
   else if(state.view==="search")renderSearch();
   else if(state.view==="discover")renderDiscover();
+  else if(state.view==="popular")renderPopular();
   else if(state.view==="voices")renderVoices();
   else if(state.view==="voice")renderVoiceDetail();
   else if(state.view==="articles")renderArticles();
