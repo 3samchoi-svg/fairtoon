@@ -517,6 +517,9 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 .rank-card .rk-num{font-family:var(--font-display);font-size:74px;line-height:.8;color:#C8D4EE;letter-spacing:-4px;transition:color .15s;}
 .rank-card:hover .rk-num{color:var(--blue);}
 .rank-card .hcard{flex:0 0 148px;width:148px;}
+/* 찾아보기 격자 — 카드 폭을 칸에 맞춘다(.hcard는 원래 176px 고정이다) */
+.browse-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:26px 14px;}
+.browse-grid .hcard{flex:none;width:100%;}
 /* 인기 순위 전체 화면 — 홈 선반과 달리 격자로 깐다. 두 자리 순위도 표지를 덮지 않도록
    숫자 자리를 먼저 잡고 카드가 남은 폭을 쓴다. */
 .rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(196px,1fr));gap:22px 14px;}
@@ -661,6 +664,7 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
     </a>
     <nav class="main-nav" id="mainNav">
       <a href="#" class="nav-link active" data-view="home" data-i18n="nav_home">홈</a>
+      <a href="#" class="nav-link" data-view="browse" data-i18n="nav_browse">작품 찾아보기</a>
       <a href="#" class="nav-link" data-view="discover" data-i18n="nav_discover">명작 큐레이션</a>
       <a href="#" class="nav-link" data-view="voices" data-i18n="nav_voices">작가의 목소리</a>
       <a href="#" class="nav-link" data-view="articles" data-i18n="nav_articles">아티클</a>
@@ -680,6 +684,7 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
   </div>
   <div class="mobile-nav" id="mobileNav">
     <a href="#" class="nav-link" data-view="home" data-i18n="nav_home">홈</a>
+    <a href="#" class="nav-link" data-view="browse" data-i18n="nav_browse">작품 찾아보기</a>
     <a href="#" class="nav-link" data-view="discover" data-i18n="nav_discover">명작 큐레이션</a>
     <a href="#" class="nav-link" data-view="voices" data-i18n="nav_voices">작가의 목소리</a>
     <a href="#" class="nav-link" data-view="articles" data-i18n="nav_articles">아티클</a>
@@ -705,6 +710,7 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
         <div class="footer-col">
           <h4>SITE</h4>
           <a href="#" data-view="home" data-i18n="nav_home">홈</a>
+          <a href="#" data-view="browse" data-i18n="nav_browse">작품 찾아보기</a>
           <a href="#" data-view="discover" data-i18n="nav_discover">명작 큐레이션</a>
           <a href="#" data-view="articles" data-i18n="nav_articles">아티클</a>
           <a href="#" data-view="staysafe" data-i18n="nav_staysafe">안전 수칙</a>
@@ -1057,7 +1063,7 @@ function toggleCounterDetail(){ var d=document.getElementById("cbDetail"); if(d)
 /* ---------------- i18n (UI 라벨) ---------------- */
 var LANG="ko";
 var I18N={
- nav_home:{ko:"홈",en:"Home"},nav_discover:{ko:"명작 큐레이션",en:"Discover"},nav_voices:{ko:"작가의 목소리",en:"Creator Voices"},
+ nav_home:{ko:"홈",en:"Home"},nav_browse:{ko:"작품 찾아보기",en:"Browse"},nav_discover:{ko:"명작 큐레이션",en:"Discover"},nav_voices:{ko:"작가의 목소리",en:"Creator Voices"},
  nav_articles:{ko:"아티클",en:"Articles"},nav_staysafe:{ko:"안전 수칙",en:"Stay Safe"},nav_about:{ko:"소개",en:"About"},
  view_all:{ko:"전체 보기 →",en:"View all →"}
 };
@@ -1086,11 +1092,12 @@ var toastTimer;
 function showToast(msg){var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.classList.remove("show");},3000);}
 
 /* ---------------- ROUTER ---------------- */
-var state={view:"home",query:"",articleId:null,voiceId:null,quizStep:0,quizScores:{},discoverGenre:"전체",popularTab:"fairtoon"};
+var state={view:"home",query:"",articleId:null,voiceId:null,quizStep:0,quizScores:{},discoverGenre:"전체",popularTab:"fairtoon",
+           browseStatus:"연재",browseGenre:"전체",browsePlat:"전체",browseLimit:60};
 
 /* 주소(해시) 동기화 — 새로고침·뒤로가기·링크 공유 지원 */
 var expectedHash=null,bootRender=false;
-var HASH_VIEWS=["home","discover","popular","voices","articles","staysafe","about","quiz"];
+var HASH_VIEWS=["home","browse","discover","popular","voices","articles","staysafe","about","quiz"];
 function articleSlug(id){
   var a=ARTICLES.find(function(x){return x.id===id;});
   return a&&a.slug?a.slug:String(id);
@@ -1102,6 +1109,7 @@ function buildHash(){
   if(state.view==="voice") return "#/voices/"+state.voiceId;
   if(state.view==="discover") return "#/discover"+(state.discoverGenre&&state.discoverGenre!=="전체"?"/"+encodeURIComponent(state.discoverGenre):"");
   if(state.view==="popular") return "#/popular"+(state.popularTab&&state.popularTab!=="fairtoon"?"/"+state.popularTab:"");
+  if(state.view==="browse") return "#/browse"+(state.browseStatus==="완결"?"/완결":"");
   return "#/"+state.view;
 }
 function syncHash(){
@@ -1133,6 +1141,7 @@ function applyHash(){
   }
   if(v==="discover"&&seg[1]){goGenre(seg[1]);return;}
   if(v==="popular"&&seg[1]){goPopular(seg[1]);return;}
+  if(v==="browse"&&seg[1]){goBrowse("status",seg[1]);return;}
   showView(HASH_VIEWS.indexOf(v)!==-1?v:"home");
 }
 window.addEventListener("hashchange",function(){
@@ -1145,6 +1154,7 @@ function showView(name){
   stopCounter();
   if(name==="discover") state.discoverGenre="전체";
   if(name==="popular") state.popularTab="fairtoon";
+  if(name==="browse"){state.browseStatus="연재";state.browseGenre="전체";state.browsePlat="전체";state.browseLimit=BROWSE_PAGE;}
   state.view=name;
   document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")===name);});
   document.getElementById("mobileNav").classList.remove("open");
@@ -1354,6 +1364,88 @@ function renderSearch(){
 }
 
 /* ---------------- RENDER: DISCOVER (명작 큐레이션) ---------------- */
+/* ---------------- RENDER: 작품 찾아보기 ----------------
+   수집한 작품 전부를 훑는 화면이다. 명작 큐레이션(손으로 고른 49편)과는 성격이
+   다르므로 섞지 않는다. 연재/완결 탭 + 장르·플랫폼 필터로 좁히고, 한 번에
+   BROWSE_PAGE편씩 이어 붙인다. 2,000편을 한 번에 그리면 화면이 버벅인다. */
+var BROWSE_PAGE=60;
+/* 오늘 순위에 오른 작품을 앞에 세우고 나머지는 가나다순. 가나다순만 쓰면 첫 화면이
+   숫자·기호로 시작하는 제목으로 채워져 아는 작품이 한 편도 안 보인다. */
+function browseRankOrder(){
+  var m={};(RANKINGS.rank||[]).forEach(function(r){
+    var k=normKey(r.title);if(m[k]===undefined||r.rank<m[k])m[k]=r.rank;
+  });return m;
+}
+function browsePool(){
+  var st=state.browseStatus,g=state.browseGenre,pk=state.browsePlat,ord=browseRankOrder();
+  return CURATED.filter(function(c){
+    if((c.status||"완결")!==st) return false;
+    if(g!=="전체"&&(c.genres||[]).indexOf(g)===-1) return false;
+    if(pk!=="전체"&&c.legal!==pk) return false;
+    return true;
+  }).sort(function(a,b){
+    var ra=ord[normKey(a.title)],rb=ord[normKey(b.title)];
+    if(ra===undefined) ra=9999; if(rb===undefined) rb=9999;
+    if(ra!==rb) return ra-rb;
+    return a.title.localeCompare(b.title,"ko");
+  });
+}
+function goBrowse(kind,val){
+  stopCounter();
+  state.view="browse";
+  if(kind==="status") state.browseStatus=(val==="완결"?"완결":"연재");
+  else if(kind==="genre") state.browseGenre=val;
+  else if(kind==="plat") state.browsePlat=val;
+  state.browseLimit=BROWSE_PAGE;   /* 조건이 바뀌면 처음부터 다시 센다 */
+  document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="browse");});
+  render();syncHash();
+}
+/* 더 보기 — 화면을 다시 그리지 않고 카드만 이어 붙인다(스크롤 자리를 지키기 위해) */
+function moreBrowse(){
+  var grid=document.getElementById("browseGrid");if(!grid) return;
+  var pool=browsePool(),from=state.browseLimit;
+  state.browseLimit+=BROWSE_PAGE;
+  grid.insertAdjacentHTML("beforeend",pool.slice(from,state.browseLimit).map(browseCardHTML).join(""));
+  var btn=document.getElementById("browseMore");
+  if(btn) btn.outerHTML=browseMoreHTML(pool.length);
+}
+function browseCardHTML(c){return hcardHTML(c,c.status||"완결");}
+function browseMoreHTML(total){
+  var shown=Math.min(state.browseLimit,total);
+  if(shown>=total) return '<div class="pass-note" style="margin-top:26px;">'+total.toLocaleString()+'편을 모두 보셨습니다.</div>';
+  return '<div id="browseMore" style="text-align:center;margin-top:30px;">'+
+    '<button class="btn-primary" onclick="moreBrowse()">더 보기 ('+shown.toLocaleString()+' / '+total.toLocaleString()+')</button></div>';
+}
+function renderBrowse(){
+  var st=state.browseStatus;
+  var statusTabs=[["연재","연재 중"],["완결","완결"]].map(function(t){
+    return '<button class="genre-pill'+(t[0]===st?" active":"")+'" style="'+(t[0]===st?"background:var(--blue);color:#0a0a0a;":"")+'" onclick="goBrowse(\'status\',\''+t[0]+'\')">'+t[1]+'</button>';
+  }).join("");
+  /* 장르·플랫폼 칩은 지금 선택된 상태(연재/완결) 안에 실제로 있는 것만 세운다 */
+  var inStatus=CURATED.filter(function(c){return (c.status||"완결")===st;});
+  var genres=[];inStatus.forEach(function(c){(c.genres||[]).forEach(function(g){if(g&&genres.indexOf(g)===-1)genres.push(g);});});
+  genres.sort();
+  var genreChips=["전체"].concat(genres).map(function(g){
+    return '<button class="genre-pill'+(g===state.browseGenre?" active":"")+'" style="'+(g===state.browseGenre?"background:var(--blue);color:#0a0a0a;":"")+'" onclick="goBrowse(\'genre\',\''+g+'\')">'+g+'</button>';
+  }).join("");
+  var plats=PLATFORMS.filter(function(p){return inStatus.some(function(c){return c.legal===p.key;});});
+  var platChips=[['전체','전체 플랫폼']].concat(plats.map(function(p){return [p.key,p.name];})).map(function(t){
+    return '<button class="genre-pill'+(t[0]===state.browsePlat?" active":"")+'" style="'+(t[0]===state.browsePlat?"background:var(--blue);color:#0a0a0a;":"")+'" onclick="goBrowse(\'plat\',\''+t[0]+'\')">'+t[1]+'</button>';
+  }).join("");
+  var pool=browsePool();
+  var cards=pool.slice(0,state.browseLimit).map(browseCardHTML).join("");
+  var html='<div class="container">'+
+    '<div class="page-header"><h1>작품 찾아보기</h1><p>페어툰이 모아 둔 한국 웹툰 '+CURATED.length.toLocaleString()+'편입니다. 장르와 플랫폼으로 좁혀 보세요. 카드를 누르면 그 작품을 정식으로 볼 수 있는 곳으로 바로 갑니다.</p></div>'+
+    '<div class="genre-rail" style="margin-bottom:12px;">'+statusTabs+'</div>'+
+    '<div class="genre-rail" style="margin-bottom:12px;">'+genreChips+'</div>'+
+    '<div class="genre-rail" style="margin-bottom:22px;">'+platChips+'</div>'+
+    (pool.length
+      ? '<div class="browse-grid" id="browseGrid">'+cards+'</div>'+browseMoreHTML(pool.length)
+      : '<div class="pass-empty">조건에 맞는 작품이 없습니다. 필터를 넓혀 보세요.</div>')+
+  '</div>';
+  document.getElementById("mainContent").innerHTML=html;
+}
+
 /* ---------------- RENDER: 인기 순위 전체 화면 ----------------
    홈 선반의 5편을 30위까지 늘린 화면이다. 탭은 두 종류다.
      · 페어툰 순위 — 홈과 같은 5칸 주기 정원 배분
@@ -1638,6 +1730,9 @@ function updateMeta(){
     if(v){t=(v.creator_name||"")+" 영상 — Fairtoon 작가의 목소리";d=v.quote_ko||v.summary_ko||d;}
   }else if(state.view==="articles"){
     t="경제학으로 읽는 웹툰 — Fairtoon";d="가격차별·공공재·외부효과·넛지. 익숙한 웹툰 속에 숨은 경제 원리로 ‘왜 합법이어야 하는가’를 풀어내는 아티클 시리즈.";
+  }else if(state.view==="browse"){
+    t=state.browseStatus+" 웹툰 찾아보기 — Fairtoon";
+    d="페어툰이 모아 둔 한국 웹툰을 장르·플랫폼으로 찾아봅니다. 각 작품을 정식으로 볼 수 있는 곳으로 바로 연결합니다.";
   }else if(state.view==="popular"){
     t="지금 인기 웹툰 순위 — Fairtoon";
     d="네이버웹툰·카카오웹툰·카카오페이지 공식 랭킹을 매일 받아 정리한 인기 순위. 각 작품을 정식으로 볼 수 있는 곳으로 바로 연결합니다.";
@@ -1673,6 +1768,7 @@ function renderDispatch(){
   else if(state.view==="search")renderSearch();
   else if(state.view==="discover")renderDiscover();
   else if(state.view==="popular")renderPopular();
+  else if(state.view==="browse")renderBrowse();
   else if(state.view==="voices")renderVoices();
   else if(state.view==="voice")renderVoiceDetail();
   else if(state.view==="articles")renderArticles();
