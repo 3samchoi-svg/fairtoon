@@ -375,6 +375,16 @@ main{min-height:60vh;}
 .voice-hero-text{flex:1;min-width:260px;}
 .voice-hero-text .vquote{font-family:var(--font-display);font-size:20px;letter-spacing:-.3px;line-height:1.4;margin:0 0 14px;}
 .voice-hero-text .vby{font-size:14px;color:var(--gray);}
+/* 인터뷰 영상 즉시 재생 모달 */
+.vmodal{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(6,12,28,.86);padding:20px;}
+.vmodal.show{display:flex;}
+.vmodal-box{width:min(960px,100%);}
+.vmodal-frame{position:relative;aspect-ratio:16/9;border-radius:var(--radius-m);overflow:hidden;background:#000;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.vmodal-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0;}
+.vmodal-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:12px;}
+.vmodal-name{font-size:14px;font-weight:700;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.vmodal-more{flex:0 0 auto;font-size:13px;color:rgba(255,255,255,.8);text-decoration:underline;cursor:pointer;}
+.vmodal-x{position:absolute;top:14px;right:16px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;font-size:17px;line-height:1;cursor:pointer;}
 .shorts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
 .short-card{aspect-ratio:9/16;border-radius:var(--radius-l);overflow:hidden;position:relative;display:flex;align-items:flex-end;cursor:pointer;transition:transform .15s;}
 .short-card:hover{transform:translateY(-3px);}
@@ -696,6 +706,14 @@ footer{border-top:1px solid var(--line);margin-top:60px;}
 <main id="mainContent"></main>
 
 <div class="toast" id="toast"></div>
+
+<div class="vmodal" id="voiceModal" role="dialog" aria-modal="true" aria-label="작가 인터뷰 영상" onclick="if(event.target===this)closeVoiceModal();">
+  <button class="vmodal-x" type="button" aria-label="닫기" onclick="closeVoiceModal()">✕</button>
+  <div class="vmodal-box">
+    <div class="vmodal-frame"></div>
+    <div class="vmodal-bar"><span class="vmodal-name"></span><span class="vmodal-more" role="button" tabindex="0">자세히 보기 →</span></div>
+  </div>
+</div>
 
 <footer>
   <div class="footer-inner">
@@ -1274,7 +1292,7 @@ function renderHome(){
   ];
   /* 등록된 인터뷰가 있으면 그 인용구로, 없으면 플레이스홀더 문구로 */
   var voices=VOICES.length
-    ? VOICES.slice(0,5).map(function(v,i){return {t:v.quote_ko||v.creator_name||"",go:"showVoice("+v.id+")",bg:voiceThumb(v,i)};})
+    ? VOICES.slice(0,5).map(function(v,i){return {t:v.quote_ko||v.creator_name||"",go:"playVoice("+v.id+")",bg:voiceThumb(v,i)};})
     : [{t:"“내 작품이 불법 사이트에 먼저 올라왔을 때…”"},{t:"“결제 한 번이 다음 화를 만듭니다”"},{t:"“기다무로 봐주시는 것도 큰 힘이에요”"},{t:"“불법 스캔은 그림까지 뭉개져요”"},{t:"“합법이 이렇게 쉬운 줄 몰랐어요”"}];
   var html=''+
   '<section class="spotlight"><div class="spotlight-inner">'+
@@ -1523,8 +1541,29 @@ function voiceThumb(v,i){
   if(vid) return "background-image:url(https://i.ytimg.com/vi/"+vid+"/hqdefault.jpg);background-size:cover;background-position:center;";
   return coverStyle(i);
 }
+/* 카드를 누르면 목록 위에서 바로 재생. 영상이 없는 작가만 상세로 보낸다 */
+function playVoice(id){
+  var v=VOICES.find(function(x){return x.id===id;});
+  if(!v)return;
+  var vid=ytId(v.interview_youtube_url);
+  if(!vid){showVoice(id);return;}
+  var m=document.getElementById("voiceModal");
+  m.querySelector(".vmodal-frame").innerHTML='<iframe src="https://www.youtube.com/embed/'+vid+'?autoplay=1&rel=0" title="'+(v.creator_name||"")+' 영상" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>';
+  m.querySelector(".vmodal-name").textContent=(v.creator_name||"")+(v.work?" · 『"+v.work+"』":"");
+  m.querySelector(".vmodal-more").onclick=function(){closeVoiceModal();showVoice(id);};
+  m.classList.add("show");
+  document.body.style.overflow="hidden";
+}
+function closeVoiceModal(){
+  var m=document.getElementById("voiceModal");
+  if(!m||!m.classList.contains("show"))return;
+  m.classList.remove("show");
+  m.querySelector(".vmodal-frame").innerHTML="";
+  document.body.style.overflow="";
+}
+document.addEventListener("keydown",function(e){if(e.key==="Escape")closeVoiceModal();});
 function voiceCardHTML(v,i){
-  return '<div class="hcard" onclick="showVoice('+v.id+')" tabindex="0" role="button" aria-label="'+(v.creator_name||"")+' 영상">'+
+  return '<div class="hcard" onclick="playVoice('+v.id+')" tabindex="0" role="button" aria-label="'+(v.creator_name||"")+' 영상">'+
     '<div class="hc-cover" style="'+voiceThumb(v,i)+'"><span class="hc-badge">영상</span>'+
       '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>'+
     '</div>'+
