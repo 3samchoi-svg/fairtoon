@@ -867,9 +867,22 @@ function popularList(n){
 function normKey(s){return (s||"").toString().toLowerCase().replace(/\s+/g,"");}
 function searchCurated(q){
   var nq=normKey(q); if(!nq) return [];
+  /* 카탈로그가 수천 편이므로 순서가 중요하다. 제목 완전일치 → 제목 시작일치 →
+     제목 포함 → 작가·영문·별칭에서만 걸린 것. 같은 등급 안에서는 가나다순. */
+  function rank(c){
+    var t=normKey(c.title);
+    if(t===nq) return 0;
+    if(t.indexOf(nq)===0) return 1;
+    if(t.indexOf(nq)!==-1) return 2;
+    return 3;
+  }
   return CURATED.filter(function(c){
     var hay=normKey([c.title,c.en,(c.aliases||[]).join(" "),c.author].join(" "));
     return hay.indexOf(nq)!==-1;
+  }).sort(function(a,b){
+    var ra=rank(a),rb=rank(b);
+    if(ra!==rb) return ra-rb;
+    return a.title.localeCompare(b.title,"ko");
   });
 }
 
@@ -1111,7 +1124,7 @@ function showToast(msg){var t=document.getElementById("toast");t.textContent=msg
 
 /* ---------------- ROUTER ---------------- */
 var state={view:"home",query:"",articleId:null,voiceId:null,quizStep:0,quizScores:{},discoverGenre:"전체",popularTab:"fairtoon",
-           browseStatus:"연재",browseGenre:"전체",browsePlat:"전체",browseLimit:60};
+           browseStatus:"연재",browseGenre:"전체",browsePlat:"전체",browseLimit:60,searchLimit:24};
 
 /* 주소(해시) 동기화 — 새로고침·뒤로가기·링크 공유 지원 */
 var expectedHash=null,bootRender=false;
@@ -1180,7 +1193,7 @@ function showView(name){
 }
 function runSearch(q){
   stopCounter();
-  state.query=q;state.view="search";
+  state.query=q;state.view="search";state.searchLimit=SEARCH_PAGE;   /* 검색어가 바뀌면 처음부터 다시 센다 */
   document.querySelectorAll(".nav-link").forEach(function(el){el.classList.remove("active");});
   render();syncHash();window.scrollTo({top:0,behavior:"instant"});
 }
@@ -1195,7 +1208,8 @@ document.addEventListener("click",function(e){
 /* ---------------- CARD BUILDERS ---------------- */
 function curatedCardHTML(c){
   var p=platOf(c.legal);
-  var url=p.search.replace("{q}",encodeURIComponent(c.title));
+  /* 딥링크가 있으면 작품 페이지로 보낸다. 다른 카드는 이미 그렇게 하고 있었다. */
+  var url=c.legalUrl||p.search.replace("{q}",encodeURIComponent(c.title));
   return '<div class="toon-card">'+
     '<div class="toon-cover"><span class="status-badge">'+(c.status||"완결")+'</span>'+coverInner(c)+'</div>'+
     '<div class="toon-body">'+
@@ -1345,7 +1359,26 @@ function renderHome(){
   setTimeout(function(){startHeroTyping();startCounter("revCounter");},50);
 }
 
-/* ---------------- RENDER: SEARCH PASSTHROUGH ---------------- */
+/* ---------------- RENDER: SEARCH PASSTHROUGH ----------------
+   카탈로그가 수천 편이 된 뒤로 '회귀'처럼 흔한 말을 넣으면 수백 편이 걸린다.
+   전부 그리지 않고 SEARCH_PAGE편씩 이어 붙인다. 카드는 찾아보기 화면과 같은
+   것을 쓴다 — 딥링크가 있으면 작품 페이지로 바로 간다. */
+var SEARCH_PAGE=24;
+function searchMoreHTML(total){
+  var shown=Math.min(state.searchLimit||SEARCH_PAGE,total);
+  if(shown>=total) return '';
+  return '<div id="searchMore" style="text-align:center;margin-top:24px;">'+
+    '<button class="btn-primary" onclick="moreSearch()">더 보기 ('+shown.toLocaleString()+' / '+total.toLocaleString()+')</button></div>';
+}
+/* 더 보기 — 화면을 다시 그리지 않고 카드만 이어 붙인다(스크롤 자리를 지키기 위해) */
+function moreSearch(){
+  var grid=document.getElementById("searchGrid");if(!grid) return;
+  var matches=searchCurated(state.query||""),from=state.searchLimit||SEARCH_PAGE;
+  state.searchLimit=from+SEARCH_PAGE;
+  grid.insertAdjacentHTML("beforeend",matches.slice(from,state.searchLimit).map(browseCardHTML).join(""));
+  var btn=document.getElementById("searchMore");
+  if(btn) btn.outerHTML=searchMoreHTML(matches.length);
+}
 function renderSearch(){
   var q=(state.query||"").trim();
   var html='<div class="container">';
@@ -1369,13 +1402,15 @@ function renderSearch(){
       '<span class="pass-go">검색 ↗</span>'+
     '</a>';
   }).join("");
-  /* 헤더: 큐레이션 매칭 여부에 따라 문구 변경 */
+  /* 헤더: 작품 정보 보유 여부에 따라 문구 변경 */
   if(matches.length){
-    html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 검색 결과</h2><p>페어툰 큐레이션에서 '+matches.length+'편을 찾았습니다. 합법 플랫폼으로 바로 연결됩니다.</p></div>'+
-      '<div class="toon-grid" style="margin-bottom:12px;">'+matches.map(curatedCardHTML).join("")+'</div>'+
-      '<h3 class="search-subhead">다른 플랫폼에서도 찾기</h3>';
+    var lim=state.searchLimit||SEARCH_PAGE;
+    html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 검색 결과</h2><p>페어툰 작품 정보에서 '+matches.length.toLocaleString()+'편을 찾았습니다. 카드를 누르면 그 작품을 정식으로 볼 수 있는 곳으로 바로 갑니다.</p></div>'+
+      '<div class="toon-grid" id="searchGrid" style="margin-bottom:12px;">'+matches.slice(0,lim).map(browseCardHTML).join("")+'</div>'+
+      searchMoreHTML(matches.length)+
+      '<h3 class="search-subhead" style="margin-top:36px;">다른 플랫폼에서도 찾기</h3>';
   } else {
-    html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 합법으로 보기</h2><p>큐레이션에는 아직 없는 작품입니다. 아래 공식 플랫폼에서 바로 검색해 보세요.</p></div>';
+    html+='<div class="pass-header"><h2>“<span class="q">'+q+'</span>” 합법으로 보기</h2><p>페어툰 작품 정보에는 아직 없는 작품입니다. 아래 공식 플랫폼에서 바로 검색해 보세요.</p></div>';
   }
   html+='<div class="pass-list">'+cards+'</div>'+
     '<div class="pass-note">ℹ️ 페어툰 큐레이션에 없는 작품도, 각 플랫폼의 <b>검색 결과</b>로 안내해 어떤 신작이든 바로 찾을 수 있어요. (플랫폼 검색은 작품 페이지가 아니라 검색 결과로 이동하며, 표시 가격은 플랫폼 일반 안내입니다.) 링크가 깨졌다면 <a href="#" onclick="showView(\'about\');return false;">문의하기</a>로 알려주세요.</div>'+
