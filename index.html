@@ -1266,9 +1266,12 @@ function bannerStripHTML(){
 function goGenre(g){stopCounter();state.view="discover";state.discoverGenre=g;document.querySelectorAll(".nav-link").forEach(function(el){el.classList.toggle("active",el.getAttribute("data-view")==="discover");});render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
 /* 인기 순위 화면 탭 이동. 탭은 주소에 남으므로 링크로 공유된다. */
 function goPopular(tab){stopCounter();state.view="popular";state.popularTab=POPULAR_TABS.some(function(t){return t[0]===tab;})?tab:"fairtoon";document.querySelectorAll(".nav-link").forEach(function(el){el.classList.remove("active");});render();syncHash();window.scrollTo({top:0,behavior:"instant"});}
-function hcardHTML(c,badge){
-  /* 딥링크가 있으면 작품 페이지로 직접 보낸다. 표지 이미지를 쓰는 작품은 딥링크가 반드시 있어야 한다. */
-  var p=platOf(c.legal);var url=c.legalUrl||p.search.replace("{q}",encodeURIComponent(c.title));
+function hcardHTML(c,badge,pk){
+  /* 딥링크가 있으면 작품 페이지로 직접 보낸다. 표지 이미지를 쓰는 작품은 딥링크가 반드시 있어야 한다.
+     pk를 넘기면 그 플랫폼으로 보낸다 — 카카오 양 서비스 공통 작품이 카카오페이지 순위에 올랐을 때
+     카드가 카카오웹툰으로 새는 것을 막는다. 그 플랫폼의 딥링크는 없으므로 검색으로 보낸다. */
+  var p=platOf(pk&&pk!==c.legal?pk:c.legal);
+  var url=(!pk||pk===c.legal)&&c.legalUrl?c.legalUrl:p.search.replace("{q}",encodeURIComponent(c.title));
   return '<div class="hcard" onclick="openLegal(\''+url+'\',\''+p.name+'\')" tabindex="0" role="button" aria-label="'+c.title+'">'+
     '<div class="hc-cover"><span class="hc-badge">'+(badge||c.status||"완결")+'</span>'+coverInner(c)+
       '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>'+
@@ -1503,7 +1506,7 @@ function renderPopular(){
     var rows=platformRankList(tab,POPULAR_N);
     cards=rows.map(function(r){
       return '<div class="rank-card"><span class="rk-num">'+r.rank+'</span>'+
-        (r.work?hcardHTML(r.work,"인기"):unknownRankCardHTML(r.title,r.pk))+'</div>';
+        (r.work?hcardHTML(r.work,"인기",r.pk):unknownRankCardHTML(r.title,r.pk))+'</div>';
     }).join("");
     var miss=rows.filter(function(r){return !r.work;}).length;
     note=platOf(tab).name+' 공식 순위를 그대로 옮겼습니다.'+(miss?' 이 가운데 '+miss+'편은 아직 페어툰 작품 정보에 없어 제목만 표시하고 플랫폼 검색으로 연결합니다.':'');
