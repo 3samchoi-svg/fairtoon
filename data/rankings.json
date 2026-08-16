@@ -1,6 +1,6 @@
 {
- "fetched_on": "2026-08-16",
- "naver_weekday": "sun",
+ "fetched_on": "2026-08-17",
+ "naver_weekday": "mon",
  "counts": {
   "naver": 30,
   "kakaowebtoon": 30,
@@ -10,212 +10,212 @@
   {
    "pk": "naver",
    "rank": 1,
-   "title": "육아일기"
+   "title": "참교육"
   },
   {
    "pk": "naver",
    "rank": 2,
-   "title": "범죄도시0"
+   "title": "환생천마"
   },
   {
    "pk": "naver",
    "rank": 3,
-   "title": "권왕환생"
+   "title": "샤MONEY즘"
   },
   {
    "pk": "naver",
    "rank": 4,
-   "title": "인간의 식탁"
+   "title": "시한부 천재가 살아남는 법"
   },
   {
    "pk": "naver",
    "rank": 5,
-   "title": "태존비록"
+   "title": "절대검감"
   },
   {
    "pk": "naver",
    "rank": 6,
-   "title": "일타강사 백사부"
+   "title": "백수세끼"
   },
   {
    "pk": "naver",
    "rank": 7,
-   "title": "프롤로그에서 30년이 흘렀다"
+   "title": "귀촌리"
   },
   {
    "pk": "naver",
    "rank": 8,
-   "title": "모든걸 기억하는 천재무사"
+   "title": "소녀의 세계"
   },
   {
    "pk": "naver",
    "rank": 9,
-   "title": "아카데미의 천재칼잡이"
+   "title": "똑 닮은 딸"
   },
   {
    "pk": "naver",
    "rank": 10,
-   "title": "축구천재로 오해받는 중입니다"
+   "title": "파브르 in 사천당가"
   },
   {
    "pk": "naver",
    "rank": 11,
-   "title": "하남자의 탑 공략법"
+   "title": "먹는 인생2"
   },
   {
    "pk": "naver",
    "rank": 12,
-   "title": "환생좌"
+   "title": "계속 써도 돈이 쌓임"
   },
   {
    "pk": "naver",
    "rank": 13,
-   "title": "용사파티만화"
+   "title": "시리도록 불꽃처럼"
   },
   {
    "pk": "naver",
    "rank": 14,
-   "title": "천재 무림 트레이너"
+   "title": "회귀한 공작가의 막내도련님은 암살자"
   },
   {
    "pk": "naver",
    "rank": 15,
-   "title": "세상에 나쁜 영애는 없다"
+   "title": "천재 타자가 강속구를 숨김"
   },
   {
    "pk": "naver",
    "rank": 16,
-   "title": "맹종"
+   "title": "청부입학"
   },
   {
    "pk": "naver",
    "rank": 17,
-   "title": "부활소년"
+   "title": "아포칼립스에 집을 숨김"
   },
   {
    "pk": "naver",
    "rank": 18,
-   "title": "같이 장볼래?"
+   "title": "변경백의 10클래스 망나니"
   },
   {
    "pk": "naver",
    "rank": 19,
-   "title": "용사보다 너무 강해서 힘을 숨김"
+   "title": "영업 천재가 되었다"
   },
   {
    "pk": "naver",
    "rank": 20,
-   "title": "너만 보인단 말이야"
+   "title": "세림의 철칙"
   },
   {
    "pk": "naver",
    "rank": 21,
-   "title": "천도박멸"
+   "title": "다정한 침입자"
   },
   {
    "pk": "naver",
    "rank": 22,
-   "title": "해시태그는 첫사랑"
+   "title": "신화급 귀속 아이템을 손에 넣었다"
   },
   {
    "pk": "naver",
    "rank": 23,
-   "title": "소녀바둑"
+   "title": "수상한 다이어트 클럽"
   },
   {
    "pk": "naver",
    "rank": 24,
-   "title": "재벌의 품격"
+   "title": "조선야차"
   },
   {
    "pk": "naver",
    "rank": 25,
-   "title": "20 중반, 성공이란 무엇인가"
+   "title": "검 먹는 소드마스터"
   },
   {
    "pk": "naver",
    "rank": 26,
-   "title": "이레즈미 소개팅남"
+   "title": "대공비가 체질입니다"
   },
   {
    "pk": "naver",
    "rank": 27,
-   "title": "장풍전"
+   "title": "어린이집 다니는 구나"
   },
   {
    "pk": "naver",
    "rank": 28,
-   "title": "내 최애는 막차를 탄다"
+   "title": "우주천마 3077"
   },
   {
    "pk": "naver",
    "rank": 29,
-   "title": "양아치의 첫사랑"
+   "title": "중세 판타지 속 망나니 경비조장"
   },
   {
    "pk": "naver",
    "rank": 30,
-   "title": "레드셔츠"
+   "title": "이혼자녀"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 1,
-   "title": "검술명가 막내아들"
+   "title": "이번 생은 가주가 되겠습니다"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 2,
+   "title": "철혈검가 사냥개의 회귀"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 3,
    "title": "악마의 주인님이 되어버렸다"
   },
   {
    "pk": "kakaowebtoon",
-   "rank": 3,
-   "title": "무당기협"
-  },
-  {
-   "pk": "kakaowebtoon",
    "rank": 4,
-   "title": "점괘보는 공녀님"
+   "title": "세이렌: 악당과 계약 가족이 되었다"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 5,
-   "title": "가드패스"
+   "title": "너의 뜻대로"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 6,
-   "title": "진짜 가주는 나였다"
+   "title": "해골병사는 던전을 지키지 못했다"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 7,
-   "title": "갓 오브 블랙필드"
+   "title": "재앙급 영웅님이 귀환하셨다"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 8,
-   "title": "남주들과 외딴섬에 갇혀버렸다"
+   "title": "결혼 장사2 ~잊히지 않을 노래~"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 9,
-   "title": "막내 공녀의 총애를 독차지했더니, 모두 내게 집착한다"
+   "title": "만 년 만에 귀환한 플레이어"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 10,
-   "title": "북부 대공"
+   "title": "유부녀 킬러"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 11,
-   "title": "학사검전"
+   "title": "은해상단 막내아들"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 12,
-   "title": "유부녀 킬러"
+   "title": "곱게 자란 자식"
   },
   {
    "pk": "kakaowebtoon",
@@ -225,97 +225,97 @@
   {
    "pk": "kakaowebtoon",
    "rank": 14,
-   "title": "데뷔 못 하면 죽는 병 걸림"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 15,
-   "title": "우리 아빠는 천하제일인"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 16,
-   "title": "기연독식"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 17,
-   "title": "레드스톰 - 왕의 귀환"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 18,
-   "title": "여보, 왜 이혼은 안 되나요?"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 19,
-   "title": "도굴왕"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 20,
-   "title": "아비무쌍"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 21,
-   "title": "아빠가 힘을 숨김"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 22,
-   "title": "신마의선"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 23,
-   "title": "신마대제"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 24,
-   "title": "템빨"
-  },
-  {
-   "pk": "kakaowebtoon",
-   "rank": 25,
    "title": "시간치료사 세레스"
   },
   {
    "pk": "kakaowebtoon",
+   "rank": 15,
+   "title": "튜토리얼이 너무 어렵다"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 16,
+   "title": "저 후회물 여주 아니었나요?"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 17,
+   "title": "무당기협"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 18,
+   "title": "픽 미 업!"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 19,
+   "title": "검술명가 막내아들"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 20,
+   "title": "도굴왕"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 21,
+   "title": "극한견주 시즌2"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 22,
+   "title": "황제와 비밀 연애 중인데 나는 그걸 몰라"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 23,
+   "title": "나 혼자만 레벨업"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 24,
+   "title": "가드패스"
+  },
+  {
+   "pk": "kakaowebtoon",
+   "rank": 25,
+   "title": "흑백무제"
+  },
+  {
+   "pk": "kakaowebtoon",
    "rank": 26,
-   "title": "괴담에 떨어져도 출근을 해야 하는구나"
+   "title": "관존 이강진"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 27,
-   "title": "무색의 빛"
+   "title": "우리 아빠는 천하제일인"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 28,
-   "title": "말단 후궁의 딸로 태어났습니다"
+   "title": "악녀의 맞선남이 너무 완벽하다"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 29,
-   "title": "천하제일 곤륜객잔"
+   "title": "천재 궁수의 스트리밍"
   },
   {
    "pk": "kakaowebtoon",
    "rank": 30,
-   "title": "전생자"
+   "title": "템빨"
   },
   {
    "pk": "kakaopage",
    "rank": 1,
-   "title": "아기는 악당을 키운다"
+   "title": "결혼 장사2 ~잊히지 않을 노래~"
   },
   {
    "pk": "kakaopage",
    "rank": 2,
-   "title": "우리 아빠는 천하제일인"
+   "title": "이번 생은 가주가 되겠습니다"
   },
   {
    "pk": "kakaopage",
@@ -325,27 +325,27 @@
   {
    "pk": "kakaopage",
    "rank": 4,
-   "title": "검술명가 막내아들"
+   "title": "만 년 만에 귀환한 플레이어"
   },
   {
    "pk": "kakaopage",
    "rank": 5,
-   "title": "갓 오브 블랙필드"
+   "title": "우리 아빠는 천하제일인"
   },
   {
    "pk": "kakaopage",
    "rank": 6,
-   "title": "데뷔 못 하면 죽는 병 걸림"
+   "title": "아기는 악당을 키운다"
   },
   {
    "pk": "kakaopage",
    "rank": 7,
-   "title": "점괘보는 공녀님"
+   "title": "괴담에 떨어져도 출근을 해야 하는구나"
   },
   {
    "pk": "kakaopage",
    "rank": 8,
-   "title": "이번 생은 가주가 되겠습니다"
+   "title": "철혈검가 사냥개의 회귀"
   },
   {
    "pk": "kakaopage",
@@ -355,37 +355,37 @@
   {
    "pk": "kakaopage",
    "rank": 10,
-   "title": "진짜 가주는 나였다"
-  },
-  {
-   "pk": "kakaopage",
-   "rank": 11,
-   "title": "악마의 주인님이 되어버렸다"
-  },
-  {
-   "pk": "kakaopage",
-   "rank": 12,
-   "title": "무당기협"
-  },
-  {
-   "pk": "kakaopage",
-   "rank": 13,
-   "title": "백호 가문의 아기 솜뭉치"
-  },
-  {
-   "pk": "kakaopage",
-   "rank": 14,
    "title": "도굴왕"
   },
   {
    "pk": "kakaopage",
+   "rank": 11,
+   "title": "유부녀 킬러"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 12,
+   "title": "황제와 비밀 연애 중인데 나는 그걸 몰라"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 13,
+   "title": "픽 미 업!"
+  },
+  {
+   "pk": "kakaopage",
+   "rank": 14,
+   "title": "튜토리얼이 너무 어렵다"
+  },
+  {
+   "pk": "kakaopage",
    "rank": 15,
-   "title": "무림세가 천대받는 손녀 딸이 되었다"
+   "title": "병아리반 헌터는 효도 중!"
   },
   {
    "pk": "kakaopage",
    "rank": 16,
-   "title": "유부녀 킬러"
+   "title": "진짜 가주는 나였다"
   },
   {
    "pk": "kakaopage",
@@ -395,67 +395,67 @@
   {
    "pk": "kakaopage",
    "rank": 18,
-   "title": "막내 공녀의 총애를 독차지했더니, 모두 내게 집착한다"
+   "title": "은해상단 막내아들"
   },
   {
    "pk": "kakaopage",
    "rank": 19,
-   "title": "나는 한 편의 극을 보았다"
+   "title": "흑막 범고래 아기님"
   },
   {
    "pk": "kakaopage",
    "rank": 20,
-   "title": "나 혼자만 레벨업"
+   "title": "악마의 주인님이 되어버렸다"
   },
   {
    "pk": "kakaopage",
    "rank": 21,
-   "title": "환생자의 스트리밍"
+   "title": "검술명가 막내아들"
   },
   {
    "pk": "kakaopage",
    "rank": 22,
-   "title": "악녀의 맞선남이 너무 완벽하다"
+   "title": "나 혼자만 레벨업"
   },
   {
    "pk": "kakaopage",
    "rank": 23,
-   "title": "말단 후궁의 딸로 태어났습니다"
+   "title": "악녀의 맞선남이 너무 완벽하다"
   },
   {
    "pk": "kakaopage",
    "rank": 24,
-   "title": "빙의자를 위한 특혜"
+   "title": "점괘보는 공녀님"
   },
   {
    "pk": "kakaopage",
    "rank": 25,
-   "title": "괴담에 떨어져도 출근을 해야 하는구나"
+   "title": "데뷔 못 하면 죽는 병 걸림"
   },
   {
    "pk": "kakaopage",
    "rank": 26,
-   "title": "무한의 마법사"
+   "title": "백호 가문의 아기 솜뭉치"
   },
   {
    "pk": "kakaopage",
    "rank": 27,
-   "title": "아빠가 힘을 숨김"
+   "title": "나는 한 편의 극을 보았다"
   },
   {
    "pk": "kakaopage",
    "rank": 28,
-   "title": "신마대제"
+   "title": "랭커를 위한 바른 생활 안내서"
   },
   {
    "pk": "kakaopage",
    "rank": 29,
-   "title": "천재 궁수의 스트리밍"
+   "title": "백작가의 망나니가 되었다"
   },
   {
    "pk": "kakaopage",
    "rank": 30,
-   "title": "픽 미 업!"
+   "title": "남주가 제 건강에 집착합니다"
   }
  ]
 }
