@@ -33,9 +33,11 @@ python3 scripts/sync_serial.py --out supabase/NN_serial_sync.sql --sort-base 730
 
 Supabase CLI가 필요하다. 프로젝트 참조는 `wrvllrxwgautewttvffe`.
 
+Homebrew가 없는 기기라면 설치 없이 `npx supabase ...` 로 대신 쓸 수 있다(Node만 있으면 된다). 아래 명령의 `supabase` 를 전부 `npx supabase` 로 바꿔 읽으면 된다.
+
 ```bash
 # 1) CLI 설치·로그인 (브라우저가 열린다)
-brew install supabase/tap/supabase
+brew install supabase/tap/supabase   # 또는 설치 없이: npx supabase <명령>
 supabase login
 
 # 2) 프로젝트 연결

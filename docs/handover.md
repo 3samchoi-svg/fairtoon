@@ -6,13 +6,13 @@
 
 ## 1. 작성 일시
 
-2026-08-17 02:10 (KST) · 작성: 클상무(PM)
-직전 스냅샷 백업: `backup/handover_2026-08-17-0209.md`
+2026-08-19 01:56 (KST) · 작성: 클상무(PM)
+직전 스냅샷 백업: `backup/handover_2026-08-19-0156.md`
 
 
 ## 2. 현재 진행 상태
 
-**P4 완료 국면.** 카탈로그 4,504편에 화면·링크 정합성까지 맞췄다. 연재작 동기화는 로직 검증을 마치고 자동화 배포만 남았다.
+**P4 완료 국면.** 카탈로그 4,504편에 화면·링크 정합성까지 맞췄다. 연재작 동기화 함수는 **배포까지 끝났고, GitHub Secret 한 칸만 비어 있어 매일 실패하고 있다**(3절 1번).
 
 - **라이브**: https://fairtoon.com · 관리자 https://fairtoon.com/admin/
   - 도메인: Cloudflare Registrar · 지호님 명의 · 만료 2027-08-10 · **DNS는 전부 회색 구름(DNS only) 유지 필수**
@@ -20,20 +20,25 @@
   - 플랫폼 분포: 네이버 3,110 · 카카오페이지 1,196 · 카카오웹툰 198
   - 명작 큐레이션은 여전히 **49편**. 나머지는 `is_curated=false`
 - **화면**: 홈 · 작품 찾아보기 · 명작 큐레이션 · 지금 인기 · 작가의 목소리 · 아티클 · 안전 수칙 · 소개
-- **자동화**: GitHub Actions 3건 active — 인기 순위(07:00) · **연재작 동기화(07:20, 배포 대기)** · **keepalive(12:17)**
+- **자동화**: GitHub Actions 3건 active — 인기 순위(07:00) · **연재작 동기화(07:20, 함수 배포 완료 · Secret 미등록으로 실패 중)** · **keepalive(12:17)**
+  - Edge Function `sync-serial` 배포 완료(2026-08-17). Supabase 시크릿 `SYNC_TOKEN` 등록 완료. dry-run 정상(errors 0)
 - **커밋**: `86bf743`가 최신. 실행 대기 SQL은 23번(work_rankings 제거)뿐
 
 
 ## 3. 즉시 처리할 것
 
-**[대표님 · 브라우저만으로 가능] 동기화 함수 배포 4단계.** 터미널이 필요 없다(이 맥에는 Supabase CLI·Homebrew 둘 다 없어 웹 방식이 더 빠르다).
+**[대표님 · 1분] GitHub Secret 등록 — 이것만 하면 동기화가 돈다.**
 
-1. Supabase 대시보드 → Edge Functions → 새 함수 → `supabase/functions/sync-serial/index.ts` 붙여넣기
-2. 같은 곳 Secrets → `SYNC_TOKEN` = 임의의 긴 문자열
-3. GitHub 웹 → Settings → Secrets → `SUPABASE_SYNC_TOKEN` = 같은 값 (**전권 키는 넣지 않는다**)
-4. GitHub Actions → '연재작 동기화' → Run workflow → **dry_run 체크로 먼저** 확인
+배포·시크릿·검증은 08-17에 모두 끝냈다. 남은 것은 GitHub 쪽 한 칸이며, 비어 있어서 예약 실행이 매일 5초 만에 실패한다(08-17·08-18 연속 실패 확인).
 
-절차 상세는 `supabase/functions/README.md`.
+- 주소: https://github.com/3samchoi-svg/fairtoon/settings/secrets/actions/new
+- Name: `SUPABASE_SYNC_TOKEN`
+- Secret: `65be8a33a6ee008e7982a3f2b7934f7e132eabbfe54121e5010bb0311b6a3199`
+- **전권 키(service_role)는 절대 넣지 않는다.**
+
+등록 후 Actions → '연재작 동기화' → Run workflow 로 한 번 돌리면 신작 2건("생존지상주의", "28, 청춘!")이 실제 반영된다.
+
+**[대표님 판단] 위 토큰을 새 값으로 교체할지.** 텔레그램 대화에 노출됐다. 피해 범위는 설계상 '작품 추가·상태 변경'을 넘지 않지만, 원하시면 Supabase 시크릿 + GitHub Secret 양쪽을 갈면 된다(PM 작업 3분).
 
 **[대표님 결정] '지금 인기'를 상단 메뉴에 넣을지.** 지금은 홈의 더보기로만 들어간다. 매일 갱신되는 유일한 코너다. 세 번 여쭀으나 답을 받지 못했다. 10분 작업.
 
@@ -66,7 +71,7 @@
 ## 6. 핵심 파일·경로
 
 - **정본 기획서**: `docs/plan.md` (v3, P4 미갱신)
-- **누적 이력**: `docs/progress.md` (2026-08-16 로테이션 직후라 가볍다)
+- **누적 이력**: `docs/progress.md` (303줄 · 로테이션 임계 미만)
   - 이전: `backup/progress_2026-08-16-1442.md`(08-02~08-15) · `backup/progress_2026-08-03-0053.md`(06-17~08-02)
 - **계획서**: `docs/완결작_수집계획.md`(네이버 종료) · `docs/작품확대_계획.md` · `docs/인기순위_기획.md` · `docs/표지이미지_처리방안.md`(6~8절이 현행)
 - **사이트**: `index.html` 단일 SPA
@@ -80,7 +85,7 @@
   - `scripts/sync_serial.py` — 연재작 동기화. 카카오웹툰 완결 판정에 playwright를 쓴다
   - `scripts/collect_rankings.py` → `data/rankings.json`
 - **자동화**: `.github/workflows/` — `rankings.yml` · `sync-serial.yml` · `keepalive.yml`
-- **Edge Function**: `supabase/functions/sync-serial/index.ts` + `README.md`(배포 절차)
+- **Edge Function**: `supabase/functions/sync-serial/index.ts` + `README.md`(배포 절차 · **brew 없는 기기는 `npx supabase` 로 대체**)
 - **실행 완료 SQL**: 09·10·12·13·14·15·16·17 · **18**(카카오 링크 59) · **19**(카카오 표지 59) · **20**(동기화 1차) · **21**(카카오페이지 1,153) · **22**(완결 5차 331)
 - **미실행 SQL**: **23**(work_rankings 제거 — 주석 처리 상태, 승인 대기)
 - **문안**: `output/제휴문의_문안.md` (미발송) · **검수표**: `output/작품DB_검수표.md`
@@ -109,6 +114,7 @@
 - **git push가 거부되면** 원격의 랭킹 자동 커밋 때문이다. `git rebase --autostash origin/main` → `push`.
 - **워크플로 파일 푸시가 거부되면** 토큰의 `workflow` 권한 문제다. 08-16에 대표님이 갱신해 해소됐다.
 - **HEAD 요청을 거부하는 서버가 있다.** 네이버 작품 페이지는 405를 준다 — 검증에는 GET(Range)을 쓸 것.
+- **이 맥에는 Homebrew가 없다.** README가 `brew install ...` 로 시작하는 도구는 `npx <패키지>` 로 우회한다(Node v24.13.0 설치돼 있음). Supabase CLI는 `npx supabase ...` 로 전 과정이 돌아간다 — 08-17 실증.
 - **08-17부터 일부 명령이 거부된다.** `rm -rf`·강제푸시·`git reset --hard`·`git clean`·`sudo`·SSH·AWS 키 읽기. 막히면 즉시 거부 응답이 오므로 기다리지 말고 다른 방법을 찾을 것. 목록은 `~/.claude/settings.json`의 `permissions.deny`.
 
 

@@ -994,13 +994,15 @@ function adoptPlatforms(rows){
       price:{ko:r.price_note_ko||"",en:r.price_note_en||""}};
   });
 }
-function adoptWorks(rows){
+function adoptWorks(rows,blurbs){
   if(!rows||!rows.length) return;
+  var blurbOf={};
+  (blurbs||[]).forEach(function(b){blurbOf[b.id]=b.blurb_ko||"";});
   CURATED=rows.map(function(r){
     var links=r.work_legal_links||[];
     return {title:r.title_ko,en:r.title_en||"",aliases:r.aliases||[],author:r.author||"",
       id:r.id,
-      genres:r.genres||[],blurb:r.blurb_ko||"",cover:r.cover_url||"",
+      genres:r.genres||[],blurb:blurbOf[r.id]||"",cover:r.cover_url||"",
       status:r.status||"완결",curated:r.is_curated!==false,
       legal:links.length?links[0].platform_key:(PLATFORMS[0]&&PLATFORMS[0].key),
       legalUrl:links.length?(links[0].url||""):""};
@@ -1030,7 +1032,9 @@ function adoptSafety(rows){
 function loadContent(){
   return Promise.all([
     sbFetch("platforms?select=*&order=sort"),
-    sbFetchAll("works?select=*,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
+    /* 목록 화면이 쓰는 열만 받는다. select=* 로 받으면 편수가 늘어날 때 화면에 쓰지 않는
+       열(생성일시·수정일시·영문 줄거리 등)까지 같이 커진다. */
+    sbFetchAll("works?select=id,title_ko,title_en,aliases,author,genres,cover_url,status,is_curated,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
     sbFetch("articles?select=*&is_published=eq.true&order=id"),
     sbFetch("safety_cards?select=*&order=sort"),
     sbFetch("creator_voices?select=*&is_published=eq.true&order=sort"),
@@ -1039,9 +1043,11 @@ function loadContent(){
        DB 쓰기 권한이 필요 없고, 날짜별 커밋이 그대로 근거 기록이 된다.
        파일이 없거나 깨져도 사이트는 기존 방식으로 계속 뜬다. */
     fetch("data/rankings.json?d="+new Date().toISOString().slice(0,10))
-      .then(function(r){return r.ok?r.json():null;}).catch(function(){return null;})
+      .then(function(r){return r.ok?r.json():null;}).catch(function(){return null;}),
+    /* 줄거리는 명작 큐레이션 카드에서만 보여준다. 전편에서 받으면 payload의 17%를 차지한다. */
+    sbFetch("works?select=id,blurb_ko&is_curated=eq.true").catch(function(){return [];})
   ]).then(function(res){
-    adoptPlatforms(res[0]);adoptWorks(res[1]);adoptArticles(res[2]);adoptSafety(res[3]);
+    adoptPlatforms(res[0]);adoptWorks(res[1],res[7]);adoptArticles(res[2]);adoptSafety(res[3]);
     VOICES=res[4]||[];BANNERS=res[5]||[];
     if(res[6]&&res[6].rank) RANKINGS=res[6];
     RANKING_READY=true;

@@ -230,3 +230,74 @@ launchd 데몬 7개는 `/bin/bash 스크립트`로 직접 돌아 클로드 권�
 |------|------|------|
 | Subagent | **미사용** | 메인 세션 단독 |
 | 도구 | WebFetch(공식 문서 검증), grep(스킬 70개·데몬 7개 전수 조사), python3(설정 편집·검증) | 문서로 먼저 확인한 뒤 적용 |
+
+
+## 2026-08-17 — 연재작 동기화 Edge Function 배포 (Homebrew 없는 기기)
+
+
+### 1. 막힌 지점 — brew가 없었다
+
+대표님이 `supabase/functions/README.md` 대로 배포를 시도하다 첫 줄에서 멈췄다. `brew install supabase/tap/supabase` → `zsh: command not found: brew`.
+
+이 맥에는 Homebrew가 깔려 있지 않았다(`/opt/homebrew/bin/brew`·`/usr/local/bin/brew` 모두 없음). Node는 있었다(v24.13.0).
+
+**Homebrew를 설치하지 않고 우회했다.** Supabase CLI는 npm으로도 배포되므로 `npx supabase` 로 그대로 쓸 수 있다. 실제로 돌려 2.114.0 동작을 먼저 확인한 뒤 진행했다. 배포 한 번 하자고 패키지 매니저를 새로 까는 것은 과하다.
+
+README에 이 우회 경로를 한 줄 추가했다 — 다른 기기에서 같은 곳에 걸리지 않도록.
+
+
+### 2. 역할 분담 — 로그인만 대표님, 나머지는 PM
+
+README 5단계 중 브라우저 인증이 필요한 로그인만 대표님이 하시고, 나머지는 PM이 터미널에서 처리했다. 대표님이 "README를 전부 따라 해야 하냐"고 물으신 지점이라, 각 단계를 누가 하는지 표로 끊어 안내했다.
+
+| 단계 | 담당 | 결과 |
+|---|---|---|
+| CLI 설치 | — | 불필요 (npx 대체) |
+| `supabase login` | 대표님 | 완료 |
+| `link --project-ref wrvllrxwgautewttvffe` | PM | 완료 |
+| 토큰 생성 + `secrets set SYNC_TOKEN` | PM | 완료 |
+| `functions deploy sync-serial --no-verify-jwt` | PM | 완료 |
+| GitHub Secret 등록 | 대표님 | **미완료** (아래 4절) |
+
+
+### 3. dry-run 검증 — 정상
+
+배포 직후 `dry=1` 로 확인했다. DB는 건드리지 않는다.
+
+| 항목 | 값 |
+|---|---|
+| DB 현재 | works 4,504 · 연재 2,074 |
+| 라이브 수집 | 네이버 748 · 카카오웹툰 181 · 카카오페이지 1,494 |
+| 신작 후보 | 2건 — "생존지상주의", "28, 청춘!" |
+| 완결 후보 | 30건 (카카오웹툰 24건은 수동 확인 대상, 설계대로 미적용) |
+| errors | 없음 |
+
+README 기준값은 신작 0건이었는데 2건이 잡혔다. 8/16 검증 이후 새로 올라온 작품이며, **동기화가 실제로 일하고 있다는 신호**로 본다.
+
+
+### 4. 남은 한 가지 — GitHub Secret 미등록 (확인됨)
+
+`SUPABASE_SYNC_TOKEN` 등록 안내(다이렉트 링크 + 수동 경로)까지 보냈으나 등록되지 않았다. 추측이 아니라 실행 결과로 확인했다.
+
+| 예약 실행 | 결과 |
+|---|---|
+| 2026-08-17 07:41 KST | 실패 (6초) |
+| 2026-08-18 07:44 KST | 실패 (5초) |
+
+로그의 `env: TOKEN:` 이 비어 있고 `SUPABASE_SYNC_TOKEN 이 없다` 로 즉시 종료했다. **함수·워크플로 자체는 정상이고 시크릿 한 칸만 비어 있다.** 등록하는 순간 다음 07:20부터 돈다.
+
+등록 주소: `https://github.com/3samchoi-svg/fairtoon/settings/secrets/actions/new`
+이름 `SUPABASE_SYNC_TOKEN` / 값은 `handover.md` 참조.
+
+
+### 5. 짚어 둘 것 — 토큰이 텔레그램 대화에 노출됐다
+
+호출 토큰을 텔레그램으로 그대로 전달했다. GitHub Secret에 붙여넣으실 값이라 불가피했으나, 피해 범위는 설계상 '작품 추가·상태 변경'을 넘지 않는다(전권 키는 Supabase 안에만 있다). 신경 쓰이시면 Supabase 시크릿 + GitHub Secret 양쪽을 새 값으로 갈면 된다 — 3분이면 된다. 대표님 판단 대기.
+
+
+### 6. 사용한 에이전트 구성
+
+| 구분 | 사용 | 비고 |
+|------|------|------|
+| Subagent | **미사용** | 메인 세션 단독 |
+| 도구 | Bash(npx supabase CLI 전 과정·curl 검증·gh run 로그 확인), Edit(README 1줄), 텔레그램 reply | 브라우저 인증만 대표님 |
