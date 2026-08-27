@@ -1,14 +1,14 @@
 name: 연재작 동기화
 
-# 매일 07:20(KST) — 인기 순위 갱신(07:00)보다 20분 뒤다.
+# 매일 07:57(KST) — 인기 순위 갱신(07:37)보다 20분 뒤다.
 # 순위에 새로 오른 작품이 그날 안에 카탈로그에 들어오게 하려는 순서다.
-# GitHub 크론은 UTC라 22:20 UTC로 적는다.
+# GitHub 크론은 UTC라 22:57 UTC로 적는다. 정각을 피한 이유는 rankings.yml 참조.
 #
 # 이 워크플로는 DB에 직접 쓰지 않는다. Supabase Edge Function 하나를 부를 뿐이다.
 # 전권 키는 GitHub에 두지 않는다 — 자세한 이유는 supabase/functions/README.md.
 on:
   schedule:
-    - cron: "20 22 * * *"
+    - cron: "57 22 * * *"
   workflow_dispatch:
     inputs:
       dry_run:

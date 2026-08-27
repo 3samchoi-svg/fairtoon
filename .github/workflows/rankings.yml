@@ -1,10 +1,12 @@
 name: 인기 순위 갱신
 
-# 매일 07:00(KST) — GitHub 크론은 UTC라 22:00 UTC로 적는다.
+# 매일 07:37(KST) — GitHub 크론은 UTC라 22:37 UTC로 적는다.
+# 정각(0분)을 피한 이유: GitHub 무료 예약 실행은 시각을 보장하지 않고 여유가 생길 때
+# 돌린다. 정각은 전 세계 작업이 몰려 몇 시간씩 밀린다(08-27에 4시간 55분 지연).
 # 손으로 돌리고 싶을 때는 Actions 탭에서 "Run workflow"를 누르면 된다.
 on:
   schedule:
-    - cron: "0 22 * * *"
+    - cron: "37 22 * * *"
   workflow_dispatch:
 
 permissions:

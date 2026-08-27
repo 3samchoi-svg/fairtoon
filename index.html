@@ -1005,7 +1005,10 @@ function adoptWorks(rows,blurbs){
       genres:r.genres||[],blurb:blurbOf[r.id]||"",cover:r.cover_url||"",
       status:r.status||"완결",curated:r.is_curated!==false,
       legal:links.length?links[0].platform_key:(PLATFORMS[0]&&PLATFORMS[0].key),
-      legalUrl:links.length?(links[0].url||""):""};
+      legalUrl:links.length?(links[0].url||""):"",
+      /* 한 작품이 여러 플랫폼에 정식으로 올라 있는 경우가 있다(레진·리디 겹침 144편).
+         카드 배지는 links[0]을 쓰지만, 검색 화면의 플랫폼 목록은 이 전체를 쓴다. */
+      links:links.map(function(l){return {k:l.platform_key,url:l.url||""};})};
   });
 }
 function adoptArticles(rows){
@@ -1400,12 +1403,17 @@ function renderSearch(){
     return;
   }
   var matches=searchCurated(q);
+  /* 찾은 작품이 딱 한 편이면, 그 작품의 정식 링크를 가진 플랫폼은 검색이 아니라
+     작품 페이지로 바로 보낸다. 여러 편이 걸렸을 때는 어느 작품의 링크인지 알 수 없어 쓰지 않는다. */
+  var deep={};
+  if(matches.length===1)(matches[0].links||[]).forEach(function(l){if(l.url)deep[l.k]=l.url;});
   var cards=PLATFORMS.map(function(p){
-    var url=p.search.replace("{q}",encodeURIComponent(q));
-    return '<a class="pass-card" href="'+url+'" target="_blank" rel="noopener" onclick="showToast(\''+p.name+' 검색으로 이동합니다\')">'+
+    var direct=deep[p.key]||"";
+    var url=direct||p.search.replace("{q}",encodeURIComponent(q));
+    return '<a class="pass-card" href="'+url+'" target="_blank" rel="noopener" onclick="showToast(\''+p.name+(direct?' 작품 페이지로 이동합니다':' 검색으로 이동합니다')+'\')">'+
       platLogo(p,48)+
       '<div class="pass-meta"><div class="pass-name">'+p.name+'</div><div class="pass-price">'+p.price[LANG]+'</div></div>'+
-      '<span class="pass-go">검색 ↗</span>'+
+      '<span class="pass-go">'+(direct?'작품 페이지 ↗':'검색 ↗')+'</span>'+
     '</a>';
   }).join("");
   /* 헤더: 작품 정보 보유 여부에 따라 문구 변경 */
