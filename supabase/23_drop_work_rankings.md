@@ -24,5 +24,8 @@ select platform_key, count(*) as rows, min(fetched_on) as oldest, max(fetched_on
  order by platform_key;
 
 
--- 승인 후 아래 한 줄을 실행한다
--- drop table if exists public.work_rankings;
+-- 2026-08-27 · 대표님이 08-21에 이 파일을 실행하셨으나, 아래 한 줄이 주석 처리돼 있어
+-- 위의 select 만 돌고 테이블은 그대로 남았다(90행, 2026-08-12 스냅샷). 이제 주석을 풀어 둔다.
+-- 이 파일을 Run 하면 work_rankings 테이블이 실제로 사라진다.
+-- 리포 전체(index.html · Edge Function · 수집 스크립트 · 워크플로)에 참조가 없음을 재확인했다.
+drop table if exists public.work_rankings;
