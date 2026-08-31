@@ -29,7 +29,7 @@ update public.works
 set author  = '네스티캣',
     aliases = case
                 when '고영훈' = any(coalesce(aliases, array[]::text[])) then aliases
-                else coalesce(aliases, array[]::text[]) || '고영훈'
+                else array_append(coalesce(aliases, array[]::text[]), '고영훈'::text)
               end
 where id = 11;
 
