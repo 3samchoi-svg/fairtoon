@@ -791,6 +791,13 @@ var GENRE_COVER={
 };
 /* 커버 내부 마크업. cover_url이 있으면 이미지 + 출처 표기(표지 그림을 가리지 않도록 최소한으로), 없으면 장르 커버.
    cover_url을 비우면 장르 커버로 자동 폴백된다 — 권리자 이의제기 시 즉시 철회하는 스위치다. */
+/* 작가 표기 — 그림 작가가 따로 있으면 역할을 밝힌다.
+   long=true 는 카드 본문용("글 손제호 · 그림 이광수"), false 는 좁은 카드용("손제호·이광수"). */
+function authorText(c,long){
+  var w=c.author||"", g=c.artAuthor||"";
+  if(!g||g===w) return w;
+  return long?("글 "+w+" · 그림 "+g):(w+"·"+g);
+}
 function coverInner(c){
   if(c.cover) return '<img class="cv-img" src="'+c.cover+'" alt="'+c.title+' 표지" loading="lazy">'+
     '<span class="cv-src">ⓒ '+platOf(c.legal).name+'</span>';
@@ -800,7 +807,7 @@ function coverInner(c){
     '</div>'+
     '<div class="cv-in"><div class="cv-t">'+c.title+'</div>'+
       '<div class="cv-r" style="background:'+g[2]+';"></div>'+
-      '<div class="cv-a">'+(c.author||"")+'</div></div>'+
+      '<div class="cv-a">'+authorText(c,false)+'</div></div>'+
     '<div class="cv-g">'+((c.genres&&c.genres[0])||"")+'</div>';
 }
 /* 각 항목: en(영문 제목)·aliases(별칭)는 선택 필드 — 검색 매칭용. 없으면 title로만 매칭. */
@@ -811,11 +818,11 @@ var CURATED = [
  {title:"치즈인더트랩",en:"Cheese in the Trap",   aliases:["치인트","치즈 인 더 트랩"], author:"순끼",   genres:["로맨스","드라마"], blurb:"평범한 대학생과 완벽해 보이는 선배. 심리 묘사의 정석.", legal:"naver"},
  {title:"유미의 세포들",en:"Yumi's Cells",         aliases:["유세포"],               author:"이동건", genres:["로맨스","코미디"], blurb:"머릿속 세포들이 그리는 한 사람의 연애와 성장. 완결의 여운.", legal:"naver"},
  {title:"조명가게",   en:"The Light Shop",                                         author:"강풀",   genres:["미스터리","드라마"], blurb:"골목 조명가게에 얽힌 사람들. 강풀 미스터리의 정점.", legal:"kakaowebtoon"},
- {title:"노블레스",   en:"Noblesse",                                               author:"손제호·이광수", genres:["액션","판타지"], blurb:"820년을 잠든 귀족의 현대 부활기. 초창기 액션 웹툰의 완결작.", legal:"naver"},
+ {title:"노블레스",   en:"Noblesse",                                               author:"손제호", artAuthor:"이광수", genres:["액션","판타지"], blurb:"820년을 잠든 귀족의 현대 부활기. 초창기 액션 웹툰의 완결작.", legal:"naver"},
  {title:"목욕의 신",  en:"God of Bath",                                            author:"하일권", genres:["코미디","드라마"], blurb:"목욕탕을 무대로 한 뜨끈한 성장 코미디. 하일권 유머의 진수.", legal:"naver"},
  {title:"마음의 소리",en:"The Sound of Your Heart",aliases:["마소"],                author:"조석",   genres:["개그","일상"],     blurb:"천만 독자를 웃긴 국민 개그 웹툰. 완결까지 1000화가 넘는 여정.", legal:"naver"},
  {title:"데드데이즈", en:"Dead Days",                                              author:"DEY",    genres:["스릴러","좀비"],   blurb:"하루아침에 무너진 도시에서의 생존극. 몰입도 높은 완결 스릴러.", legal:"naver"},
- {title:"트레이스",   en:"Trace",                                                  author:"고영훈", genres:["액션","SF"],       blurb:"초능력자들이 뒤섞인 세계의 히어로물. 스케일 큰 완결 액션.", legal:"kakaowebtoon"},
+ {title:"트레이스",   en:"Trace",                                                  author:"네스티캣", genres:["액션","SF"],       blurb:"초능력자들이 뒤섞인 세계의 히어로물. 스케일 큰 완결 액션.", legal:"kakaowebtoon"},
  {title:"여신강림",   en:"True Beauty",          aliases:["여강"],                 author:"야옹이", genres:["로맨스","코미디"], blurb:"화장으로 감춘 얼굴과 진짜 나. 세대를 사로잡은 완결 로맨스.", legal:"naver"}
 ];
 /* 하이브리드 검색: 큐레이션 DB 부분일치(제목/영문/별칭/작가). 공백·대소문자 무시. */
@@ -877,7 +884,7 @@ function searchCurated(q){
     return 3;
   }
   return CURATED.filter(function(c){
-    var hay=normKey([c.title,c.en,(c.aliases||[]).join(" "),c.author].join(" "));
+    var hay=normKey([c.title,c.en,(c.aliases||[]).join(" "),c.author,c.artAuthor||""].join(" "));
     return hay.indexOf(nq)!==-1;
   }).sort(function(a,b){
     var ra=rank(a),rb=rank(b);
@@ -1022,7 +1029,7 @@ function adoptWorks(rows,blurbs){
   (blurbs||[]).forEach(function(b){blurbOf[b.id]=b.blurb_ko||"";});
   CURATED=rows.map(function(r){
     var links=r.work_legal_links||[];
-    return {title:r.title_ko,en:r.title_en||"",aliases:r.aliases||[],author:r.author||"",
+    return {title:r.title_ko,en:r.title_en||"",aliases:r.aliases||[],author:r.author||"",artAuthor:r.art_author||"",
       id:r.id,
       genres:r.genres||[],blurb:blurbOf[r.id]||"",cover:r.cover_url||"",
       status:r.status||"완결",curated:r.is_curated!==false,
@@ -1059,7 +1066,7 @@ function loadContent(){
     sbFetch("platforms?select=*&order=sort"),
     /* 목록 화면이 쓰는 열만 받는다. select=* 로 받으면 편수가 늘어날 때 화면에 쓰지 않는
        열(생성일시·수정일시·영문 줄거리 등)까지 같이 커진다. */
-    sbFetchAll("works?select=id,title_ko,title_en,aliases,author,genres,cover_url,status,is_curated,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
+    sbFetchAll("works?select=id,title_ko,title_en,aliases,author,art_author,genres,cover_url,status,is_curated,work_legal_links(platform_key,url,sort)&order=sort&work_legal_links.order=sort"),
     sbFetch("articles?select=*&is_published=eq.true&order=id"),
     sbFetch("safety_cards?select=*&order=sort"),
     sbFetch("creator_voices?select=*&is_published=eq.true&order=sort"),
@@ -1245,7 +1252,7 @@ function curatedCardHTML(c){
     '<div class="toon-cover"><span class="status-badge">'+(c.status||"완결")+'</span>'+coverInner(c)+'</div>'+
     '<div class="toon-body">'+
       '<div class="toon-title">'+c.title+'</div>'+
-      '<div class="toon-author">'+c.author+'</div>'+
+      '<div class="toon-author">'+authorText(c,true)+'</div>'+
       '<div class="toon-blurb">'+c.blurb+'</div>'+
       '<div class="toon-tags">'+c.genres.map(function(g){return '<span class="tag">'+g+'</span>';}).join("")+'</div>'+
       '<div class="toon-foot"><a class="legal-link" href="'+url+'" target="_blank" rel="noopener" onclick="showToast(\''+p.name+' 검색으로 이동합니다 (합법 플랫폼)\')">'+p.name+'에서 보기 ↗</a></div>'+
@@ -1321,7 +1328,7 @@ function hcardHTML(c,badge,pk){
     '<div class="hc-cover"><span class="hc-badge">'+(badge||c.status||"완결")+'</span>'+coverInner(c)+
       '<span class="hc-play"><svg width="15" height="15" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span>'+
     '</div>'+
-    '<div class="hc-title">'+c.title+'</div><div class="hc-sub">'+c.author+' · '+c.genres[0]+'</div>'+
+    '<div class="hc-title">'+c.title+'</div><div class="hc-sub">'+authorText(c,false)+' · '+c.genres[0]+'</div>'+
   '</div>';
 }
 function acardHTML(a){
