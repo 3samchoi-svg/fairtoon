@@ -1,0 +1,129 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 46px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:980px;}
+.lead b{color:#0F1729;}
+table{width:100%;border-collapse:collapse;margin-top:24px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:20px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:18px;width:262px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.mn{font-size:11px;font-weight:800;color:#2F5FEF;margin-top:4px;letter-spacing:.2px;}
+.ds{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:5px;}
+.appicon{width:70px;height:70px;border-radius:17px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32{width:32px;height:32px;border-radius:8px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.fav16{width:16px;height:16px;border-radius:4px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:11px;}
+.lockmark{width:40px;height:40px;border-radius:11px;background:rgba(47,95,239,.10);
+  display:inline-flex;align-items:center;justify-content:center;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.note{margin-top:26px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#39435C;}
+.note b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안 · 2차</span>
+<h1>‘만화’가 형태로 읽히는 마크 5종</h1>
+<div class="lead">1차 시안이 만화로 읽히지 않은 이유는 <b>둥근 말풍선이 메신저 아이콘과 같은 형태</b>였기 때문입니다. 이번에는 만화에만 있는 기호만 썼습니다 — <b>컷 분할·집중선·효과음 풍선·세로 스크롤·캐릭터 눈</b>. 채팅으로 오해될 형태는 전부 배제했습니다.</div>
+
+<table>
+<tr><th class="lft">시안</th><th>마크 (72px)</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더 락업</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>판단 기준.</b> 만화로 읽히는 강도는 집중선 &gt; 효과음 풍선 &gt; 컷 분할 &gt; 세로 스크롤 순입니다. 반대로 16px 식별성은 컷 분할 &gt; 세로 스크롤 &gt; 효과음 풍선 &gt; 집중선 순입니다. 두 기준이 어긋나므로, 어느 쪽을 더 살릴지가 선택의 핵심입니다.
+</div>
+
+<script>
+var BLUE="#2F5FEF", WHITE="#FFFFFF";
+
+/* F1. 만화 컷 분할 — 컷 사이 흰 거터가 만화 페이지를 지시 */
+function m1(fg,bg){
+  return '<rect x="9" y="8" width="20" height="19" rx="3.5" fill="'+fg+'"/>'+
+         '<rect x="33" y="8" width="22" height="19" rx="3.5" fill="'+fg+'"/>'+
+         '<rect x="9" y="31" width="46" height="25" rx="3.5" fill="'+fg+'"/>'+
+         '<path d="M22 43.6l5.5 5.5L40 36.8" fill="none" stroke="'+bg+'" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+/* F2. 집중선 — 만화 특유의 효과선. 중앙 컷에 체크 */
+function m2(fg,bg){
+  var sp="";
+  for(var i=0;i<8;i++){
+    sp+='<path d="M32 16.5 L36.4 3 L27.6 3 Z" fill="'+fg+'" transform="rotate('+(i*45)+' 32 32)"/>';
+  }
+  return sp+'<circle cx="32" cy="32" r="14" fill="'+fg+'"/>'+
+    '<path d="M25.5 32.2l4.8 4.8L39.5 27.5" fill="none" stroke="'+bg+'" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+/* F3. 효과음 풍선 — 폭발형 지그재그 풍선(만화 고유). 채팅 풍선과 혼동 없음 */
+function m3(fg,bg){
+  var pts=[],N=16;
+  for(var i=0;i<N;i++){
+    var a=(i/N)*Math.PI*2-Math.PI/2, r=(i%2===0)?30:21.5;
+    pts.push((32+r*Math.cos(a)).toFixed(1)+","+(32+r*Math.sin(a)).toFixed(1));
+  }
+  return '<polygon points="'+pts.join(" ")+'" fill="'+fg+'"/>'+
+    '<path d="M23.5 32.4l6 6L42 25.8" fill="none" stroke="'+bg+'" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+/* F4. 세로 스크롤 웹툰 — 폰 프레임 안에 이어지는 컷 + 승인 배지 */
+function m4(fg,bg){
+  return '<rect x="17" y="4" width="30" height="56" rx="7.5" fill="'+fg+'"/>'+
+         '<rect x="22" y="10" width="20" height="12" rx="2.6" fill="'+bg+'"/>'+
+         '<rect x="22" y="25" width="20" height="12" rx="2.6" fill="'+bg+'"/>'+
+         '<rect x="22" y="40" width="20" height="8" rx="2.6" fill="'+bg+'"/>'+
+         '<circle cx="47" cy="47" r="13" fill="'+bg+'"/>'+
+         '<circle cx="47" cy="47" r="10.5" fill="'+fg+'"/>'+
+         '<path d="M42.3 47.2l3.4 3.4L52 44.3" fill="none" stroke="'+bg+'" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+/* F5. 캐릭터 눈 — 만화·애니의 인물 기호. 승인 배지로 합법 의미 보완 */
+function m5(fg,bg){
+  return '<path d="M6 32C13 14 51 14 58 32" fill="none" stroke="'+fg+'" stroke-width="6" stroke-linecap="round"/>'+
+         '<circle cx="31" cy="33" r="11" fill="'+fg+'"/>'+
+         '<circle cx="27" cy="29" r="3.6" fill="'+bg+'"/>'+
+         '<path d="M13 42C21 48 41 48 49 42" fill="none" stroke="'+fg+'" stroke-width="4.4" stroke-linecap="round"/>'+
+         '<circle cx="50" cy="50" r="12" fill="'+bg+'"/>'+
+         '<circle cx="50" cy="50" r="9.6" fill="'+fg+'"/>'+
+         '<path d="M45.8 50.2l3.1 3.1L54.6 47.6" fill="none" stroke="'+bg+'" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+
+var MARKS=[
+ {k:"F1", nm:"만화 컷 분할", mn:"만화 페이지의 컷 나누기",
+  ds:"위 두 컷 + 아래 와이드 컷. 컷 사이 흰 거터가 ‘만화 페이지’를 바로 지시합니다. 아래 컷 안의 체크로 합법을 표시. 16px에서 가장 또렷합니다.",
+  on:function(){return m1(BLUE,WHITE);}, inv:function(){return m1(WHITE,BLUE);}},
+ {k:"F2", nm:"집중선", mn:"만화 효과선(집중선)",
+  ds:"중심으로 모이는 효과선은 만화에만 있는 기호입니다. 만화로 읽히는 강도가 가장 높습니다. 다만 16px에서 선이 뭉개질 수 있어 스파이크를 8개로 줄였습니다.",
+  on:function(){return m2(BLUE,WHITE);}, inv:function(){return m2(WHITE,BLUE);}},
+ {k:"F3", nm:"효과음 풍선", mn:"만화의 폭발형 말풍선",
+  ds:"지그재그 폭발 풍선은 ‘쾅!’ 같은 효과음을 담는 만화 고유 형태로, 메신저 풍선과 절대 혼동되지 않습니다. 실루엣이 특이해 탭에서 눈에 띕니다.",
+  on:function(){return m3(BLUE,WHITE);}, inv:function(){return m3(WHITE,BLUE);}},
+ {k:"F4", nm:"세로 스크롤 웹툰", mn:"한국 웹툰의 세로 연출",
+  ds:"세로 프레임 안에 컷이 이어지는 형태. ‘만화’보다 정확히 ‘웹툰’을 지시합니다. 우하단 승인 배지로 합법을 표시.",
+  on:function(){return m4(BLUE,WHITE);}, inv:function(){return m4(WHITE,BLUE);}},
+ {k:"F5", nm:"캐릭터 눈", mn:"만화·애니의 인물 기호",
+  ds:"큰 눈과 하이라이트는 만화 캐릭터를 즉시 환기합니다. 가장 감성적이지만, 특정 그림 스타일을 연상시킬 수 있고 ‘공정·합법’ 의미는 배지에만 의존합니다.",
+  on:function(){return m5(BLUE,WHITE);}, inv:function(){return m5(WHITE,BLUE);}}
+];
+
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+document.getElementById("rows").innerHTML = MARKS.map(function(m){
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+m.k+'. '+m.nm+'</div><div class="mn">'+m.mn+'</div><div class="ds">'+m.ds+'</div></td>'+
+    '<td>'+svg(72,m.on())+'</td>'+
+    '<td><span class="appicon">'+svg(46,m.inv())+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32">'+svg(22,m.inv())+'</span>'+
+        '<span class="fav16">'+svg(11,m.inv())+'</span></div></td>'+
+    '<td><span class="lock"><span class="lockmark">'+svg(24,m.on())+'</span>'+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

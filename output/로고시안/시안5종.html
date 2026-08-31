@@ -1,0 +1,102 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 46px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.6;margin-top:8px;max-width:940px;}
+table{width:100%;border-collapse:collapse;margin-top:26px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:22px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:18px;width:250px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.ds{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:5px;}
+.appicon{width:72px;height:72px;border-radius:18px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32{width:32px;height:32px;border-radius:8px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.fav16{width:16px;height:16px;border-radius:4px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:11px;}
+.lockmark{width:40px;height:40px;border-radius:11px;background:rgba(47,95,239,.10);
+  display:inline-flex;align-items:center;justify-content:center;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.note{margin-top:30px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:16px 20px;font-size:12.5px;line-height:1.7;color:#39435C;}
+.note b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안</span>
+<h1>Fairtoon 마크 시안 5종 — 실제 사용 크기 비교</h1>
+<div class="lead">각 시안을 실제로 쓰이는 4가지 상태로 나란히 놓았습니다. 큰 마크는 인상, 앱 아이콘은 홈화면, 32·16px는 브라우저 탭에서의 식별성, 헤더 락업은 사이트 상단 실제 모습입니다. 파비콘 16px에서 형태가 뭉개지지 않는지가 실무에서 가장 중요한 기준입니다.</div>
+
+<table>
+<tr><th class="lft">시안</th><th>마크 (72px)</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더 락업</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>현재 상태에 문제가 하나 있습니다.</b> 사이트 헤더 아이콘은 ‘두 개의 세로 패널’ 형태인데, 파비콘·앱 아이콘은 ‘말풍선 + 체크’로 서로 다른 그림입니다. 즉 지금은 마크가 두 종류 돌아가고 있습니다. 이번에 하나로 확정하면 헤더·파비콘·앱아이콘·공유 이미지 전부 같은 마크로 통일하겠습니다.
+</div>
+
+<script>
+/* ── 마크 정의: 단색(블루) / 반전(흰색) 두 버전을 같은 패스로 생성 ── */
+function markA(fg,bg){ // 말풍선 + 체크
+  return '<path d="M12 14h40a6 6 0 0 1 6 6v18a6 6 0 0 1-6 6H30l-10 8v-8h-8a6 6 0 0 1-6-6V20a6 6 0 0 1 6-6z" fill="'+fg+'"/>'+
+         '<path d="M22.5 29.5l6.5 6.5L42 23" fill="none" stroke="'+bg+'" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+function markB(fg,bg){ // 웹툰 컷 스택 + 체크 배지
+  return '<rect x="9" y="9" width="46" height="19" rx="5.5" fill="'+fg+'"/>'+
+         '<rect x="9" y="33" width="27" height="19" rx="5.5" fill="'+fg+'"/>'+
+         '<circle cx="47" cy="43" r="14" fill="'+bg+'"/>'+
+         '<circle cx="47" cy="43" r="11.5" fill="'+fg+'"/>'+
+         '<path d="M42 43.2l3.6 3.6L53 39.4" fill="none" stroke="'+bg+'" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+function markC(fg){ // F 모노그램 (웹툰 컷 거터)
+  return '<rect x="13" y="9" width="13" height="46" rx="4.5" fill="'+fg+'"/>'+
+         '<rect x="30" y="9" width="22" height="13" rx="4.5" fill="'+fg+'"/>'+
+         '<rect x="30" y="26" width="16" height="13" rx="4.5" fill="'+fg+'"/>';
+}
+function markD(fg){ // 말풍선 꼬리가 체크로 이어지는 원-스트로크
+  return '<rect x="6.5" y="11" width="43" height="31" rx="9" fill="none" stroke="'+fg+'" stroke-width="5.5"/>'+
+         '<path d="M33 42l6.5 11L58 25" fill="none" stroke="'+fg+'" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+function markE(fg,bg){ // 인증 도장 — 원형 + 말풍선 + 체크
+  return '<circle cx="32" cy="32" r="25.5" fill="'+fg+'"/>'+
+         '<path d="M18 21h28a4.5 4.5 0 0 1 4.5 4.5v12A4.5 4.5 0 0 1 46 42H31l-7.5 6v-6H18a4.5 4.5 0 0 1-4.5-4.5v-12A4.5 4.5 0 0 1 18 21z" fill="'+bg+'"/>'+
+         '<path d="M24 31.6l4.6 4.6L38.5 26" fill="none" stroke="'+fg+'" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>';
+}
+
+var BLUE="#2F5FEF", WHITE="#FFFFFF";
+var MARKS=[
+ {k:"A", nm:"말풍선 + 체크", ds:"현재 파비콘의 정련판. ‘만화(말풍선) + 합법(체크)’ 의미가 가장 직관적이고 설명이 필요 없습니다. 안전한 선택.",
+  on:function(){return markA(BLUE,WHITE);}, inv:function(){return markA(WHITE,BLUE);}},
+ {k:"B", nm:"웹툰 컷 + 체크 배지", ds:"세로로 쌓인 컷은 한국 웹툰 고유의 스크롤 형식을 가리킵니다. 체크를 배지로 분리해 ‘승인’ 뉘앙스가 강합니다.",
+  on:function(){return markB(BLUE,WHITE);}, inv:function(){return markB(WHITE,BLUE);}},
+ {k:"C", nm:"F 모노그램", ds:"컷 사이 여백(거터)으로 F를 만든 형태. 가장 브랜드답고 작은 크기에서 가장 또렷합니다. 다만 ‘웹툰·합법’ 의미는 직접 드러나지 않습니다.",
+  on:function(){return markC(BLUE);}, inv:function(){return markC(WHITE);}},
+ {k:"D", nm:"원-스트로크 말풍선", ds:"말풍선 꼬리가 그대로 체크로 이어집니다. 선 하나로 두 의미를 잇는 방식이라 세련되지만, 작은 크기에서 선이 얇아집니다.",
+  on:function(){return markD(BLUE);}, inv:function(){return markD(WHITE);}},
+ {k:"E", nm:"인증 도장", ds:"원형 배지 안에 말풍선과 체크. ‘합법 인증’ 도장의 인상이 강해 캠페인 성격과 잘 맞습니다. 형태가 가장 묵직합니다.",
+  on:function(){return markE(BLUE,WHITE);}, inv:function(){return markE(WHITE,BLUE);}}
+];
+
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+
+document.getElementById("rows").innerHTML = MARKS.map(function(m){
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+m.k+'. '+m.nm+'</div><div class="ds">'+m.ds+'</div></td>'+
+    '<td>'+svg(72,m.on())+'</td>'+
+    '<td><span class="appicon">'+svg(48,m.inv())+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32">'+svg(22,m.inv())+'</span>'+
+        '<span class="fav16">'+svg(11,m.inv())+'</span></div></td>'+
+    '<td><span class="lock"><span class="lockmark">'+svg(24,m.on())+'</span>'+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

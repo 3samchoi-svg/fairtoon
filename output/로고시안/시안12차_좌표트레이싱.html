@@ -1,0 +1,27 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#fff;font-family:Inter,sans-serif;padding:20px;}
+.wrap{position:relative;width:640px;height:640px;}
+.wrap img{position:absolute;inset:0;width:640px;height:640px;}
+.grid{position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,rgba(255,0,0,.55) 0 1px,transparent 1px 50px),
+    repeating-linear-gradient(90deg,rgba(255,0,0,.55) 0 1px,transparent 1px 50px),
+    repeating-linear-gradient(0deg,rgba(0,150,0,.25) 0 1px,transparent 1px 10px),
+    repeating-linear-gradient(90deg,rgba(0,150,0,.25) 0 1px,transparent 1px 10px);}
+.lbl{position:absolute;font-size:9px;color:#c00;font-weight:700;}
+</style></head><body>
+<div class="wrap">
+  <img src="ai_22.png" alt="">
+  <div class="grid"></div>
+  <div id="labels"></div>
+</div>
+<script>
+var L=document.getElementById("labels"),h="";
+for(var i=0;i<=64;i+=5){
+  h+='<span class="lbl" style="left:'+(i*10+2)+'px;top:1px;">'+i+'</span>';
+  h+='<span class="lbl" style="left:1px;top:'+(i*10+1)+'px;">'+i+'</span>';
+}
+L.innerHTML=h;
+</script>
+</body></html>

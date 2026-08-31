@@ -1,0 +1,184 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 44px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+h2{font-family:'Archivo Black',sans-serif;font-size:17px;letter-spacing:-.3px;margin-top:30px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:1010px;}
+.lead b{color:#0F1729;}
+.cmp{display:flex;gap:26px;margin-top:18px;}
+.cmpcard{flex:1;border:1px solid #E3E8F2;border-radius:16px;padding:20px;text-align:center;}
+.cmpcard.pick{border:2px solid #2F5FEF;}
+.cmpcard .t{font-size:13.5px;font-weight:800;margin-bottom:2px;}
+.cmpcard .s{font-size:11px;color:#8C97AD;margin-bottom:12px;}
+.cmpcard .d{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:12px;text-align:left;}
+.cmpcard img{width:170px;height:170px;display:block;margin:0 auto;}
+table{width:100%;border-collapse:collapse;margin-top:18px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:20px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:18px;width:270px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.ds{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:5px;}
+.appicon{width:70px;height:70px;border-radius:17px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32,.fav16{display:inline-flex;align-items:center;justify-content:center;}
+.fav32{width:32px;height:32px;border-radius:8px;} .fav16{width:16px;height:16px;border-radius:4px;}
+.bgb{background:#2F5FEF;} .bgw{background:#fff;border:1px solid #E3E8F2;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:10px;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:20px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.note{margin-top:22px;background:#FFF6E5;border-left:3px solid #E08700;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#5A4100;}
+.note b{color:#3D2C00;}
+.note2{margin-top:14px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#39435C;}
+.note2 b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안 · 10차 · 손맛 적용</span>
+<h1>Canva 그림은 벡터가 아니었습니다 — 대신 손맛을 벡터로 옮겼습니다</h1>
+<div class="lead">먼저 Canva 결과물을 <b>PDF로 내보내 내부를 분석</b>했습니다. 결과는 아래 노트에 있습니다. 그리고 대표님이 느끼신 ‘다른 느낌’의 원인 — 기계적인 대칭성 — 을 없앤 손맛 버전을 만들었습니다.</div>
+
+<div class="cmp">
+  <div class="cmpcard"><div class="t">Canva 원본 (AI 2차-2)</div><div class="s">래스터 이미지 · 788 × 545px</div>
+    <img src="ai_6.png" alt="">
+    <div class="d">선이 손으로 그린 듯 미세하게 흔들리고 페이지 층이 제각각 겹쳐 있습니다. 이 불규칙함이 매력입니다.</div></div>
+  <div class="cmpcard"><div class="t">9차 벡터 (기존)</div><div class="s">벡터 · 무한 확대</div>
+    <div id="v1"></div>
+    <div class="d">좌우가 완벽히 대칭이고 선 굵기가 일정합니다. 정확하지만 도면처럼 딱딱합니다. 대표님이 다르다고 느낀 지점입니다.</div></div>
+  <div class="cmpcard pick"><div class="t">10차 벡터 · 손맛 ★</div><div class="s">벡터 · 무한 확대</div>
+    <div id="v2"></div>
+    <div class="d">대칭을 깨고 선을 미세하게 흔들었습니다. 컷도 조금씩 비뚤게 눕히고 페이지 층을 세 겹으로 제각각 겹쳤습니다.</div></div>
+</div>
+
+<h2>손맛 버전 · 실제 사용 크기</h2>
+<table>
+<tr><th class="lft">버전</th><th>마크</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>Canva 그림을 그대로 로고로 쓸 수 없는 이유 — PDF를 열어 확인했습니다.</b> 내부에 벡터 경로가 아니라 <b>788 × 545px 래스터 이미지 + 투명 마스크</b>가 들어 있었습니다. 즉 Canva의 AI 로고 생성은 그림을 픽셀로 만들어 붙인 것입니다. 이걸 로고로 쓰면 ① 명함·현수막처럼 크게 뽑을 때 깨지고 ② 색을 바꿀 수 없어 반전 버전을 만들 수 없고 ③ “기울기를 조금만 줄여줘” 같은 수정이 불가능합니다. 로고는 무한 확대와 색 교체가 전제라 벡터여야 합니다.
+</div>
+<div class="note2">
+<b>구체적으로 무엇을 흔들었는가.</b> 좌우 페이지의 곡률을 서로 다르게 잡고(왼쪽이 0.4 더 부풀게), 컷 세 칸을 각각 −1.6°·+1.2°·−0.7°로 눕히고, 페이지 층을 두 겹에서 <b>세 겹</b>으로 늘려 길이·곡률·투명도를 모두 다르게 했습니다. fair와 toon이 앉는 곡선도 좌우 비대칭입니다. 눈으로는 “왜인지 손으로 그린 것 같다”로만 읽히지만, 계산은 전부 벡터라 확대와 색 교체는 그대로 됩니다.
+</div>
+
+<script>
+var BLUE="#2F5FEF", WHITE="#FFFFFF", uid=0, FONT="'Baloo 2'";
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+
+/* ───── 9차(규칙적) ───── */
+function pages9(fg,page){
+  return '<path d="M7 15.5C14 11.2 25 11.2 31 15.5V43C25 38.8 14 38.8 7 43V15.5Z" fill="'+page+'" stroke="'+fg+
+      '" stroke-width="2.4" stroke-linejoin="round"/>'+
+    '<path d="M57 15.5C50 11.2 39 11.2 33 15.5V43C39 38.8 50 38.8 57 43V15.5Z" fill="'+page+'" stroke="'+fg+
+      '" stroke-width="2.4" stroke-linejoin="round"/>';
+}
+function cuts9(fg){
+  var s='stroke="'+fg+'" stroke-width="1.35" fill="none" stroke-linejoin="round"';
+  return '<rect x="10.6" y="19.2" width="7.5" height="4.8" rx="1.1" '+s+'/>'+
+         '<rect x="19.9" y="19.2" width="7.4" height="4.8" rx="1.1" '+s+'/>'+
+         '<rect x="10.6" y="25.7" width="16.7" height="4.4" rx="1.1" '+s+'/>'+
+         '<path d="M11.7 31.8h7.6l-2.3 4.6h-6.4a1.1 1.1 0 0 1-1.1-1.1v-2.4a1.1 1.1 0 0 1 1.1-1.1z" '+s+'/>'+
+         '<path d="M21.5 31.8h4.7a1.1 1.1 0 0 1 1.1 1.1v2.4a1.1 1.1 0 0 1-1.1 1.1h-7z" '+s+'/>';
+}
+function stack9(fg){
+  return '<path d="M7 46.5C14 42.3 25 42.3 31 46.5M33 46.5C39 42.3 50 42.3 57 46.5" fill="none" stroke="'+fg+
+      '" stroke-width="2.3" stroke-linecap="round"/>'+
+    '<path d="M7 50.2C14 46 25 46 31 50.2M33 50.2C39 46 50 46 57 50.2" fill="none" stroke="'+fg+
+      '" stroke-width="1.9" stroke-linecap="round" opacity=".68"/>';
+}
+function lines9(fill,size){
+  uid++; var a="a"+uid,b="b"+uid;
+  return '<defs><path id="'+a+'" d="M35.2 28.2C40.1 25.7 49.9 25.7 54.8 28.2"/>'+
+         '<path id="'+b+'" d="M35.5 37.6C40.3 35.2 49.7 35.2 54.5 37.6"/></defs>'+
+    '<text fill="'+fill+'" font-family="'+FONT+',Inter,sans-serif" font-weight="800" font-size="'+size+
+      '" text-anchor="middle"><textPath href="#'+a+'" startOffset="50%">fair</textPath></text>'+
+    '<text fill="'+fill+'" font-family="'+FONT+',Inter,sans-serif" font-weight="800" font-size="'+size+
+      '" text-anchor="middle"><textPath href="#'+b+'" startOffset="50%">toon</textPath></text>';
+}
+function mark9(fg,page){
+  return '<g transform="rotate(-8 32 32)">'+pages9(fg,page)+cuts9(fg)+lines9(fg,10)+stack9(fg)+'</g>';
+}
+
+/* ───── 10차(손맛): 대칭 파괴 + 선 흔들기 ───── */
+function pagesH(fg,page){
+  return '<path d="M7.2 15.9C14.5 10.9 24.4 11.5 30.9 15.6V42.7C24.3 38.3 14.1 38.9 7.0 43.2V15.9Z" fill="'+page+
+      '" stroke="'+fg+'" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>'+
+    '<path d="M57.1 15.3C50.4 11.0 39.5 11.4 33.1 15.8V43.1C39.1 38.7 50.5 38.4 56.8 42.8V15.3Z" fill="'+page+
+      '" stroke="'+fg+'" stroke-width="2.35" stroke-linejoin="round" stroke-linecap="round"/>';
+}
+function cutsH(fg){
+  var s1='stroke="'+fg+'" stroke-width="1.45" fill="none" stroke-linejoin="round" stroke-linecap="round"';
+  var s2='stroke="'+fg+'" stroke-width="1.3" fill="none" stroke-linejoin="round" stroke-linecap="round"';
+  var s3='stroke="'+fg+'" stroke-width="1.38" fill="none" stroke-linejoin="round" stroke-linecap="round"';
+  return '<g transform="rotate(-1.6 14.4 21.6)"><rect x="10.6" y="19.1" width="7.6" height="4.9" rx="1.2" '+s1+'/></g>'+
+         '<g transform="rotate(1.2 23.6 21.7)"><rect x="19.9" y="19.4" width="7.3" height="4.6" rx="1.2" '+s2+'/></g>'+
+         '<g transform="rotate(-0.7 19 27.9)"><rect x="10.5" y="25.8" width="16.9" height="4.3" rx="1.2" '+s3+'/></g>'+
+         '<g transform="rotate(0.9 16 34)"><path d="M11.6 31.7h7.8l-2.4 4.8h-6.5a1.15 1.15 0 0 1-1.15-1.15v-2.5a1.15 1.15 0 0 1 1.15-1.15z" '+s1+'/>'+
+         '<path d="M21.6 31.9h4.6a1.15 1.15 0 0 1 1.15 1.15v2.4a1.15 1.15 0 0 1-1.15 1.15h-7.1z" '+s2+'/></g>';
+}
+function stackH(fg){
+  return '<path d="M7.1 46.6C14.2 42.1 24.9 42.6 30.9 46.3" fill="none" stroke="'+fg+'" stroke-width="2.35" stroke-linecap="round"/>'+
+    '<path d="M33.2 46.4C39.5 42.4 50.3 41.9 56.8 46.7" fill="none" stroke="'+fg+'" stroke-width="2.2" stroke-linecap="round"/>'+
+    '<path d="M7.7 50.2C14.5 46.1 24.5 46.4 30.7 49.9" fill="none" stroke="'+fg+'" stroke-width="1.95" stroke-linecap="round" opacity=".7"/>'+
+    '<path d="M33.5 50.1C39.7 46.2 49.7 45.8 56.3 50.3" fill="none" stroke="'+fg+'" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>'+
+    '<path d="M8.6 53.3C15.1 49.6 23.9 49.8 30.3 52.9" fill="none" stroke="'+fg+'" stroke-width="1.55" stroke-linecap="round" opacity=".45"/>'+
+    '<path d="M34.1 53.0C40 49.2 48.8 49.4 55.6 53.1" fill="none" stroke="'+fg+'" stroke-width="1.45" stroke-linecap="round" opacity=".45"/>';
+}
+function linesH(fill,size){
+  uid++; var a="ha"+uid,b="hb"+uid;
+  return '<defs><path id="'+a+'" d="M35.0 28.5C40.0 25.5 49.8 26.0 54.9 27.9"/>'+
+         '<path id="'+b+'" d="M35.7 37.9C40.5 34.9 49.5 35.5 54.4 37.3"/></defs>'+
+    '<text fill="'+fill+'" font-family="'+FONT+',Inter,sans-serif" font-weight="800" font-size="'+size+
+      '" text-anchor="middle"><textPath href="#'+a+'" startOffset="50%">fair</textPath></text>'+
+    '<text fill="'+fill+'" font-family="'+FONT+',Inter,sans-serif" font-weight="800" font-size="'+(size-0.3)+
+      '" text-anchor="middle"><textPath href="#'+b+'" startOffset="50%">toon</textPath></text>';
+}
+function markH(fg,page){
+  return '<g transform="rotate(-8.6 32 32)">'+pagesH(fg,page)+cutsH(fg)+linesH(fg,10)+stackH(fg)+'</g>';
+}
+/* 손맛 축약본 (파비콘 전용) */
+function miniH(fg,bg){
+  return '<g transform="rotate(-8.6 32 32)">'+
+    '<path d="M7.2 15.9C14.5 10.9 24.4 11.5 30.9 15.6V42.7C24.3 38.3 14.1 38.9 7.0 43.2V15.9Z" fill="'+fg+'"/>'+
+    '<path d="M57.1 15.3C50.4 11.0 39.5 11.4 33.1 15.8V43.1C39.1 38.7 50.5 38.4 56.8 42.8V15.3Z" fill="'+fg+'"/>'+
+    '<g transform="rotate(-1.6 14.6 22.6)"><rect x="10.9" y="19.6" width="7.5" height="6" rx="1.3" fill="'+bg+'"/></g>'+
+    '<g transform="rotate(1.2 23.7 22.7)"><rect x="20" y="19.8" width="7.4" height="6" rx="1.3" fill="'+bg+'"/></g>'+
+    '<g transform="rotate(-0.7 19.2 31.4)"><rect x="11" y="28.4" width="16.5" height="6" rx="1.3" fill="'+bg+'"/></g>'+
+    stackH(fg)+'</g>';
+}
+
+document.getElementById("v1").innerHTML = svg(170, mark9(BLUE,WHITE));
+document.getElementById("v2").innerHTML = svg(170, markH(BLUE,WHITE));
+
+var rows=[
+ {nm:"N1 · 정식 로고 (라이트)", ds:"흰 페이지에 파란 선. 손맛 적용. 흰 배경 헤더·명함·인쇄물용.",
+  mark:markH(BLUE,WHITE), app:markH(WHITE,BLUE), fav:markH(BLUE,WHITE), favBg:"bgw"},
+ {nm:"N2 · 반전 (파란 배경용)", ds:"같은 그림을 흰 선으로. 앱 아이콘 등 파란 면 위에 올릴 때.",
+  mark:markH(WHITE,BLUE), app:markH(WHITE,BLUE), fav:markH(WHITE,BLUE), favBg:"bgb", dark:true},
+ {nm:"N3 · 파비콘 축약본", ds:"16px 전용. 실루엣 채움 + 흰 여백 컷, 글자 없음. 손맛 기울기·비대칭은 유지.",
+  mark:miniH(BLUE,WHITE), app:miniH(WHITE,BLUE), fav:miniH(WHITE,BLUE), favBg:"bgb"}
+];
+document.getElementById("rows").innerHTML = rows.map(function(r){
+  var bg = r.dark ? 'style="background:#2F5FEF;border-radius:14px;padding:8px;display:inline-flex;"' : '';
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+r.nm+'</div><div class="ds">'+r.ds+'</div></td>'+
+    '<td><span '+bg+'>'+svg(92,r.mark)+'</span></td>'+
+    '<td><span class="appicon">'+svg(52,r.app)+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32 '+r.favBg+'">'+svg(25,r.fav)+'</span>'+
+        '<span class="fav16 '+r.favBg+'">'+svg(14,r.fav)+'</span></div></td>'+
+    '<td><span class="lock">'+svg(42,r.dark?markH(BLUE,WHITE):r.mark)+'</span>'+
+        '<span class="lock" style="margin-left:20px;">'+svg(36,r.dark?markH(BLUE,WHITE):r.mark)+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

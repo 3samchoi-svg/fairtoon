@@ -1,0 +1,67 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 44px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:1000px;}
+.lead b{color:#0F1729;}
+table{width:100%;border-collapse:collapse;margin-top:24px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:17px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:16px;width:238px;}
+td.msg{text-align:left;font-size:11.5px;color:#5C6780;line-height:1.55;padding-left:16px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.mn{font-size:11px;font-weight:800;color:#2F5FEF;margin-top:4px;}
+.appicon{width:64px;height:64px;border-radius:16px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav16{width:16px;height:16px;border-radius:4px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.solo{display:inline-flex;align-items:center;justify-content:center;width:52px;height:52px;
+  border-radius:50%;background:rgba(47,95,239,.10);}
+.note{margin-top:24px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#39435C;}
+.note b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안 · 3차 ② 합법 표현</span>
+<h1>‘합법’을 무엇으로 말할까 — 체크 외 5가지</h1>
+<div class="lead">체크는 <b>검사에 통과했다</b>는 뜻입니다. 정확하지만 Fairtoon이 하는 일과 정확히 겹치지는 않습니다. 우리 사이트가 실제로 하는 일은 ① 합법 플랫폼으로 <b>안내</b>하고 ② 돈이 <b>창작자에게 돌아가게</b> 하는 것입니다. 그 각각을 형태로 말하는 대안들을 같은 마크(B1 단행본)에 붙여 비교했습니다.</div>
+
+<table>
+<tr><th class="lft">기호</th><th>기호 단독</th><th>결합 마크</th><th>앱 아이콘</th><th>16px</th><th style="text-align:left;padding-left:16px;">이 기호가 하는 말</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>정리.</b> 검증·공식성을 앞세우려면 체크나 인장, 창작자와의 관계를 앞세우려면 하트나 동전, 서비스 기능(안내)을 앞세우려면 화살표, 브랜드명 ‘Fair’를 직역하려면 저울입니다. 16px 기준으로는 체크·하트·화살표가 가장 또렷하고, 저울과 동전(₩)은 작아지면 형태가 뭉개집니다.
+</div>
+
+<script src="logo3_common.js"></script>
+<script>
+var SYMS=[
+ {k:"check", nm:"체크", mn:"검증 · 통과", msg:"“확인된 정식 경로입니다.” 가장 널리 통하고 오해가 없습니다. 다만 흔하고, 창작자와의 관계는 말하지 않습니다."},
+ {k:"heart",  nm:"하트", mn:"응원 · 지지", msg:"“이 작품을 응원하는 방식입니다.” 합법 이용을 규칙 준수가 아니라 애정 표현으로 바꿔 말합니다. 캠페인 톤과 가장 잘 맞습니다."},
+ {k:"coin",   nm:"동전(₩)", mn:"정당한 대가", msg:"“낸 돈이 작가에게 갑니다.” 사이트의 수익 배분 메시지·수익 카운터와 직결됩니다. 다만 유료라는 인상이 앞설 수 있습니다."},
+ {k:"scale",  nm:"저울", mn:"공정(Fair)", msg:"“공정하게.” 브랜드명 Fair를 그대로 형태로 옮깁니다. 의미는 정확하지만 법·제도의 딱딱한 인상이 따라옵니다."},
+ {k:"arrow",  nm:"화살표", mn:"안내 · 연결", msg:"“여기서 보세요.” 우리가 실제로 하는 일(합법 플랫폼으로 보내주기)을 가장 정확히 말합니다. 인증이 아니라 길잡이입니다."},
+ {k:"seal",   nm:"인장(별)", mn:"공식 · 정품", msg:"“공식 인정.” 도장·훈장의 권위가 붙습니다. 신뢰감은 높지만 우리가 인증 기관은 아니라는 점에서 과장될 소지가 있습니다."}
+];
+document.getElementById("rows").innerHTML = SYMS.map(function(s){
+  var soloOn = badge(s.k, BLUE, WHITE, 32, 32, 1.55);
+  var on  = bookCover(BLUE,WHITE)+badge(s.k,BLUE,WHITE);
+  var inv = bookCover(WHITE,BLUE)+badge(s.k,WHITE,BLUE);
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+s.nm+'</div><div class="mn">'+s.mn+'</div></td>'+
+    '<td><span class="solo">'+svg(46,soloOn)+'</span></td>'+
+    '<td>'+svg(64,on)+'</td>'+
+    '<td><span class="appicon">'+svg(42,inv)+'</span></td>'+
+    '<td><span class="fav16">'+svg(11,inv)+'</span></td>'+
+    '<td class="msg">'+s.msg+'</td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

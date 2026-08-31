@@ -1,0 +1,143 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Fredoka:wght@600;700&family=Baloo+2:wght@800&family=Bubblegum+Sans&family=Gaegu:wght@700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 44px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+h2{font-family:'Archivo Black',sans-serif;font-size:17px;letter-spacing:-.3px;margin-top:36px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:1000px;}
+.lead b{color:#0F1729;}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:18px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:18px;width:272px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.ds{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:5px;}
+.appicon{width:70px;height:70px;border-radius:17px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32{width:32px;height:32px;border-radius:8px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.fav16{width:16px;height:16px;border-radius:4px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:11px;}
+.lockmark{width:44px;height:44px;border-radius:12px;background:rgba(47,95,239,.10);
+  display:inline-flex;align-items:center;justify-content:center;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.fontrow{display:flex;gap:26px;margin-top:18px;flex-wrap:wrap;}
+.fcard{border:1px solid #E3E8F2;border-radius:14px;padding:16px 18px 14px;text-align:center;width:238px;}
+.fcard .fn{font-size:12.5px;font-weight:800;margin-bottom:2px;}
+.fcard .fx{font-size:11px;color:#8C97AD;margin-bottom:10px;}
+</style></head><body>
+<span class="tag">로고 시안 · 5차 · D3 디벨롭</span>
+<h1>펼친 만화책 — 6가지 발전안</h1>
+<div class="lead">D3(펼친 책)를 기준으로 다듬었습니다. 공통으로 <b>페이지의 위아래를 곡선으로 휘게</b> 해서 종이가 실제로 펼쳐진 느낌을 넣고, 중앙 골(책이 접히는 선)을 흰 여백으로 살렸습니다. 여기에 움직임을 더하는 방법을 여섯 가지로 나눠 비교합니다. 폰트는 Fredoka로 고정했고 <b>폰트 비교는 맨 아래</b>에 따로 넣었습니다.</div>
+
+<table>
+<tr><th class="lft">발전안</th><th>마크 (78px)</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더 락업</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<h2>선택 후보(E2)에 폰트만 바꿔본 것</h2>
+<div class="fontrow" id="fonts"></div>
+
+<script>
+var BLUE="#2F5FEF", WHITE="#FFFFFF";
+function fairT(x,y,size,fill,font,weight){
+  return '<text x="'+x+'" y="'+y+'" text-anchor="middle" fill="'+fill+'" font-family="'+font+
+    ', Inter, sans-serif" font-weight="'+(weight||700)+'" font-size="'+size+'">fair</text>';
+}
+/* 공통: 곡선으로 휜 펼친 책 양면 */
+function pages(fg,bg){
+  return '<path d="M7 16.5C14 12.2 25 12.2 31 16.5V47C25 42.8 14 42.8 7 47V16.5Z" fill="'+fg+'"/>'+
+         '<path d="M57 16.5C50 12.2 39 12.2 33 16.5V47C39 42.8 50 42.8 57 47V16.5Z" fill="'+fg+'"/>';
+}
+function cutsLeft(bg,three){
+  var s='<rect x="11" y="21.5" width="15" height="8.5" rx="1.8" fill="'+bg+'"/>';
+  if(three){
+    s+='<rect x="11" y="32" width="7" height="10" rx="1.8" fill="'+bg+'"/>'+
+       '<rect x="19.5" y="32" width="6.5" height="10" rx="1.8" fill="'+bg+'"/>';
+  }else{
+    s+='<rect x="11" y="32" width="15" height="10" rx="1.8" fill="'+bg+'"/>';
+  }
+  return s;
+}
+/* E1. 기본 정련 — 8° */
+function e1(fg,bg,font,size,weight){
+  return '<g transform="rotate(-8 32 32)">'+pages(fg,bg)+cutsLeft(bg)+
+    fairT(45,36.5,size||13,bg,font||'Fredoka',weight)+'</g>';
+}
+/* E2. 속도선 결합 */
+function e2(fg,bg,font,size,weight){
+  return '<path d="M3 23h7M1 32.5h8.5M4 42h6" fill="none" stroke="'+fg+
+    '" stroke-width="3" stroke-linecap="round"/>'+
+    '<g transform="rotate(-8 34 32)">'+pages(fg,bg)+cutsLeft(bg)+
+    fairT(45,36.5,size||13,bg,font||'Fredoka',weight)+'</g>';
+}
+/* E3. 책 두께 — 아래 페이지 층 */
+function e3(fg,bg,font,size,weight){
+  return '<g transform="rotate(-8 32 31)">'+
+    '<path d="M7 22C14 17.8 25 17.8 31 22V52.5C25 48.3 14 48.3 7 52.5V22Z" fill="'+fg+'"/>'+
+    '<path d="M57 22C50 17.8 39 17.8 33 22V52.5C39 48.3 50 48.3 57 52.5V22Z" fill="'+fg+'"/>'+
+    '<path d="M9 17.5C15.5 13.8 24.5 13.8 30 17.5" fill="none" stroke="'+fg+'" stroke-width="3.2" stroke-linecap="round"/>'+
+    '<path d="M55 17.5C48.5 13.8 39.5 13.8 34 17.5" fill="none" stroke="'+fg+'" stroke-width="3.2" stroke-linecap="round"/>'+
+    '<rect x="11" y="26.5" width="15" height="8.5" rx="1.8" fill="'+bg+'"/>'+
+    '<rect x="11" y="37" width="15" height="10" rx="1.8" fill="'+bg+'"/>'+
+    fairT(45,41.5,size||13,bg,font||'Fredoka',weight)+'</g>';
+}
+/* E4. 오른쪽 페이지 펄럭임 */
+function e4(fg,bg,font,size,weight){
+  return '<g transform="rotate(-8 30 32)">'+pages(fg,bg)+cutsLeft(bg)+
+    fairT(44,36.5,size||12.5,bg,font||'Fredoka',weight)+
+    '<path d="M59.5 19c4 3.5 4 9 0 12.5s4 9 0 12.5" fill="none" stroke="'+fg+
+      '" stroke-width="3.2" stroke-linecap="round"/></g>';
+}
+/* E5. 컷 3분할 — 만화 페이지 느낌 강화 */
+function e5(fg,bg,font,size,weight){
+  return '<g transform="rotate(-8 32 32)">'+pages(fg,bg)+cutsLeft(bg,true)+
+    fairT(45,36.5,size||13,bg,font||'Fredoka',weight)+'</g>';
+}
+/* E6. 기울기 크게 — 16° */
+function e6(fg,bg,font,size,weight){
+  return '<g transform="rotate(-16 32 32)">'+pages(fg,bg)+cutsLeft(bg)+
+    fairT(45,37,size||14,bg,font||'Fredoka',weight)+'</g>';
+}
+
+var FORMS=[
+ {k:"E1", nm:"기본 정련 · 8°", ds:"페이지 위아래를 곡선으로 휘게 하고 중앙 골을 살렸습니다. D3에서 종이의 물성만 더한 안으로, 가장 차분합니다.", f:e1},
+ {k:"E2", nm:"속도선 결합", ds:"왼쪽에 만화 속도선을 붙였습니다. 정지된 책이 아니라 넘어가는 중인 책으로 보여 말씀하신 ‘역동적’에 가장 가깝습니다.", f:e2},
+ {k:"E3", nm:"책 두께 표현", ds:"아래에 페이지 층을 겹치고 위쪽에 들린 페이지 선을 넣었습니다. 얇은 종이가 아니라 두꺼운 단행본으로 읽힙니다.", f:e3},
+ {k:"E4", nm:"펄럭이는 오른쪽", ds:"오른쪽 페이지가 파도처럼 넘어갑니다. 움직임이 부드럽고 수다스럽지 않습니다.", f:e4},
+ {k:"E5", nm:"컷 3분할", ds:"왼쪽 페이지를 위 1컷 + 아래 2컷으로 나눠 ‘만화 페이지’라는 신호를 키웠습니다.", f:e5},
+ {k:"E6", nm:"기울기 크게 · 16°", ds:"기울기를 두 배로. 장난기가 가장 크지만, 헤더에서 다른 요소와 각이 어긋나 보일 수 있습니다.", f:e6}
+];
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+document.getElementById("rows").innerHTML = FORMS.map(function(m){
+  var on=m.f(BLUE,WHITE), inv=m.f(WHITE,BLUE);
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+m.k+'. '+m.nm+'</div><div class="ds">'+m.ds+'</div></td>'+
+    '<td>'+svg(78,on)+'</td>'+
+    '<td><span class="appicon">'+svg(48,inv)+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32">'+svg(23,inv)+'</span>'+
+        '<span class="fav16">'+svg(12,inv)+'</span></div></td>'+
+    '<td><span class="lock"><span class="lockmark">'+svg(28,on)+'</span>'+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+
+var FONTS=[
+ {nm:"Fredoka",        fx:"둥글고 두툼 · 가장 안전", f:"Fredoka", w:700, s:13},
+ {nm:"Bubblegum Sans", fx:"손그림 곡선 · 장난기",   f:"'Bubblegum Sans'", w:400, s:14},
+ {nm:"Baloo 2",        fx:"통통함 · 키즈 톤",       f:"'Baloo 2'", w:800, s:13.5},
+ {nm:"Gaegu",          fx:"크레용 손글씨 · 사람 손맛", f:"Gaegu", w:700, s:16.5}
+];
+document.getElementById("fonts").innerHTML = FONTS.map(function(t){
+  return '<div class="fcard"><div class="fn">'+t.nm+'</div><div class="fx">'+t.fx+'</div>'+
+    svg(74,e2(BLUE,WHITE,t.f,t.s,t.w))+'</div>';
+}).join("");
+</script>
+</body></html>

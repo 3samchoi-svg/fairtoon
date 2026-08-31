@@ -1,0 +1,92 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Fredoka:wght@600;700&family=Baloo+2:wght@800&family=Bubblegum+Sans&family=Nunito:wght@900&family=Comfortaa:wght@700&family=Gaegu:wght@700&family=Patrick+Hand&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 44px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:1000px;}
+.lead b{color:#0F1729;}
+table{width:100%;border-collapse:collapse;margin-top:24px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:16px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:16px;width:210px;}
+td.msg{text-align:left;font-size:11.5px;color:#5C6780;line-height:1.55;padding-left:14px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.sample{font-size:30px;line-height:1;color:#2F5FEF;margin-top:4px;}
+.appicon{width:62px;height:62px;border-radius:15px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.lock{display:inline-flex;align-items:center;gap:10px;}
+.lockmark{width:40px;height:40px;border-radius:11px;background:rgba(47,95,239,.10);
+  display:inline-flex;align-items:center;justify-content:center;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:19px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.note{margin-top:24px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#39435C;}
+.note b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안 · 4차 ② 폰트</span>
+<h1>표지에 쓸 ‘fair’ — 귀여운 폰트 7종</h1>
+<div class="lead">형태는 D1(단행본 10° 기울기)으로 고정하고 폰트만 바꿨습니다. 두 번째 칸은 그 폰트의 실제 글자 모양이고, 오른쪽으로 갈수록 실제 사용 크기입니다. 맨 아래 <b>Archivo Black</b>은 현재 사이트 워드마크 서체로, ‘귀엽지 않은 쪽’과 비교하기 위한 대조군입니다.</div>
+
+<table>
+<tr><th class="lft">폰트</th><th>글자 모양</th><th>마크 (76px)</th><th>앱 아이콘</th><th>헤더 락업</th><th style="text-align:left;padding-left:14px;">성격</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>참고.</b> 마크 표지에 ‘fair’가 들어가고 옆에 워드마크 FAIRTOON이 붙으면 fair가 두 번 나옵니다. 실무에서는 흔한 구성이고(표지 글자는 그림의 일부로 읽힘) 문제는 아니지만, 신경 쓰이시면 ① 헤더에서는 마크만 쓰고 워드마크를 빼거나 ② 표지 글자를 ‘f’ 한 글자로 줄이는 방법이 있습니다. 원하시는 쪽을 말씀해 주십시오.
+</div>
+
+<script>
+var BLUE="#2F5FEF", WHITE="#FFFFFF";
+function fairT(x,y,size,fill,font,weight){
+  return '<text x="'+x+'" y="'+y+'" text-anchor="middle" fill="'+fill+'" font-family="'+font+
+    ', Inter, sans-serif" font-weight="'+(weight||700)+'" font-size="'+size+'">fair</text>';
+}
+function d1(fg,bg,font,size,weight,dy){
+  return '<g transform="rotate(-10 32 32)">'+
+    '<rect x="15" y="8" width="34" height="48" rx="4.5" fill="'+fg+'"/>'+
+    '<rect x="19.2" y="8" width="2.4" height="48" fill="'+bg+'"/>'+
+    '<rect x="24.8" y="13.5" width="9.6" height="10.5" rx="1.8" fill="'+bg+'"/>'+
+    '<rect x="36.8" y="13.5" width="9.6" height="10.5" rx="1.8" fill="'+bg+'"/>'+
+    fairT(35.6,42.5+(dy||0),size,bg,font,weight)+
+    '</g>';
+}
+var FONTS=[
+ {nm:"Fredoka",      f:"Fredoka",       w:700, s:13.5, dy:0,
+  msg:"둥글고 두툼한 라운드 산세리프. 귀엽지만 흐트러지지 않아 로고에 안전합니다. 가독성이 가장 좋습니다."},
+ {nm:"Baloo 2",      f:"'Baloo 2'",     w:800, s:14,   dy:.5,
+  msg:"Fredoka보다 획이 굵고 통통합니다. 유아·키즈 느낌이 조금 더 강합니다."},
+ {nm:"Bubblegum Sans",f:"'Bubblegum Sans'",w:400,s:14.5,dy:.5,
+  msg:"살짝 기울고 손으로 그린 듯한 곡선. 만화·풍선껌 느낌이 가장 강해 장난기가 있습니다."},
+ {nm:"Comfortaa",    f:"Comfortaa",     w:700, s:12,   dy:0,
+  msg:"기하학적이고 넓은 라운드. 귀엽지만 차분합니다. 글자 폭이 넓어 표지를 많이 차지합니다."},
+ {nm:"Nunito",       f:"Nunito",        w:900, s:13.5, dy:0,
+  msg:"라운드 산세리프의 표준. 가장 무난하고 현대적이지만, 귀여움은 약합니다."},
+ {nm:"Gaegu",        f:"Gaegu",         w:700, s:17,   dy:1.5,
+  msg:"한글·영문 손글씨체. 크레용으로 쓴 느낌으로 가장 사람 손맛이 납니다. 다만 얇아 작은 크기에서 약합니다."},
+ {nm:"Patrick Hand", f:"'Patrick Hand'",w:400, s:15,   dy:1,
+  msg:"연필 손글씨. 정갈한 손맛. Gaegu보다 어른스럽습니다."},
+ {nm:"Archivo Black (대조군)", f:"'Archivo Black'", w:400, s:12, dy:0,
+  msg:"현재 워드마크 서체. 단단하고 무겁습니다. 나란히 보시면 왜 귀여운 폰트가 필요한지 바로 드러납니다."}
+];
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+document.getElementById("rows").innerHTML = FONTS.map(function(t){
+  var on=d1(BLUE,WHITE,t.f,t.s,t.w,t.dy), inv=d1(WHITE,BLUE,t.f,t.s,t.w,t.dy);
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+t.nm+'</div></td>'+
+    '<td><div class="sample" style="font-family:'+t.f+',sans-serif;font-weight:'+t.w+';">fair</div></td>'+
+    '<td>'+svg(76,on)+'</td>'+
+    '<td><span class="appicon">'+svg(42,inv)+'</span></td>'+
+    '<td><span class="lock"><span class="lockmark">'+svg(25,on)+'</span>'+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+    '<td class="msg">'+t.msg+'</td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

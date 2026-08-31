@@ -1,0 +1,123 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Fredoka:wght@600;700&family=Baloo+2:wght@700;800&family=Bubblegum+Sans&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 44px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+h2{font-family:'Archivo Black',sans-serif;font-size:17px;letter-spacing:-.3px;margin-top:32px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:1010px;}
+.lead b{color:#0F1729;}
+table{width:100%;border-collapse:collapse;margin-top:20px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:20px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:18px;width:210px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.ds{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:5px;}
+.appicon{width:70px;height:70px;border-radius:17px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32{width:32px;height:32px;border-radius:8px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.fav16{width:16px;height:16px;border-radius:4px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:11px;}
+.lockmark{width:44px;height:44px;border-radius:12px;background:rgba(47,95,239,.10);
+  display:inline-flex;align-items:center;justify-content:center;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.cutbox{display:flex;gap:28px;align-items:center;margin-top:16px;}
+.cutbox .cap{font-size:12px;color:#5C6780;line-height:1.6;max-width:560px;}
+.note{margin-top:24px;background:#FFF6E5;border-left:3px solid #E08700;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#5A4100;}
+.note b{color:#3D2C00;}
+</style></head><body>
+<span class="tag">로고 시안 · 7차 · H1 발전</span>
+<h1>역동적 컷 분할 + 곡면을 따라 휘는 ‘fair’</h1>
+<div class="lead">H1(채움)을 기준으로 두 가지를 손봤습니다. ① 컷을 2×4 격자에서 <b>행마다 다른 분할</b>로 바꿨습니다 — 첫 행은 두 칸, 둘째 행은 칸 구분 없는 와이드, 셋째 행은 사선으로 나눈 두 칸입니다. ② 글자를 <b>페이지 곡률에 맞춰 휘게</b> 했습니다(SVG textPath). 왼쪽은 곡면 없이 직선 배치, 오른쪽은 곡면 적용이라 차이를 바로 보실 수 있습니다.</div>
+
+<table>
+<tr><th class="lft">폰트</th><th>직선 배치</th><th>곡면 적용</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더 락업</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<h2>컷 분할만 크게 본 것</h2>
+<div class="cutbox">
+  <div id="bigcut"></div>
+  <div class="cap">첫 행은 세로선으로 두 칸, 둘째 행은 구분 없이 통으로, 셋째 행은 사선 여백으로 두 칸입니다. 규칙이 행마다 달라 움직임이 생기지만, 컷의 크기 차이는 크지 않게 잡아 어수선해지지 않도록 했습니다. 사선은 약 20도로만 기울여 파비콘 크기에서도 사선임이 읽힙니다.</div>
+</div>
+
+<div class="note">
+<b>글꼴 지시 확인이 필요합니다.</b> H1과 H2는 사실 <b>같은 폰트(Bubblegum Sans)</b>였습니다. H2가 달라 보인 것은 글자가 파란색이고 배경이 흰색이어서 더 가늘고 또렷하게 보였기 때문입니다. 그래서 ‘H2의 글꼴’이 무엇을 뜻하는지 확실하지 않아, 후보 세 가지를 위 표에 나란히 놓았습니다. 혹시 AI가 뽑은 <b>AI-2</b>의 글꼴을 말씀하신 것이라면 그건 Fredoka·Baloo 2 계열의 굵고 통통한 라운드체이니 표의 2·3행이 그에 해당합니다. 마음에 드는 행을 알려주십시오.
+</div>
+
+<script>
+var BLUE="#2F5FEF", WHITE="#FFFFFF", uid=0;
+
+/* ── 역동적 컷 분할: 1행 2칸 · 2행 와이드 · 3행 사선 2칸 ── */
+function cuts(bg){
+  return '<rect x="10.5" y="19" width="7.8" height="5" rx="1.3" fill="'+bg+'"/>'+
+         '<rect x="19.8" y="19" width="7.7" height="5" rx="1.3" fill="'+bg+'"/>'+
+         '<rect x="10.5" y="25.5" width="17" height="4.6" rx="1.3" fill="'+bg+'"/>'+
+         '<path d="M11.6 31.6h7.9l-2.4 4.9h-6.7a1.2 1.2 0 0 1-1.2-1.2v-2.5a1.2 1.2 0 0 1 1.2-1.2z" fill="'+bg+'"/>'+
+         '<path d="M21.4 31.6h4.9a1.2 1.2 0 0 1 1.2 1.2v2.5a1.2 1.2 0 0 1-1.2 1.2h-7.3z" fill="'+bg+'"/>';
+}
+/* ── 페이지 층(책 두께) ── */
+function stack(fg){
+  return '<path d="M7 44.5C14 40.3 25 40.3 31 44.5M33 44.5C39 40.3 50 40.3 57 44.5" fill="none" stroke="'+fg+
+      '" stroke-width="2.6" stroke-linecap="round"/>'+
+    '<path d="M7 48.5C14 44.3 25 44.3 31 48.5M33 48.5C39 44.3 50 44.3 57 48.5" fill="none" stroke="'+fg+
+      '" stroke-width="2.2" stroke-linecap="round" opacity=".72"/>';
+}
+function pagesFill(fg){
+  return '<path d="M7 15.5C14 11.2 25 11.2 31 15.5V41C25 36.8 14 36.8 7 41V15.5Z" fill="'+fg+'"/>'+
+         '<path d="M57 15.5C50 11.2 39 11.2 33 15.5V41C39 36.8 50 36.8 57 41V15.5Z" fill="'+fg+'"/>';
+}
+/* 곡면 텍스트 */
+function fairCurved(fill,font,size,weight){
+  uid++; var id="fp"+uid;
+  return '<defs><path id="'+id+'" d="M34.6 31.6C39.8 28.6 50.2 28.6 55.6 31.6"/></defs>'+
+    '<text fill="'+fill+'" font-family="'+font+', Inter, sans-serif" font-weight="'+weight+
+      '" font-size="'+size+'" text-anchor="middle">'+
+      '<textPath href="#'+id+'" startOffset="50%">fair</textPath></text>';
+}
+/* 직선 텍스트 */
+function fairStraight(fill,font,size,weight){
+  return '<text x="45" y="31.2" fill="'+fill+'" text-anchor="middle" font-family="'+font+
+    ', Inter, sans-serif" font-weight="'+weight+'" font-size="'+size+'">fair</text>';
+}
+function mark(fg,bg,font,size,weight,curved){
+  return '<g transform="rotate(-8 32 32)">'+pagesFill(fg)+cuts(bg)+
+    (curved?fairCurved(bg,font,size,weight):fairStraight(bg,font,size,weight))+
+    stack(fg)+'</g>';
+}
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+
+var FONTS=[
+ {nm:"Bubblegum Sans", ds:"현재 H1·H2에 쓴 폰트. 손그림 곡선이라 만화 표지 글씨에 가깝습니다.", f:"'Bubblegum Sans'", w:400, s:12.5},
+ {nm:"Fredoka",        ds:"둥글고 두툼. 획이 굵어 흰 글자로 뒤집었을 때 가장 또렷합니다.", f:"Fredoka", w:700, s:12},
+ {nm:"Baloo 2",        ds:"가장 통통하고 무게감이 있습니다. AI가 뽑은 시안의 글꼴에 가장 가깝습니다.", f:"'Baloo 2'", w:800, s:12.5}
+];
+document.getElementById("rows").innerHTML = FONTS.map(function(t){
+  var straight = mark(BLUE,WHITE,t.f,t.s,t.w,false);
+  var curved   = mark(BLUE,WHITE,t.f,t.s,t.w,true);
+  var inv      = mark(WHITE,BLUE,t.f,t.s,t.w,true);
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+t.nm+'</div><div class="ds">'+t.ds+'</div></td>'+
+    '<td>'+svg(74,straight)+'</td>'+
+    '<td>'+svg(84,curved)+'</td>'+
+    '<td><span class="appicon">'+svg(48,inv)+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32">'+svg(23,inv)+'</span>'+
+        '<span class="fav16">'+svg(12,inv)+'</span></div></td>'+
+    '<td><span class="lock"><span class="lockmark">'+svg(28,curved)+'</span>'+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+
+document.getElementById("bigcut").innerHTML =
+  svg(190,'<g transform="rotate(-8 32 32)">'+pagesFill(BLUE)+cuts(WHITE)+
+  fairCurved(WHITE,"Fredoka",12,700)+stack(BLUE)+'</g>');
+</script>
+</body></html>

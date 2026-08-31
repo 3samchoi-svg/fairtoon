@@ -1,0 +1,172 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Fredoka:wght@600;700&family=Baloo+2:wght@700;800&family=Nunito:wght@900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 44px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+h2{font-family:'Archivo Black',sans-serif;font-size:16.5px;letter-spacing:-.3px;margin-top:30px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:1010px;}
+.lead b{color:#0F1729;}
+.top{display:flex;gap:38px;align-items:flex-start;margin-top:20px;}
+.chk{flex:1;}
+.chk .row{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid #EDF1F8;font-size:12.5px;line-height:1.5;}
+.chk .row:last-child{border-bottom:none;}
+.chk .ok{flex:0 0 18px;height:18px;border-radius:50%;background:#2F5FEF;color:#fff;font-size:10px;
+  font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.chk .row b{color:#0F1729;}
+.chk .row span.d{color:#5C6780;}
+table{width:100%;border-collapse:collapse;margin-top:16px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:18px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:18px;width:262px;}
+.nm{font-size:14px;font-weight:800;letter-spacing:-.2px;}
+.ds{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:5px;}
+.appicon{width:66px;height:66px;border-radius:16px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32,.fav16{display:inline-flex;align-items:center;justify-content:center;}
+.fav32{width:32px;height:32px;border-radius:8px;} .fav16{width:16px;height:16px;border-radius:4px;}
+.bgb{background:#2F5FEF;} .bgw{background:#fff;border:1px solid #E3E8F2;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:10px;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:19px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.fonts{display:flex;gap:24px;margin-top:14px;}
+.fcard{border:1px solid #E3E8F2;border-radius:14px;padding:16px 18px 14px;text-align:center;width:250px;}
+.fcard.pick{border:2px solid #2F5FEF;}
+.fcard .fn{font-size:12.5px;font-weight:800;}
+.fcard .fx{font-size:11px;color:#8C97AD;margin-bottom:8px;}
+.note{margin-top:20px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#39435C;}
+.note b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안 · 11차 · 요건 6개 반영</span>
+<h1>정돈된 만화책 — 대각 컷 · 빈 컷 · 곡면 fairtoon</h1>
+<div class="lead">주신 여섯 가지를 하나씩 좌표로 고정했습니다. 오른쪽 체크리스트에 무엇을 어떻게 했는지 적었습니다. <b>Canva 대신 벡터로 돌아온 이유</b>는 아래 노트에 있습니다.</div>
+
+<div class="top">
+  <div id="big"></div>
+  <div class="chk" id="chk"></div>
+</div>
+
+<h2>글꼴 — 손글씨 느낌 없는 후보 3종</h2>
+<div class="fonts" id="fonts"></div>
+
+<h2>실제 사용 크기</h2>
+<table>
+<tr><th class="lft">버전</th><th>마크</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>왜 다시 벡터인가.</b> 대표님이 “갈수록 원하는 것과 달라진다”고 느끼신 원인은 분명합니다. Canva는 생성할 때마다 결과가 달라져서 <b>여섯 조건을 동시에 붙잡아 둘 수 없습니다</b>. 실제로 지금까지 16장을 뽑았는데 컷 개수·기울기·색·글자 줄 수가 매번 바뀌었습니다. 벡터는 반대입니다. “상단 두 칸, 구분선은 수직에서 9.5도, 컷은 비움, 글자는 곡면 위” 같은 조건을 숫자로 박아두면 다시는 안 흔들립니다. 그리고 대표님이 Canva에서 좋아하셨던 <b>여러 겹 페이지 층의 입체감</b>은 그대로 가져왔습니다. 배제하신 것은 구불구불한 손떨림뿐입니다.
+</div>
+
+<script>
+var BLUE="#2F5FEF", WHITE="#FFFFFF", uid=0;
+
+/* 페이지 — 정돈된 대칭 곡선 */
+function pages(fg,page,sw){
+  sw=sw||2.4;
+  return '<path d="M7 15.5C14 11.2 25 11.2 31 15.5V42C25 37.8 14 37.8 7 42V15.5Z" fill="'+page+'" stroke="'+fg+
+      '" stroke-width="'+sw+'" stroke-linejoin="round"/>'+
+    '<path d="M57 15.5C50 11.2 39 11.2 33 15.5V42C39 37.8 50 37.8 57 42V15.5Z" fill="'+page+'" stroke="'+fg+
+      '" stroke-width="'+sw+'" stroke-linejoin="round"/>';
+}
+/* 페이지 층 3겹 — 정돈된 대칭 */
+function stack(fg){
+  return '<path d="M7 45.5C14 41.3 25 41.3 31 45.5M33 45.5C39 41.3 50 41.3 57 45.5" fill="none" stroke="'+fg+
+      '" stroke-width="2.2" stroke-linecap="round"/>'+
+    '<path d="M7.6 49C14.4 44.9 24.6 44.9 30.6 49M33.4 49C39.4 44.9 49.6 44.9 56.4 49" fill="none" stroke="'+fg+
+      '" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>'+
+    '<path d="M8.4 52.2C15 48.3 24 48.3 30.2 52.2M33.8 52.2C40 48.3 49 48.3 55.6 52.2" fill="none" stroke="'+fg+
+      '" stroke-width="1.5" stroke-linecap="round" opacity=".45"/>';
+}
+/* 컷 — 상단 2칸(대각 구분) + 하단 1칸, 전부 빈 아웃라인 */
+function cuts(fg,sw){
+  sw=sw||1.4;
+  var s='stroke="'+fg+'" stroke-width="'+sw+'" fill="none" stroke-linejoin="round"';
+  return '<path d="M10.6 19.4H18.7L17.5 26.6H10.6Z" '+s+'/>'+
+         '<path d="M20.2 19.4H27.4V26.6H19.0Z" '+s+'/>'+
+         '<rect x="10.6" y="28.6" width="16.8" height="7.6" rx="1.2" '+s+'/>';
+}
+/* 컷 — 축약본용(면 채움 대비 흰 여백) */
+function cutsFilled(bg){
+  return '<path d="M10.9 19.7H18.8L17.6 26.3H10.9Z" fill="'+bg+'"/>'+
+         '<path d="M20.4 19.7H27.1V26.3H19.2Z" fill="'+bg+'"/>'+
+         '<rect x="10.9" y="28.8" width="16.2" height="7.2" rx="1.2" fill="'+bg+'"/>';
+}
+/* fairtoon 두 줄 — 곡면 위, 손글씨 아닌 라운드체 */
+function twoLines(fill,font,size,weight){
+  uid++; var a="a"+uid,b="b"+uid;
+  return '<defs><path id="'+a+'" d="M35.2 27.4C40.1 24.9 49.9 24.9 54.8 27.4"/>'+
+         '<path id="'+b+'" d="M35.5 36.4C40.3 34 49.7 34 54.5 36.4"/></defs>'+
+    '<text fill="'+fill+'" font-family="'+font+',Inter,sans-serif" font-weight="'+weight+
+      '" font-size="'+size+'" text-anchor="middle"><textPath href="#'+a+'" startOffset="50%">fair</textPath></text>'+
+    '<text fill="'+fill+'" font-family="'+font+',Inter,sans-serif" font-weight="'+weight+
+      '" font-size="'+size+'" text-anchor="middle"><textPath href="#'+b+'" startOffset="50%">toon</textPath></text>';
+}
+function mark(fg,page,font,size,weight){
+  return '<g transform="rotate(-8 32 32)">'+pages(fg,page)+cuts(fg)+
+    twoLines(fg,font||"Fredoka",size||10,weight||700)+stack(fg)+'</g>';
+}
+function mini(fg,bg){
+  return '<g transform="rotate(-8 32 32)">'+
+    '<path d="M7 15.5C14 11.2 25 11.2 31 15.5V42C25 37.8 14 37.8 7 42V15.5Z" fill="'+fg+'"/>'+
+    '<path d="M57 15.5C50 11.2 39 11.2 33 15.5V42C39 37.8 50 37.8 57 42V15.5Z" fill="'+fg+'"/>'+
+    cutsFilled(bg)+stack(fg)+'</g>';
+}
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+
+document.getElementById("big").innerHTML = svg(230, mark(BLUE,WHITE));
+
+var CHK=[
+ ["만화책 느낌","펼친 단행본 + 페이지 층 3겹으로 두께를 줘서 종이책임을 분명히 했습니다."],
+ ["손떨림 배제","선을 모두 정돈했습니다. 좌우 완전 대칭, 굵기 일정, 흔들림 0."],
+ ["대각 컷 구분","상단 두 칸을 <b>수직에서 9.5도</b> 기울인 대각선으로 나눴습니다. 과하지 않은 각도입니다."],
+ ["컷 3칸 구성","상단 2칸 + 하단 와이드 1칸. 지시하신 구성 그대로입니다."],
+ ["컷 비움","세 칸 모두 선만 있고 안쪽은 비어 있습니다. 채운 곳 없습니다."],
+ ["곡면 레터링","fair · toon 두 줄이 각각 페이지 곡률을 따라 휘어 앉습니다(SVG textPath)."],
+ ["손글씨체 배제","Fredoka·Baloo 2·Nunito — 셋 다 기하학적 라운드체입니다. 손글씨 계열은 후보에서 뺐습니다."]
+];
+document.getElementById("chk").innerHTML = CHK.map(function(r,i){
+  return '<div class="row"><span class="ok">✓</span><span><b>'+r[0]+'</b> — <span class="d">'+r[1]+'</span></span></div>';
+}).join("");
+
+var FONTS=[
+ {nm:"Fredoka", fx:"둥글고 두툼 · 가장 정돈됨", f:"Fredoka", w:700, s:10, pick:true},
+ {nm:"Baloo 2", fx:"통통함 · 무게감 있음", f:"'Baloo 2'", w:800, s:10.5},
+ {nm:"Nunito", fx:"가장 중립적 · 현대적", f:"Nunito", w:900, s:10}
+];
+document.getElementById("fonts").innerHTML = FONTS.map(function(t){
+  return '<div class="fcard'+(t.pick?' pick':'')+'"><div class="fn">'+t.nm+(t.pick?' ★':'')+'</div>'+
+    '<div class="fx">'+t.fx+'</div>'+svg(96,mark(BLUE,WHITE,t.f,t.s,t.w))+'</div>';
+}).join("");
+
+var rows=[
+ {nm:"P1 · 정식 로고 (라이트)", ds:"흰 페이지 + 파란 선. 흰 배경 헤더·명함·인쇄물용.",
+  mark:mark(BLUE,WHITE), app:mark(WHITE,BLUE), fav:mark(BLUE,WHITE), favBg:"bgw"},
+ {nm:"P2 · 반전 (파란 배경용)", ds:"같은 그림을 흰 선으로. 앱 아이콘 등 파란 면 위에.",
+  mark:mark(WHITE,BLUE), app:mark(WHITE,BLUE), fav:mark(WHITE,BLUE), favBg:"bgb", dark:true},
+ {nm:"P3 · 파비콘 축약본", ds:"16px 전용. 면을 채우고 컷은 흰 여백, 글자 없음. 대각 컷·기울기는 유지.",
+  mark:mini(BLUE,WHITE), app:mini(WHITE,BLUE), fav:mini(WHITE,BLUE), favBg:"bgb"}
+];
+document.getElementById("rows").innerHTML = rows.map(function(r){
+  var bg = r.dark ? 'style="background:#2F5FEF;border-radius:14px;padding:8px;display:inline-flex;"' : '';
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+r.nm+'</div><div class="ds">'+r.ds+'</div></td>'+
+    '<td><span '+bg+'>'+svg(88,r.mark)+'</span></td>'+
+    '<td><span class="appicon">'+svg(50,r.app)+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32 '+r.favBg+'">'+svg(25,r.fav)+'</span>'+
+        '<span class="fav16 '+r.favBg+'">'+svg(14,r.fav)+'</span></div></td>'+
+    '<td><span class="lock">'+svg(40,r.dark?mark(BLUE,WHITE):r.mark)+'</span>'+
+        '<span class="lock" style="margin-left:18px;">'+svg(34,r.dark?mark(BLUE,WHITE):r.mark)+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

@@ -1,0 +1,73 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Noto+Sans+KR:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:40px 44px 44px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:11px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:25px;letter-spacing:-.5px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:980px;}
+.lead b{color:#0F1729;}
+table{width:100%;border-collapse:collapse;margin-top:24px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 12px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:20px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:18px;width:270px;}
+.nm{font-size:14.5px;font-weight:800;letter-spacing:-.2px;}
+.ds{font-size:11.5px;color:#5C6780;line-height:1.55;margin-top:5px;}
+.appicon{width:70px;height:70px;border-radius:17px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32{width:32px;height:32px;border-radius:8px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.fav16{width:16px;height:16px;border-radius:4px;background:#2F5FEF;display:inline-flex;align-items:center;justify-content:center;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:11px;}
+.lockmark{width:40px;height:40px;border-radius:11px;background:rgba(47,95,239,.10);
+  display:inline-flex;align-items:center;justify-content:center;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:21px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.note{margin-top:26px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:15px 20px;font-size:12.5px;line-height:1.7;color:#39435C;}
+.note b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안 · 3차 ① 형태</span>
+<h1>만화책 + 컷 분할 결합 4종</h1>
+<div class="lead">‘만화’를 만화책 형태로 지시하고, 그 안에 컷 분할을 넣었습니다. 컷은 <b>흰 여백(거터)</b>으로 나눠 페이지 위 컷임을 분명히 했습니다. 합법 기호는 비교를 위해 네 시안 모두 체크로 통일했고, <b>기호 자체의 대안은 두 번째 표에서 따로 비교</b>합니다.</div>
+
+<table>
+<tr><th class="lft">형태</th><th>마크 (72px)</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더 락업</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>형태별 성격.</b> B1은 서점에 꽂힌 단행본, B2는 펼쳐 읽는 순간, B3은 완결까지 이어지는 시리즈, B4는 페이지를 넘기는 동작을 각각 말합니다. Fairtoon이 다루는 것이 ‘완결 명작 정주행’이라는 점에서는 B3이, 가장 단순하고 작은 크기에서 또렷한 것은 B1입니다.
+</div>
+
+<script src="logo3_common.js"></script>
+<script>
+var FORMS=[
+ {k:"B1", nm:"단행본 표지 + 컷", ds:"세로 단행본에 책등 라인을 넣고, 표지 위에 컷 3개를 분할했습니다. 형태가 단순해 16px에서도 무너지지 않습니다.",
+  f:bookCover},
+ {k:"B2", nm:"펼친 책 + 양면 컷", ds:"펼쳐 읽는 만화책. 양쪽 페이지에 컷이 나뉘어 있습니다. 현재 사이트 헤더 아이콘(두 패널)의 발전형이라 연속성이 있습니다.",
+  f:bookOpen},
+ {k:"B3", nm:"시리즈 두 권 + 컷", ds:"권수가 있는 만화 시리즈. ‘완결까지 정주행’이라는 Fairtoon의 큐레이션 성격과 맞습니다. 요소가 많아 작은 크기에서 다소 빽빽합니다.",
+  f:bookStack},
+ {k:"B4", nm:"페이지 넘김 + 컷", ds:"우상단이 접힌 페이지. 읽는 동작이 담기지만, 문서 아이콘으로 읽힐 여지가 있습니다.",
+  f:bookFold}
+];
+document.getElementById("rows").innerHTML = FORMS.map(function(m){
+  var on=m.f(BLUE,WHITE)+badge("check",BLUE,WHITE);
+  var inv=m.f(WHITE,BLUE)+badge("check",WHITE,BLUE);
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+m.k+'. '+m.nm+'</div><div class="ds">'+m.ds+'</div></td>'+
+    '<td>'+svg(72,on)+'</td>'+
+    '<td><span class="appicon">'+svg(46,inv)+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32">'+svg(22,inv)+'</span>'+
+        '<span class="fav16">'+svg(11,inv)+'</span></div></td>'+
+    '<td><span class="lock"><span class="lockmark">'+svg(24,on)+'</span>'+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

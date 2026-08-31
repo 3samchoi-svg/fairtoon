@@ -1,0 +1,152 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700;800&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{width:1360px;background:#fff;color:#0F1729;padding:38px 44px 42px;
+  font-family:'Inter','Apple SD Gothic Neo',sans-serif;-webkit-font-smoothing:antialiased;}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.5px;color:#2F5FEF;
+  background:rgba(47,95,239,.10);border-radius:999px;padding:5px 12px;margin-bottom:10px;}
+h1{font-family:'Archivo Black',sans-serif;font-size:24px;letter-spacing:-.5px;}
+h2{font-family:'Archivo Black',sans-serif;font-size:16px;letter-spacing:-.3px;margin-top:28px;}
+.lead{color:#5C6780;font-size:13px;line-height:1.65;margin-top:8px;max-width:1010px;}
+.lead b{color:#0F1729;}
+.cmp{display:flex;gap:22px;margin-top:16px;}
+.cc{border:1px solid #E3E8F2;border-radius:14px;padding:16px;text-align:center;width:262px;}
+.cc.pick{border:2px solid #2F5FEF;}
+.cc .t{font-size:12.5px;font-weight:800;}
+.cc .s{font-size:10.5px;color:#8C97AD;margin-bottom:8px;}
+.cc img{width:210px;height:210px;display:block;margin:0 auto;}
+.cc .d{font-size:11px;color:#5C6780;line-height:1.5;margin-top:8px;text-align:left;}
+table{width:100%;border-collapse:collapse;margin-top:14px;}
+th{font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:#8C97AD;
+  text-align:center;padding:0 0 11px;border-bottom:1px solid #E3E8F2;}
+th.lft{text-align:left;}
+td{border-bottom:1px solid #EDF1F8;padding:17px 8px;vertical-align:middle;text-align:center;}
+td.lft{text-align:left;padding-right:16px;width:250px;}
+.nm{font-size:13.5px;font-weight:800;}
+.ds{font-size:11px;color:#5C6780;line-height:1.5;margin-top:4px;}
+.appicon{width:64px;height:64px;border-radius:15px;background:#2F5FEF;display:inline-flex;
+  align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(15,23,41,.16);}
+.fav32,.fav16{display:inline-flex;align-items:center;justify-content:center;}
+.fav32{width:32px;height:32px;border-radius:8px;} .fav16{width:16px;height:16px;border-radius:4px;}
+.bgb{background:#2F5FEF;} .bgw{background:#fff;border:1px solid #E3E8F2;}
+.favrow{display:flex;gap:12px;align-items:center;justify-content:center;}
+.lock{display:inline-flex;align-items:center;gap:10px;}
+.wm{font-family:'Archivo Black',sans-serif;font-size:18px;letter-spacing:-.6px;color:#0F1729;}
+.wm em{font-style:normal;color:#2F5FEF;}
+.note{margin-top:18px;background:#F4F6FB;border-left:3px solid #2F5FEF;border-radius:0 12px 12px 0;
+  padding:14px 18px;font-size:12px;line-height:1.7;color:#39435C;}
+.note b{color:#0F1729;}
+</style></head><body>
+<span class="tag">로고 시안 · 12차 · 선택안 벡터 재현</span>
+<h1>선택하신 그림을 벡터로 옮겼습니다</h1>
+<div class="lead">그림 위에 좌표 격자를 씌워 선 하나하나의 위치를 읽고, 같은 자리에 벡터 경로를 놓았습니다. 원본 색은 <b>#1460E8</b>이었고 우리 브랜드 블루 <b>#2F5FEF</b>와 거의 같은 계열이라, 브랜드 색으로 통일했습니다. 이제 색·크기·반전이 전부 통제됩니다.</div>
+
+<div class="cmp">
+  <div class="cc"><div class="t">원본 (Canva)</div><div class="s">래스터 800px · 수정 불가</div>
+    <img src="ai_22.png" alt=""><div class="d">대표님이 선택하신 그림입니다.</div></div>
+  <div class="cc pick"><div class="t">벡터 재현 ★</div><div class="s">벡터 · 무한 확대</div>
+    <div id="v1"></div><div class="d">같은 구조를 좌표로 옮겼습니다. 컷은 테두리 사각형이 아니라 <b>분할선만</b> 그리는 원본 방식을 그대로 따랐습니다.</div></div>
+  <div class="cc"><div class="t">벡터 + 곡면 레터링</div><div class="s">요건 6번 적용</div>
+    <div id="v2"></div><div class="d">원본은 글씨가 평평하게 기울어져 있습니다. 앞서 말씀하신 “곡면에 따라 구부러지도록”을 적용한 변형입니다.</div></div>
+</div>
+
+<h2>실제 사용 크기</h2>
+<table>
+<tr><th class="lft">버전</th><th>마크</th><th>앱 아이콘</th><th>파비콘 32 · 16px</th><th>헤더</th></tr>
+<tbody id="rows"></tbody>
+</table>
+
+<div class="note">
+<b>파비콘은 축약본이 필요합니다.</b> 이 그림은 얇은 선으로 이루어져 있어 16px로 줄이면 선이 전부 사라집니다. 그래서 세 번째 줄에 <b>면을 채운 축약본</b>을 만들었습니다. 왼쪽 페이지를 채우고 컷 분할선을 흰 여백으로 남기는 방식으로, 원본의 컷 구조(대각 + 수평)는 유지했습니다.
+</div>
+
+<script>
+var BLUE="#2F5FEF", WHITE="#FFFFFF", uid=0;
+function svg(size,inner){return '<svg width="'+size+'" height="'+size+'" viewBox="0 0 64 64">'+inner+'</svg>';}
+
+/* ── 선택안 구조: 왼쪽 표지 굵은 띠 · 상단 곡선 · 분할선만 있는 컷 · 물결 하단 · 얇은 오른쪽 페이지 ── */
+function book(fg){
+  var r='stroke-linecap="round" stroke-linejoin="round" fill="none" stroke="'+fg+'"';
+  return (
+  /* 왼쪽 표지 굵은 세로 띠 */
+  '<path d="M13.9 24.4L15.3 43.5" '+r+' stroke-width="1.75"/>'+
+  '<path d="M15.7 25.7L16.8 42.5" '+r+' stroke-width="0.62"/>'+
+  /* 왼쪽 페이지 상단 곡선 (2겹) */
+  '<path d="M14.8 23.7C19.5 20.5 26.2 19.9 31.7 22.1" '+r+' stroke-width="1.5"/>'+
+  '<path d="M16.3 24.7C20.3 22.1 26.4 21.6 31.4 23.3" '+r+' stroke-width="0.6"/>'+
+  /* 중앙 골 */
+  '<path d="M31.8 22.2L32.2 39.3" '+r+' stroke-width="0.8"/>'+
+  /* 컷 — 상단 대각 구분선 + 수평 분할선(2겹) */
+  '<path d="M21.5 23.0L22.7 29.1" '+r+' stroke-width="0.95"/>'+
+  '<path d="M16.8 30.7C21.2 28.9 26.2 28.4 30.5 29.0" '+r+' stroke-width="1.15"/>'+
+  '<path d="M17.5 31.7C21.7 30.1 26.4 29.6 30.3 30.1" '+r+' stroke-width="0.55"/>'+
+  /* 왼쪽 페이지 하단 물결 3겹 */
+  '<path d="M15.3 43.5C20.8 41.3 27.4 40.0 31.7 39.6" '+r+' stroke-width="1.5"/>'+
+  '<path d="M16.4 42.1C21.4 40.1 27.4 39.1 31.5 38.9" '+r+' stroke-width="0.85"/>'+
+  '<path d="M17.8 41.0C22.4 39.3 27.6 38.5 31.3 38.3" '+r+' stroke-width="0.6"/>'+
+  /* 중앙 하단 접힘 */
+  '<path d="M31.5 39.4C32.3 41.3 34.3 41.5 35.3 39.7" '+r+' stroke-width="1.3"/>'+
+  /* 오른쪽 페이지 — 얇은 세로선 + 하단 긴 곡선 3겹 */
+  '<path d="M32.7 23.5L33.9 36.1" '+r+' stroke-width="0.9"/>'+
+  '<path d="M34.3 38.9C40.2 36.9 47.2 36.6 52.3 37.5" '+r+' stroke-width="1.4"/>'+
+  '<path d="M34.7 40.0C40.4 38.1 47.4 37.8 52.0 38.6" '+r+' stroke-width="0.75"/>'+
+  '<path d="M35.1 41.0C40.6 39.2 46.8 38.9 51.0 39.5" '+r+' stroke-width="0.5"/>');
+}
+/* 원본 방식: 이탤릭 두 줄(평평) */
+function textFlat(fg){
+  return '<g transform="skewX(-10)" fill="'+fg+'" font-family="\'Baloo 2\',Inter,sans-serif" font-weight="800">'+
+    '<text x="48.6" y="28.6" font-size="8.8" text-anchor="middle">fair</text>'+
+    '<text x="50.9" y="34.2" font-size="8.8" text-anchor="middle">toon</text>'+
+  '</g>';
+}
+/* 변형: 곡면을 따라 휘는 두 줄 */
+function textCurved(fg){
+  uid++; var a="ca"+uid,b="cb"+uid;
+  return '<defs><path id="'+a+'" d="M36.8 29.4C41.0 26.9 48.6 26.3 54.0 28.0"/>'+
+         '<path id="'+b+'" d="M36.4 35.3C40.6 32.8 49.2 32.2 55.2 34.0"/></defs>'+
+    '<text fill="'+fg+'" font-family="\'Baloo 2\',Inter,sans-serif" font-weight="800" font-size="8.8" text-anchor="middle">'+
+      '<textPath href="#'+a+'" startOffset="50%">fair</textPath></text>'+
+    '<text fill="'+fg+'" font-family="\'Baloo 2\',Inter,sans-serif" font-weight="800" font-size="8.8" text-anchor="middle">'+
+      '<textPath href="#'+b+'" startOffset="50%">toon</textPath></text>';
+}
+function markFlat(fg){ return book(fg)+textFlat(fg); }
+function markCurved(fg){ return book(fg)+textCurved(fg); }
+
+/* 파비콘 축약본 — 왼쪽 페이지를 면으로 채우고 컷 분할을 흰 여백으로 */
+function mini(fg,bg){
+  return '<path d="M14.2 24.6C19.4 20.9 26.4 20.2 32 22.6V39.6C27 39.9 20.6 41.2 15.6 43.4Z" fill="'+fg+'"/>'+
+    '<path d="M21.8 22.2L23.2 30.2" stroke="'+bg+'" stroke-width="1.5" stroke-linecap="round"/>'+
+    '<path d="M15.8 31.6C20.6 29.6 26.4 29.0 31.4 29.6" stroke="'+bg+'" stroke-width="1.6" stroke-linecap="round" fill="none"/>'+
+    '<path d="M33.2 23.4C37.2 21.6 42.0 21.2 45.8 22.6V37.6C42.0 36.4 37.4 36.8 33.6 38.6Z" fill="'+fg+'" opacity=".9"/>'+
+    '<path d="M31.6 39.6C32.4 41.4 34.4 41.6 35.4 39.8" stroke="'+fg+'" stroke-width="1.6" stroke-linecap="round" fill="none"/>'+
+    '<path d="M15.6 45.4C21.2 43.0 27.6 41.8 32 41.4M33.4 41.4C38.4 41.2 43.6 41.8 48.2 43.2" stroke="'+fg+
+      '" stroke-width="1.5" stroke-linecap="round" fill="none"/>';
+}
+
+document.getElementById("v1").innerHTML = svg(210, markFlat(BLUE));
+document.getElementById("v2").innerHTML = svg(210, markCurved(BLUE));
+
+var rows=[
+ {nm:"Q1 · 정식 로고 (라이트)", ds:"원본 그대로. 흰 배경 헤더·명함·인쇄물용.",
+  mark:markFlat(BLUE), app:markFlat(WHITE), fav:markFlat(BLUE), favBg:"bgw"},
+ {nm:"Q2 · 반전 (파란 배경용)", ds:"같은 그림을 흰 선으로. 앱 아이콘 등 파란 면 위에.",
+  mark:markFlat(WHITE), app:markFlat(WHITE), fav:markFlat(WHITE), favBg:"bgb", dark:true},
+ {nm:"Q3 · 파비콘 축약본", ds:"16px 전용. 면을 채우고 컷 분할은 흰 여백. 글자 없음.",
+  mark:mini(BLUE,WHITE), app:mini(WHITE,BLUE), fav:mini(WHITE,BLUE), favBg:"bgb"}
+];
+document.getElementById("rows").innerHTML = rows.map(function(r){
+  var bg = r.dark ? 'style="background:#2F5FEF;border-radius:14px;padding:8px;display:inline-flex;"' : '';
+  return '<tr>'+
+    '<td class="lft"><div class="nm">'+r.nm+'</div><div class="ds">'+r.ds+'</div></td>'+
+    '<td><span '+bg+'>'+svg(96,r.mark)+'</span></td>'+
+    '<td><span class="appicon">'+svg(52,r.app)+'</span></td>'+
+    '<td><div class="favrow"><span class="fav32 '+r.favBg+'">'+svg(26,r.fav)+'</span>'+
+        '<span class="fav16 '+r.favBg+'">'+svg(15,r.fav)+'</span></div></td>'+
+    '<td><span class="lock">'+svg(44,r.dark?markFlat(BLUE):r.mark)+'</span>'+
+        '<span class="lock" style="margin-left:16px;">'+svg(38,r.dark?markFlat(BLUE):r.mark)+
+        '<span class="wm">FAIR<em>TOON</em></span></span></td>'+
+  '</tr>';
+}).join("");
+</script>
+</body></html>

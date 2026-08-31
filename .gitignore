@@ -10,3 +10,6 @@ backup/
 
 # Supabase CLI 로컬 상태
 supabase/.temp/
+
+# 통화 녹취 — 공개 리포에 올리지 않는다 (대표님 확인 전)
+etc/*.m4a
