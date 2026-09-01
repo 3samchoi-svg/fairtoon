@@ -201,6 +201,24 @@ def kakaopage_cover(imgs):
     return ""
 
 
+def kakaowebtoon_cover(cid):
+    """카카오웹툰 공유이미지. 살아 있을 때만 주소를 돌려준다.
+
+    이 UUID는 작품마다 다른데, 예전에는 한 작품의 값을 전 작품에 돌려 써서 404가 섞였다
+    (09-02에 8편 발견 · 33번 SQL로 복구). 없으면 빈 값을 주고, 화면은 장르 그라데이션으로 받는다.
+    """
+    url = "https://kr-a.kakaopagecdn.com/P/C/%d/sharing/2x/eacb00ec-9034-42cb-a533-7c7690741113.jpg" % cid
+    try:
+        req = urllib.request.Request(url, headers=H_KW, method="HEAD")
+        with urllib.request.urlopen(req, timeout=20) as r:
+            if r.status == 200 and (r.headers.get("Content-Type", "").startswith("image")) \
+                    and int(r.headers.get("Content-Length") or 0) > 3000:
+                return url
+    except Exception:
+        pass
+    return ""
+
+
 def kakaowebtoon_url(title, db_url):
     if "/content/" in (db_url or ""):
         return db_url
@@ -285,7 +303,7 @@ def main():
         rows.append((v["title"], "·".join(v["authors"]), GENRE_NAVER.get(v.get("genre") or "", "드라마"),
                      blurb, "kakaowebtoon",
                      "https://webtoon.kakao.com/content/%s/%d" % (urllib.parse.quote(v["seoId"]), v["id"]),
-                     "https://kr-a.kakaopagecdn.com/P/C/%d/sharing/2x/eacb00ec-9034-42cb-a533-7c7690741113.jpg" % v["id"]))
+                     kakaowebtoon_cover(v["id"])))
 
     kp_new = [v for v in live["kakaopage"].values()
               if norm(v["title"]) not in known and norm(v["title"]) not in seen and not v["adult"]]
