@@ -202,14 +202,22 @@ def kakaopage_cover(imgs):
 
 
 def kakaowebtoon_cover(cid):
-    """카카오웹툰 공유이미지. 살아 있을 때만 주소를 돌려준다.
+    """카카오웹툰 표지. 작품 페이지의 og:image 만 근거로 삼는다.
 
-    이 UUID는 작품마다 다른데, 예전에는 한 작품의 값을 전 작품에 돌려 써서 404가 섞였다
-    (09-02에 8편 발견 · 33번 SQL로 복구). 없으면 빈 값을 주고, 화면은 장르 그라데이션으로 받는다.
+    공유이미지 UUID는 작품마다 다르다. 예전에는 한 작품의 값을 전 작품에 돌려 써서 404가
+    섞였고(09-02에 8편 발견 · 33번 SQL로 복구), 09-04에 신작 2편이 또 깨졌다(34번 SQL로 복구).
+    그래서 추측하지 않고 페이지에서 읽는다. 못 읽으면 빈 값을 주고, 화면은 장르 그라데이션으로 받는다.
     """
-    url = "https://kr-a.kakaopagecdn.com/P/C/%d/sharing/2x/eacb00ec-9034-42cb-a533-7c7690741113.jpg" % cid
     try:
-        req = urllib.request.Request(url, headers=H_KW, method="HEAD")
+        req = urllib.request.Request("https://webtoon.kakao.com/content/x/%d" % cid,
+                                     headers={"User-Agent": UA, "Referer": "https://webtoon.kakao.com/"})
+        with urllib.request.urlopen(req, timeout=20) as r:
+            html = r.read().decode("utf-8", "replace")
+        m = re.search(r'<meta property="og:image" content="([^"]+)"', html)
+        url = m.group(1) if m else ""
+        if not url.startswith("https://"):
+            return ""
+        req = urllib.request.Request(url, headers={"User-Agent": UA}, method="HEAD")
         with urllib.request.urlopen(req, timeout=20) as r:
             if r.status == 200 and (r.headers.get("Content-Type", "").startswith("image")) \
                     and int(r.headers.get("Content-Length") or 0) > 3000:

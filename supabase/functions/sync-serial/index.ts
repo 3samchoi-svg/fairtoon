@@ -131,6 +131,29 @@ async function fillNaverDetail(w: Live): Promise<Live> {
   };
 }
 
+/** 카카오웹툰 표지 — 작품 페이지의 og:image 만 근거로 삼는다.
+ *
+ * 예전에는 공유이미지 UUID 하나를 전 작품에 돌려 썼다. UUID는 작품마다 다르므로 25편 중
+ * 8편이 404였고(09-02 발견 · 33번 SQL 복구), 파이썬 스크립트만 고친 탓에 이 함수를 타고
+ * 신작 2편이 같은 이유로 또 깨졌다(09-04 발견 · 34번 SQL 복구).
+ * 그래서 추측하지 않고 페이지에서 읽는다. 못 읽으면 빈 값을 주고 화면은 장르 그라데이션으로 받는다. */
+async function kwCover(cid: number): Promise<string> {
+  try {
+    const r = await fetch(`https://webtoon.kakao.com/content/x/${cid}`, {
+      headers: { "User-Agent": UA, "Referer": "https://webtoon.kakao.com/" },
+    });
+    if (!r.ok) return "";
+    const m = /<meta property="og:image" content="([^"]+)"/.exec(await r.text());
+    const url = m?.[1] ?? "";
+    if (!url.startsWith("https://")) return "";
+    const h = await fetch(url, { method: "HEAD", headers: { "User-Agent": UA } });
+    if (h.ok && (h.headers.get("content-type") ?? "").startsWith("image")) return url;
+  } catch (e) {
+    console.error("카카오웹툰 표지 실패", cid, String(e));
+  }
+  return "";
+}
+
 async function liveKakaoWebtoon(): Promise<Live[]> {
   const out: Live[] = [];
   const seen = new Set<number>();
@@ -154,8 +177,8 @@ async function liveKakaoWebtoon(): Promise<Live[]> {
           genre: GENRE_NAVER[c.mainGenre ?? ""] ?? "드라마", blurb: blurb.slice(0, 200),
           platform: "kakaowebtoon",
           url: `https://webtoon.kakao.com/content/${encodeURIComponent(c.seoId)}/${c.id}`,
-          // 기존 카카오웹툰 표지와 같은 형식. CDN이 경로의 작품 id로 그림을 고른다.
-          cover: `https://kr-a.kakaopagecdn.com/P/C/${c.id}/sharing/2x/eacb00ec-9034-42cb-a533-7c7690741113.jpg`,
+          // 표지는 여기서 만들지 않는다. 넣을 작품만 kwCover() 로 페이지에서 읽는다.
+          cover: "",
           adult: !!c.adult || (c.ageLimit ?? 0) >= 19,
         });
       }
@@ -255,6 +278,10 @@ Deno.serve(async (req) => {
   }
   const toInsert = detailed.filter((w) => !w.adult);
   adultSkipped += detailed.length - toInsert.length;
+  // 카카오웹툰 표지는 넣을 작품만 페이지에서 읽는다. 하루 몇 건이라 요청 수는 문제되지 않는다.
+  for (const w of toInsert) {
+    if (w.platform === "kakaowebtoon") w.cover = await kwCover(Number(w.key.split(":")[1]));
+  }
 
   // ── 완결 전환
   const liveTitles: Record<string, Set<string>> = {
